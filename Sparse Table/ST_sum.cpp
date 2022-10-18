@@ -18,7 +18,7 @@ void buildST(){
         STSUM[i][0] = arr[i];
     }
 
-    ///build min
+    ///build sum
     for(int k = 1; k < LOGN; ++k){
         int fin = (1 << k) - 1;
         for(int i = 0; i + fin < n; ++i){

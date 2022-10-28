@@ -18,7 +18,7 @@ void buildST(){
         STMIN[i][0] = arr[i];
     }
 
-    ///build min
+    ///construye el minimo
     for(int k = 1; k < LOGN; ++k){
         int fin = (1 << k) - 1;
         for(int i = 0; i + fin < n; ++i){
@@ -32,7 +32,7 @@ int main(){
     cin.tie(0);
     cout.tie(0);
 
-    /// precompute logarithms
+    /// precalcular logaritmos
     lg2[1] = 0;
     for(int i = 2; i < MAXN; ++i){
         lg2[i] = lg2[i / 2] + 1;
@@ -40,18 +40,22 @@ int main(){
 
     cin >> n >> q;
 
-    /// read n elements
+    /// lee los n elementos del arreglo
     for(int i = 0; i < n; ++i){
         cin >> arr[i];
     }
 
     buildST();
 
-    /// read and answer q minimum queries for [l, r], 0 <= l <= r < n
+    /// leer y responder preguntas para [l, r], 0 <= l <= r < n
     for(int i = 0; i < q; ++i){
         int l, r;
         cin >> l >> r;
 
+        /**
+            Para operaciones idempotentes podemos responder en O(1)
+            la operacion min es idempotente
+        */
         int lg = lg2[r - l + 1];
         cout << min(STMIN[l][lg], STMIN[r - (1 << lg) + 1][lg]) << '\n';
     }

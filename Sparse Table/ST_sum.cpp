@@ -29,6 +29,7 @@ void buildST(){
 
 long long computeSum(int l, int r){
     long long sum = 0;
+    /// acumula las sumas de los rangos potencias de 2 que conforman al rango [l, r]
     for(int k = LOGN; 0 <= k; --k){
         if( r - l + 1 < (1 << k) ) continue;
 

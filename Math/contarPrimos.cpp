@@ -11,6 +11,8 @@ using namespace std;
 void criba(int n, vector<int> &primos){
     bool no_primo[n + 1] = {};
     no_primo[0] = no_primo[1] = true;
+
+    primos.clear();
     for(long long i = 3; i * i <= n; i += 2){
         if(no_primo[i]) continue;
         for(long long j = i * i; j <= n; j += 2 * i)
@@ -24,12 +26,20 @@ void criba(int n, vector<int> &primos){
     }
 }/// Tiempo: O(nloglogn), Memoria: O(n)
 
+/**
+    La idea es primero calcular los primos hasta sqrt(n), entonces
+    ya tenemos todos los primos que dividen a los no primos en [0, n].
+    Luego, vamos haciendo la criba en segmentos de tamaño S. De esta manera
+    tenemos una complejidad en memoria de O(sqrt(n) + S). Si S = sqrt(n), entonces
+    la complejidad en memoria queda O(sqrt(n))
+*/
+
 /// cuenta primos hasta n en O(sqrt(n)) de memoria
 int cuentaPrimos(int n){
     const int S = sqrt(n);
 
     vector<int> primosRaiz;
-    criba(S, primosRaiz);
+    criba(sqrt(n) + 1, primosRaiz);
 
     int ans = 0;
 

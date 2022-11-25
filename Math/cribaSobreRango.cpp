@@ -7,10 +7,12 @@
 
 using namespace std;
 
-/// calcula primos hasta n
+/// calcula primos hasta n y guarda los primos en el vector
 void criba(int n, vector<int> &primos){
     bool no_primo[n + 1] = {};
     no_primo[0] = no_primo[1] = true;
+
+    primos.clear();
     for(long long i = 3; i * i <= n; i += 2){
         if(no_primo[i]) continue;
         for(long long j = i * i; j <= n; j += 2 * i)
@@ -24,14 +26,23 @@ void criba(int n, vector<int> &primos){
     }
 }/// Tiempo: O(nloglogn), Memoria: O(n)
 
+
+/**
+    La idea es que para un entero x, si no es primo, entonces
+    x es dividido por algún primo menor o igual a sqrt(x). Entonces,
+    si calculamos todos los primos hasta sqrt(b), ya tenemos todos los
+    primos posibles que pueden dividir a todo entero en el rango [a, b]
+*/
+
 void cribaSobreRango(long long a, long long b, vector<long long> &primos){
     long long tam = b - a + 1;
 
     vector<int> primosRaiz;
     criba(sqrt(b) + 1, primosRaiz);
 
-    primos.clear();
+
     bool no_primo[tam] = {};
+    primos.clear();
     for(long long p : primosRaiz){
         /// va por todos los multiplos m de p tales que a <= m <= b
         long long ini = p * max(p, (a + p - 1) / p);

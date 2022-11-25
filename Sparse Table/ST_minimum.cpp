@@ -14,6 +14,11 @@ int STMIN[MAXN][LOGN];
 int lg2[MAXN];
 
 void buildST(){
+    lg2[1] = 0;
+    for(int i = 2; i < MAXN; ++i){
+        lg2[i] = lg2[i / 2] + 1;
+    }
+
     for(int i = 0; i < n; ++i){
         STMIN[i][0] = arr[i];
     }
@@ -27,16 +32,19 @@ void buildST(){
     }
 }
 
+int computeMin(int l, int r){
+    /**
+        Para operaciones idempotentes podemos responder en O(1)
+        la operacion min es idempotente
+    */
+    int lg = lg2[r - l + 1];
+    cout << min(STMIN[l][lg], STMIN[r - (1 << lg) + 1][lg]) << '\n';
+}
+
 int main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-
-    /// precalcular logaritmos
-    lg2[1] = 0;
-    for(int i = 2; i < MAXN; ++i){
-        lg2[i] = lg2[i / 2] + 1;
-    }
 
     cin >> n >> q;
 
@@ -52,11 +60,6 @@ int main(){
         int l, r;
         cin >> l >> r;
 
-        /**
-            Para operaciones idempotentes podemos responder en O(1)
-            la operacion min es idempotente
-        */
-        int lg = lg2[r - l + 1];
-        cout << min(STMIN[l][lg], STMIN[r - (1 << lg) + 1][lg]) << '\n';
+        cout << computeMin(l, r) << '\n';
     }
 }

@@ -14,6 +14,12 @@ long long STSUM[MAXN][LOGN];
 int lg2[MAXN];
 
 void buildST(){
+    /// precompute logarithms
+    lg2[1] = 0;
+    for(int i = 2; i < MAXN; ++i){
+        lg2[i] = lg2[i / 2] + 1;
+    }
+
     for(int i = 0; i < n; ++i){
         STSUM[i][0] = arr[i];
     }
@@ -44,12 +50,6 @@ int main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-
-    /// precompute logarithms
-    lg2[1] = 0;
-    for(int i = 2; i < MAXN; ++i){
-        lg2[i] = lg2[i / 2] + 1;
-    }
 
     cin >> n >> q;
 

@@ -19,12 +19,12 @@ using namespace std;
 
 /// calcula primos hasta n y guarda los primos en el vector
 void criba(int n, vector<int> &primos){
+    primos.clear();
     if(n < 2) return;
 
     bool no_primo[n + 1] = {};
     no_primo[0] = no_primo[1] = true;
 
-    primos.clear();
     for(long long i = 3; i * i <= n; i += 2){
         if(no_primo[i]) continue;
         for(long long j = i * i; j <= n; j += 2 * i)

@@ -9,12 +9,13 @@ using namespace std;
 
 /// calcula primos hasta n
 void criba(int n, vector<int> &primos){
+    primos.clear();
     if(n < 2) return;
 
     bool no_primo[n + 1] = {};
     no_primo[0] = no_primo[1] = true;
 
-    primos.clear();
+
     for(long long i = 3; i * i <= n; i += 2){
         if(no_primo[i]) continue;
         for(long long j = i * i; j <= n; j += 2 * i)
@@ -49,16 +50,15 @@ int cuentaPrimos(int n){
 
     bool no_primo[S];
     for(int ini = 0; ini <= n; ini += S){
-        memset(no_primo, 0, S);
+        memset(no_primo, 0, sizeof(no_primo));
         for(int p : primosRaiz){
             int m = p * max(p, (ini + p - 1) / p) - ini;
             for(; m <= S; m += p)
                 no_primo[m] = true;
         }
 
-        if(ini == 0) no_primo[0] = no_primo[1] = true;
         for(int i = 0; i < S && i + ini <= n; ++i)
-            if(!no_primo[i])
+            if(!no_primo[i] && 1 < i + ini)
                 ans++;
     }
 

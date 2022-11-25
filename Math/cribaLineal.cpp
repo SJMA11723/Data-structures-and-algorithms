@@ -16,11 +16,13 @@ using namespace std;
 
 /// hace la criba en O(n) y guarda los primos en el vector
 void cribaLineal(int n, vector<int> &primos){
+    primos.clear();
+    if(n < 2) return;
+
     int lp[n + 1] = {}; /// lp[i] guarda el menor primo que divide a i
     bool no_primo[n + 1] = {};
     no_primo[0] = no_primo[1] = true;
 
-    primos.clear();
     for(long long i = 2; i <= n; ++i){
         if(!lp[i]){ /// si lp[i] = 0, entonces i es primo
             lp[i] = i;

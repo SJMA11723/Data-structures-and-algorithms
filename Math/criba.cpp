@@ -19,6 +19,8 @@ using namespace std;
 
 /// calcula primos hasta n y guarda los primos en el vector
 void criba(int n, vector<int> &primos){
+    if(n < 2) return;
+
     bool no_primo[n + 1] = {};
     no_primo[0] = no_primo[1] = true;
 
@@ -42,7 +44,7 @@ int main(){
     cout.tie(0);
 
     vector<int> primos;
-    criba(200, primos);
+    criba(1, primos);
     for(int it : primos)
         cout << it << ' ';
 }

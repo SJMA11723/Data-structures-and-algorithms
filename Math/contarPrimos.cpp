@@ -9,6 +9,8 @@ using namespace std;
 
 /// calcula primos hasta n
 void criba(int n, vector<int> &primos){
+    if(n < 2) return;
+
     bool no_primo[n + 1] = {};
     no_primo[0] = no_primo[1] = true;
 
@@ -36,6 +38,8 @@ void criba(int n, vector<int> &primos){
 
 /// cuenta primos hasta n en O(sqrt(n)) de memoria
 int cuentaPrimos(int n){
+    if(n < 2) return 0;
+
     const int S = sqrt(n);
 
     vector<int> primosRaiz;
@@ -66,6 +70,6 @@ int main(){
     cin.tie(0);
     cout.tie(0);
 
-    int n = 2e8;
+    int n = 2;
     cout << cuentaPrimos(n);
 }

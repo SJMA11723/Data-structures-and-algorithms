@@ -9,6 +9,8 @@ using namespace std;
 
 /// calcula primos hasta n y guarda los primos en el vector
 void criba(int n, vector<int> &primos){
+    if(n < 2) return;
+
     bool no_primo[n + 1] = {};
     no_primo[0] = no_primo[1] = true;
 
@@ -35,6 +37,9 @@ void criba(int n, vector<int> &primos){
 */
 
 void cribaSobreRango(long long a, long long b, vector<long long> &primos){
+    a = max(a, 0ll);
+    b = max(b, 0ll);
+
     long long tam = b - a + 1;
 
     vector<int> primosRaiz;
@@ -66,7 +71,7 @@ int main(){
     cout.tie(0);
 
     vector<long long> primos;
-    cribaSobreRango(0, 100, primos);
+    cribaSobreRango(-50, -10, primos);
     for(int it : primos)
         cout << it << ' ';
 }

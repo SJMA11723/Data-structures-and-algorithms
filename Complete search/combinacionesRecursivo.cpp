@@ -18,19 +18,23 @@ void check(int arr[], bool used[], int n){
     cout << "}\n";
 }
 
-void generaSubconjuntos(int arr[], bool used[], int n, int actual = 0){
-    if(actual == n){
+void generaCombinacionesEnM(int arr[], bool used[], int n, int m, int actual = 0){
+    if(n < m) return;
+
+    if(actual == n || m == 0){
+        if(m != 0) return;
         /**
-            Aqui revisas lo que quieras de cada subconjunto
+            Aqui revisas lo que quieras de cada combinacion
         */
         check(arr, used, n);
         return;
     }
 
+
     used[actual] = true; /// elige el elemento actual
-    generaSubconjuntos(arr, used, n, actual + 1);
+    generaCombinacionesEnM(arr, used, n, m - 1, actual + 1);
     used[actual] = false; /// no elige el elemento actual
-    generaSubconjuntos(arr, used, n, actual + 1);
+    generaCombinacionesEnM(arr, used, n, m, actual + 1);
 }
 
 int main(){
@@ -41,6 +45,7 @@ int main(){
     int arr[n] = {1, 2, 3, 4};
     bool used[n];
 
-    /// todos los subconjuntos de n elementos
-    generaSubconjuntos(arr, used, n);
+    int m = 2;
+    ///combinaciones de n en m (subconjuntos de m elementos)
+    generaCombinacionesEnM(arr, used, n, m);
 }

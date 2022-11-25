@@ -17,13 +17,17 @@ void check(int arr[], int n){
     cout << '\n';
 }
 
+void generaPermutaciones(int arr[], int n){
+    do{
+        check(arr, n);
+    } while(next_permutation(arr, arr + n));
+}
+
 int main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
     int n = 4;
     int arr[n] = {1, 2, 3, 4};
-    do{
-        check(arr, n);
-    } while(next_permutation(arr, arr + n));
+    generaPermutaciones(arr, n);
 }

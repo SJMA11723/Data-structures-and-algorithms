@@ -17,11 +17,13 @@ void check(int arr[], int n){
     cout << '\n';
 }
 
-/// permutaciones de n elementos
-void generaPermutaciones(int arr[], int n, int actual = 0){
-    if(actual == n){
+/// permutaciones de m elementos de un conjunto de n elementos
+void generaPermutacionesDeM(int arr[], int n, int m, int actual = 0){
+    if(n < m) return;
+
+    if(actual == m){
         /// permutacion completa
-        check(arr, n);
+        check(arr, m);
         return;
     }
 
@@ -30,7 +32,7 @@ void generaPermutaciones(int arr[], int n, int actual = 0){
     */
     for(int i = actual; i < n; ++i){
         swap(arr[i], arr[actual]);
-        generaPermutaciones(arr, n, actual + 1);
+        generaPermutacionesDeM(arr, n, m, actual + 1);
         swap(arr[i], arr[actual]);
     }
 }
@@ -41,5 +43,5 @@ int main(){
     cout.tie(0);
     int n = 4;
     int arr[n] = {1, 2, 3, 4};
-    generaPermutaciones(arr, n);
+    generaPermutacionesDeM(arr, n, 3);
 }

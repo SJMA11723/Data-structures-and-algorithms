@@ -38,7 +38,7 @@ int computeMin(int l, int r){
         la operacion min es idempotente
     */
     int lg = lg2[r - l + 1];
-    cout << min(STMIN[l][lg], STMIN[r - (1 << lg) + 1][lg]) << '\n';
+    return min(STMIN[l][lg], STMIN[r - (1 << lg) + 1][lg]);
 }
 
 int main(){

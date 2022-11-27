@@ -9,29 +9,23 @@ using namespace std;
 
 struct nodo{
     int left, right;
-    long long val;
+    int val;
 };
 
 struct SegmentTree{
-    int n;
-    const long long NEUTRO = 0;
-    long long *arr;
+    int n, NEUTRO;
+    int *arr;
     nodo *nodos;
+    int (*f)(const int &a, const int &b);
 
-    SegmentTree(int sz){
-        n = sz;
-        arr = new long long[n + 1];
+    SegmentTree(int n_size, int nums[], int (*func)(const int &a, const int &b), int neutro){
+        n = n_size;
+        arr = new int[n + 1];
+        memcpy(arr, nums, sizeof(int) * (n + 1));
         nodos = new nodo[4*n + 1];
-    }
-
-    void scanValues(){
-        for(int i = 1; i <= n; ++i)
-            cin >> arr[i];
-    }
-
-    /// calcula la operacion deseada en el segment tree
-    long long f(const long long &a, const long long &b){
-        return a + b;
+        f = func;
+        NEUTRO = neutro;
+        build(1, n);
     }
 
     void build(int l, int r, int pos = 1){
@@ -51,7 +45,7 @@ struct SegmentTree{
         nodos[pos].val = f(nodos[pos * 2].val, nodos[pos * 2 + 1].val);
     }
 
-    void update(long long x, int idx, int pos = 1){
+    void update(int x, int idx, int pos = 1){
         if(idx < nodos[pos].left || nodos[pos].right < idx) return;
 
         if(nodos[pos].left == nodos[pos].right){
@@ -66,7 +60,7 @@ struct SegmentTree{
         nodos[pos].val = f(nodos[pos * 2].val, nodos[pos * 2 + 1].val);
     }
 
-    long long query(int left, int right, int pos = 1){
+    int query(int left, int right, int pos = 1){
         if(right < nodos[pos].left || nodos[pos].right < left) return NEUTRO;
 
         if(left <= nodos[pos].left && nodos[pos].right <= right)
@@ -81,16 +75,18 @@ struct SegmentTree{
     }
 };
 
+int suma(const int &a, const int &b){return a + b;}
+
 int main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
     int n, q;
     cin >> n >> q;
-    SegmentTree seg(n);
+    int arr[n + 1];
+    for(int i = 1; i <= n; ++i) cin >> arr[i];
 
-    seg.scanValues();
-    seg.build(1, n);
+    SegmentTree seg(n, arr, suma, 0);
 
     while(q--){
         int a, b;

@@ -11,16 +11,14 @@
 using namespace std;
 
 struct SparseTable{
-    int n;
-    int NEUTRO;
-    int **ST;
-    int *lg2;
+    int n, NEUTRO;
+    int **ST, *lg2;
 
     /// Funcion/operacion que se aplicara (suma, min, max, gcd, etc)
-    int (*f)(int a, int b);
+    int (*f)(const int &a, const int &b);
 
     /// Recibe la cantidad de elementos, los elementos, la funcion/operacion y el neutro de la funcion
-    SparseTable(int n_size, int nums[], int (*func)(int a, int b), int neutro){
+    SparseTable(int n_size, int nums[], int (*func)(const int &a, const int &b), int neutro){
         n = n_size;
         lg2 = new int[n + 1];
         f = func;
@@ -43,9 +41,8 @@ struct SparseTable{
             ST[i][0] = nums[i];
         for(int k = 1; k <= lg2[n]; ++k){
             int fin = (1 << k) - 1;
-            for(int i = 0; i + fin < n; ++i){
+            for(int i = 0; i + fin < n; ++i)
                 ST[i][k] = f(ST[i][k - 1], ST[i + (1 << (k - 1))][k - 1]);
-            }
         }
     }
 
@@ -75,8 +72,8 @@ struct SparseTable{
     }
 };
 
-int suma(int a, int b){return a + b;}
-int mini(int a, int b){return a < b ? a : b;}
+int suma(const int &a, const int &b){return a + b;}
+int mini(const int &a, const int &b){return a < b ? a : b;}
 
 int main(){
     ios_base::sync_with_stdio(0);

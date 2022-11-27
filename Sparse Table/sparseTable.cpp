@@ -12,15 +12,15 @@ using namespace std;
 
 struct SparseTable{
     int n;
-    long long NEUTRO;
-    long long **ST;
+    int NEUTRO;
+    int **ST;
     int *lg2;
 
     /// Funcion/operacion que se aplicara (suma, min, max, gcd, etc)
-    long long (*f)(long long a, long long b);
+    int (*f)(int a, int b);
 
     /// Recibe la cantidad de elementos, los elementos, la funcion/operacion y el neutro de la funcion
-    SparseTable(int n_size, int nums[], long long (*func)(long long a, long long b), long long neutro){
+    SparseTable(int n_size, int nums[], int (*func)(int a, int b), int neutro){
         n = n_size;
         lg2 = new int[n + 1];
         f = func;
@@ -32,9 +32,9 @@ struct SparseTable{
             lg2[i] = lg2[i / 2] + 1;
 
         /// Inicializa la sparse table con el neutro
-        ST = new long long*[n];
+        ST = new int*[n];
         for(int i = 0; i < n; ++i){
-            ST[i] = new long long[lg2[n] + 1];
+            ST[i] = new int[lg2[n] + 1];
             memset(ST[i], NEUTRO, sizeof(ST[i]));
         }
 
@@ -49,8 +49,8 @@ struct SparseTable{
         }
     }
 
-    long long query(int l, int r){
-        long long ans = NEUTRO;
+    int query(int l, int r){
+        int ans = NEUTRO;
         for(int k = lg2[n]; 0 <= k; --k){
             if( r - l + 1 < (1 << k) ) continue;
             ans = f(ans, ST[l][k]);
@@ -59,7 +59,7 @@ struct SparseTable{
         return ans;
     }
 
-    long long queryIdem(int l, int r){
+    int queryIdem(int l, int r){
         /**
             Para funciones/operaciones idempotentes podemos responder en O(1)
             Ejemplo: la funcion min es idempotente
@@ -75,8 +75,8 @@ struct SparseTable{
     }
 };
 
-long long suma(long long a, long long b){return a + b;}
-long long mini(long long a, long long b){return a < b ? a : b;}
+int suma(int a, int b){return a + b;}
+int mini(int a, int b){return a < b ? a : b;}
 
 int main(){
     ios_base::sync_with_stdio(0);

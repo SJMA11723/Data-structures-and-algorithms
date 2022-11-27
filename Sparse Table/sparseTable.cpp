@@ -35,7 +35,7 @@ struct SparseTable{
         ST = new int*[n];
         for(int i = 0; i < n; ++i){
             ST[i] = new int[lg2[n] + 1];
-            memset(ST[i], NEUTRO, sizeof(ST[i]));
+            fill(ST[i], ST[i] + lg2[n] + 1, NEUTRO);
         }
 
         /// Construye la sparse table
@@ -95,7 +95,7 @@ int main(){
     }
 
     SparseTable st_sum = SparseTable(n, arr, suma, 0);
-    SparseTable st_min = SparseTable(n, arr, mini, LLONG_MAX);
+    SparseTable st_min = SparseTable(n, arr, mini, INT_MAX);
 
     /// read and answer q sum queries for [l, r], 0 <= l <= r < n
     for(int i = 0; i < q; ++i){

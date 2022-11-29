@@ -28,13 +28,13 @@ void criba(int n){
 
 int moebius(int n){
     if(n <= 1) return 1;
-    if(!dp[n]){
+    if(dp[n] == -7){
         int exp = 0, p = lp[n], n0 = n;
         while(n0 % p == 0){
             exp++;
             n0 /= p;
         }
-        dp[n] = (exp > 1 ? 0 : -1) * moebius(n0);
+        dp[n] = (exp > 1 ? 0 : -1 * moebius(n0));
     }
     return dp[n];
 }
@@ -43,7 +43,7 @@ int main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    criba(MAXN - 1);
+    criba(MAXN - 1); fill(dp, dp + MAXN, -7);
     int t; cin >> t;
     while(t--){
         int n; cin >> n;

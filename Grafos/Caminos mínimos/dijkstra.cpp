@@ -12,7 +12,7 @@ vector<pair<int, int>> grafo[MAXN];
 int dist[MAXN];
 bool visitado[MAXN];
 
-void dijkstra(int a, int b){
+int dijkstra(int a, int b){
     memset(dist, 255, sizeof(dist));
     memset(visitado, 0, sizeof(visitado));
 
@@ -37,6 +37,7 @@ void dijkstra(int a, int b){
             q.push({-dist[to], to});
         }
     }
+    return dist[b];
 }
 
 int main(){

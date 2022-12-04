@@ -13,7 +13,7 @@ struct FenwickTree{
     FenwickTree(int n_size){
         n = n_size;
         BIT = new int[n];
-        memset(BIT, 0, 4 * n);
+        memset(BIT, 0, sizeof(int) * n);
     }
 
     void add(int pos, int x){

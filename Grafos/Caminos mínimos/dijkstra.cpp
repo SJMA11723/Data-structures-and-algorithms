@@ -13,7 +13,7 @@ int dist[MAXN];
 bool visitado[MAXN];
 
 int dijkstra(int a, int b){
-    memset(dist, 255, sizeof(dist));
+    fill(dist, dist + MAXN, INT_MAX);
     memset(visitado, 0, sizeof(visitado));
 
     priority_queue<pair<int, int>> q;
@@ -22,8 +22,8 @@ int dijkstra(int a, int b){
     visitado[a] = true;
 
     while(!q.empty()){
-        int c, nodo;
-        tie(c, nodo) = q.top();
+        int nodo;
+        nodo = q.top().second;
         q.pop();
 
         if(visitado[nodo]) continue;

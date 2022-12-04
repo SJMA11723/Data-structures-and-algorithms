@@ -22,8 +22,7 @@ int dijkstra(int a, int b){
     visitado[a] = true;
 
     while(!q.empty()){
-        int nodo;
-        nodo = q.top().second;
+        int nodo = q.top().second;
         q.pop();
 
         if(visitado[nodo]) continue;

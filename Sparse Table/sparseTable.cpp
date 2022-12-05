@@ -30,19 +30,19 @@ struct SparseTable{
             lg2[i] = lg2[i / 2] + 1;
 
         /// Inicializa la sparse table con el neutro
-        ST = new int*[n];
-        for(int i = 0; i < n; ++i){
-            ST[i] = new int[lg2[n] + 1];
-            fill(ST[i], ST[i] + lg2[n] + 1, NEUTRO);
+        ST = new int*[lg2[n] + 1];
+        for(int i = 0; i <= lg2[n]; ++i){
+            ST[i] = new int[n];
+            fill(ST[i], ST[i] + n, NEUTRO);
         }
 
         /// Construye la sparse table
         for(int i = 0; i < n; ++i)
-            ST[i][0] = nums[i];
+            ST[0][i] = nums[i];
         for(int k = 1; k <= lg2[n]; ++k){
             int fin = (1 << k) - 1;
             for(int i = 0; i + fin < n; ++i)
-                ST[i][k] = f(ST[i][k - 1], ST[i + (1 << (k - 1))][k - 1]);
+                ST[k][i] = f(ST[k - 1][i], ST[k - 1][i + (1 << (k - 1))]);
         }
     }
 
@@ -50,7 +50,7 @@ struct SparseTable{
         int ans = NEUTRO;
         for(int k = lg2[n]; 0 <= k; --k){
             if( r - l + 1 < (1 << k) ) continue;
-            ans = f(ans, ST[l][k]);
+            ans = f(ans, ST[k][l]);
             l += 1 << k;
         }
         return ans;
@@ -62,11 +62,11 @@ struct SparseTable{
             Ejemplo: la funcion min es idempotente
         */
         int lg = lg2[r - l + 1];
-        return f(ST[l][lg], ST[r - (1 << lg) + 1][lg]);
+        return f(ST[lg][l], ST[lg][r - (1 << lg) + 1]);
     }
 
     ~SparseTable(){
-        for(int i = 0; i < n; ++i) delete[] ST[i];
+        for(int i = 0; i <= lg2[n]; ++i) delete[] ST[i];
         delete[] ST;
         delete[] lg2;
     }

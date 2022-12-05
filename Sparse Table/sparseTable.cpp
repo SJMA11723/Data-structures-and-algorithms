@@ -15,10 +15,10 @@ struct SparseTable{
     int **ST, *lg2;
 
     /// Funcion/operacion que se aplicara (suma, min, max, gcd, etc)
-    int (*f)(const int &a, const int &b);
+    int (*f)(int a, int b);
 
     /// Recibe la cantidad de elementos, los elementos, la funcion/operacion y el neutro de la funcion
-    SparseTable(int n_size, int nums[], int (*func)(const int &a, const int &b), int neutro){
+    SparseTable(int n_size, int nums[], int (*func)(int a, int b), int neutro){
         n = n_size;
         lg2 = new int[n + 1];
         f = func;
@@ -72,8 +72,8 @@ struct SparseTable{
     }
 };
 
-int suma(const int &a, const int &b){return a + b;}
-int mini(const int &a, const int &b){return a < b ? a : b;}
+int suma(int a, int b){return a + b;}
+int mini(int a, int b){return a < b ? a : b;}
 
 int main(){
     ios_base::sync_with_stdio(0);

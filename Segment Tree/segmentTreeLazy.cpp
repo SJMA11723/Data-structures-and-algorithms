@@ -11,7 +11,7 @@ struct SegmentTree{
     struct nodo{
         int val, lazy;
         nodo():val(0), lazy(0){}/// inicializa con el neutro y sin lazy pendiente
-        nodo(int x):val(x){}
+        nodo(int x, int lz = 0):val(x), lazy(lz){}
         const nodo operator+(const nodo &b)const{
             return nodo(val + b.val);
         }

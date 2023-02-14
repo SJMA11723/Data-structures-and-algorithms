@@ -38,8 +38,8 @@ struct SegmentTree{
     }
 
     nodo query(int l, int r, int left, int right, int pos = 1){
-        if(r < left || right < l) return 0; /// Devuelve el neutro
-        if(l <= left && right <= r) return nodos[pos].val;
+        if(r < left || right < l) return nodo(0); /// Devuelve el neutro
+        if(l <= left && right <= r) return nodos[pos];
         int mitad = (left + right) / 2;
         return query(l, r, left, mitad, pos * 2) + query(l, r, mitad + 1, right, pos * 2 + 1);
     }

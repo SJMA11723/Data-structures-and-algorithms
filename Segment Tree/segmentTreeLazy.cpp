@@ -46,7 +46,7 @@ struct SegmentTree{
         pushLazy(pos, left, right);
         if(r < left || right < l) return;
         if(l <= left && right <= r){
-            nodos[pos].lazy += x;
+            combineLazy(x, pos);
             pushLazy(pos, left, right);
             return;
         }

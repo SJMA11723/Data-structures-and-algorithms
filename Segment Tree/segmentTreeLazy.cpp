@@ -22,15 +22,24 @@ struct SegmentTree{
         nodos = new nodo[4 * n + 1];
     }
 
+    void combineLazy(int lz, int pos){
+        nodos[pos].lazy += lz;
+    }
+
+    /// IMPORTANTE: ESTE UPDATE ES PARA SUMA/RESTA. CAMBIAR SI ES NECESARIO
+    void applyLazy(int pos, int tam){
+        nodos[pos].val += nodos[pos].lazy * tam;
+        nodos[pos].lazy = 0;
+    }
+
     void pushLazy(int pos, int left, int right){
         int tam = abs(right - left + 1);
         if(1 < tam){
-            nodos[pos * 2].lazy += nodos[pos].lazy;
-            nodos[pos * 2 + 1].lazy += nodos[pos].lazy;
+            combineLazy(nodos[pos].lazy, pos * 2);
+            combineLazy(nodos[pos].lazy, pos * 2 + 1);
         }
-        /// IMPORTANTE: ESTE UPDATE ES PARA SUMA/RESTA. CAMBIAR SI ES NECESARIO
-        nodos[pos].val += nodos[pos].lazy * tam;
-        nodos[pos].lazy = 0;
+
+        applyLazy(pos, tam);
     }
 
     void update(int x, int l, int r, int left, int right, int pos = 1){

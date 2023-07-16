@@ -19,7 +19,6 @@ int dijkstra(int a, int b){
     priority_queue<pair<int, int>> q;
     q.push({0, a});
     dist[a] = 0;
-    visitado[a] = true;
 
     while(!q.empty()){
         int nodo = q.top().second;

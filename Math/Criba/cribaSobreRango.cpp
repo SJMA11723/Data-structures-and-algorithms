@@ -12,7 +12,7 @@ void criba(int n, vector<int> &primos){
     primos.clear();
     if(n < 2) return;
 
-    bool no_primo[n + 1] = {};
+    vector<bool> no_primo(n + 1);
     no_primo[0] = no_primo[1] = true;
 
     for(long long i = 3; i * i <= n; i += 2){
@@ -34,6 +34,8 @@ void criba(int n, vector<int> &primos){
     x es dividido por algún primo menor o igual a sqrt(x). Entonces,
     si calculamos todos los primos hasta sqrt(b), ya tenemos todos los
     primos posibles que pueden dividir a todo entero en el rango [a, b]
+
+    Criba Segmentada
 */
 
 void cribaSobreRango(long long a, long long b, vector<long long> &primos){
@@ -46,7 +48,7 @@ void cribaSobreRango(long long a, long long b, vector<long long> &primos){
     criba(sqrt(b) + 1, primosRaiz);
 
 
-    bool no_primo[tam] = {};
+    vector<char> no_primo(tam);
     primos.clear();
     for(long long p : primosRaiz){
         /// va por todos los multiplos m de p tales que a <= m <= b

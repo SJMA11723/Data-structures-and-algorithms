@@ -22,7 +22,7 @@ void criba(int n, vector<int> &primos){
     primos.clear();
     if(n < 2) return;
 
-    bool no_primo[n + 1] = {};
+    vector<bool> no_primo(n + 1);
     no_primo[0] = no_primo[1] = true;
 
     for(long long i = 3; i * i <= n; i += 2){

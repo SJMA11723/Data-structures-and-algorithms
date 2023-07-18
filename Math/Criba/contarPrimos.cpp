@@ -12,7 +12,7 @@ void criba(int n, vector<int> &primos){
     primos.clear();
     if(n < 2) return;
 
-    bool no_primo[n + 1] = {};
+    vector<bool> no_primo(n + 1);
     no_primo[0] = no_primo[1] = true;
 
 
@@ -37,7 +37,7 @@ void criba(int n, vector<int> &primos){
     la complejidad en memoria queda O(sqrt(n))
 */
 
-/// cuenta primos hasta n en O(sqrt(n)) de memoria
+/// cuenta primos hasta n en O(sqrt(n)) de memoria - Criba segmentada
 int cuentaPrimos(int n){
     if(n < 2) return 0;
 
@@ -48,9 +48,9 @@ int cuentaPrimos(int n){
 
     int ans = 0;
 
-    bool no_primo[S];
+    vector<char> no_primo(S);
     for(int ini = 0; ini <= n; ini += S){
-        memset(no_primo, 0, sizeof(no_primo));
+        fill(no_primo.begin(), no_primo.end(), false);
         for(int p : primosRaiz){
             int m = p * max(p, (ini + p - 1) / p) - ini;
             for(; m <= S; m += p)
@@ -70,6 +70,6 @@ int main(){
     cin.tie(0);
     cout.tie(0);
 
-    int n = 2;
+    int n = 11;
     cout << cuentaPrimos(n);
 }

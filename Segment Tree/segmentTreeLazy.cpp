@@ -8,37 +8,46 @@
 using namespace std;
 
 struct SegmentTree{
-    struct nodo{
+    struct node{
         int val, lazy;
-        nodo():val(0), lazy(0){}/// inicializa con el neutro y sin lazy pendiente
-        nodo(int x, int lz = 0):val(x), lazy(lz){}
-        const nodo operator+(const nodo &b)const{
-            return nodo(val + b.val);
+        node():val(0), lazy(0){}/// inicializa con el neutro y sin lazy pendiente
+        node(int x, int lz = 0):val(x), lazy(lz){}
+        const node operator+(const node &b)const{
+            return node(val + b.val);
         }
-    }*nodos;
-    int *arr;
-    SegmentTree(int n){
-        arr = new int[n + 1];
-        nodos = new nodo[4 * n + 1];
+    }*nodes;
+    SegmentTree(int n, int data[]){
+        nodes = new node[4*n + 1];
+        build(1, n, data);
+    }
+
+    void build(int left, int right, int data[], int pos = 1){
+        if(left == right){
+            nodes[pos].val = data[left];
+            return;
+        }
+        int mid = (left + right) / 2;
+        build(left, mid, data, pos * 2);
+        build(mid + 1, right, data, pos * 2 + 1);
+        nodes[pos] = nodes[pos * 2] + nodes[pos * 2 + 1];
     }
 
     void combineLazy(int lz, int pos){
-        nodos[pos].lazy += lz;
+        nodes[pos].lazy += lz;
     }
 
     /// IMPORTANTE: ESTE UPDATE ES PARA SUMA/RESTA. CAMBIAR SI ES NECESARIO
     void applyLazy(int pos, int tam){
-        nodos[pos].val += nodos[pos].lazy * tam;
-        nodos[pos].lazy = 0;
+        nodes[pos].val += nodes[pos].lazy * tam;
+        nodes[pos].lazy = 0;
     }
 
     void pushLazy(int pos, int left, int right){
         int tam = abs(right - left + 1);
         if(1 < tam){
-            combineLazy(nodos[pos].lazy, pos * 2);
-            combineLazy(nodos[pos].lazy, pos * 2 + 1);
+            combineLazy(nodes[pos].lazy, pos * 2);
+            combineLazy(nodes[pos].lazy, pos * 2 + 1);
         }
-
         applyLazy(pos, tam);
     }
 
@@ -51,24 +60,22 @@ struct SegmentTree{
             return;
         }
 
-        int mitad = (left + right) / 2;
-        update(x, l, r, left, mitad, pos * 2);
-        update(x, l, r, mitad + 1, right, pos * 2 + 1);
-
-        nodos[pos] = nodos[pos * 2] + nodos[pos * 2 + 1];
+        int mid = (left + right) / 2;
+        update(x, l, r, left, mid, pos * 2);
+        update(x, l, r, mid + 1, right, pos * 2 + 1);
+        nodes[pos] = nodes[pos * 2] + nodes[pos * 2 + 1];
     }
 
-    nodo query(int l, int r, int left, int right, int pos = 1){
+    node query(int l, int r, int left, int right, int pos = 1){
         pushLazy(pos, left, right);
-        if(r < left || right < l) return nodo(0); /// Devuelve el neutro
-        if(l <= left && right <= r) return nodos[pos];
-        int mitad = (left + right) / 2;
-        return query(l, r, left, mitad, pos * 2) + query(l, r, mitad + 1, right, pos * 2 + 1);
+        if(r < left || right < l) return node(0); /// Devuelve el neutro
+        if(l <= left && right <= r) return nodes[pos];
+        int mid = (left + right) / 2;
+        return query(l, r, left, mid, pos * 2) + query(l, r, mid + 1, right, pos * 2 + 1);
     }
 
     ~SegmentTree(){
-        delete[] nodos;
-        delete[] arr;
+        delete[] nodes;
     }
 };
 
@@ -78,11 +85,12 @@ int main(){
     cout.tie(0);
     int n, q;
     cin >> n >> q;
-    SegmentTree seg(n);
+    int arr[n + 1];
     for(int i = 1; i <= n; ++i){
-        int x; cin >> x;
-        seg.update(x, i, i, 1, n);
+        cin >> arr[i];
     }
+
+    SegmentTree seg(n, arr);
 
     while(q--){
         int a, b;
@@ -92,7 +100,7 @@ int main(){
         if(c == 'u'){
             cin >> x;
             seg.update(x, a, b, 1, n);
-        } else cout << seg.query(a, b, 1, n).val << '\n';
+        } else if(c == 'q') cout << seg.query(a, b, 1, n).val << '\n';
     }
 
 }

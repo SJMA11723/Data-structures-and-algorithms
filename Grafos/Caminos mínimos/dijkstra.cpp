@@ -8,31 +8,43 @@
 
 using namespace std;
 
-vector<pair<int, int>> grafo[MAXN];
-int dist[MAXN];
+struct edge{
+    int to;
+    long long c;
+};
+
+struct pos{
+    int from;
+    long long c;
+    const bool operator<(const pos &b)const{
+        return c > b.c;
+    }
+};
+
+vector<edge> grafo[MAXN];
+long long dist[MAXN];
 bool visitado[MAXN];
 
 int dijkstra(int a, int b){
-    fill(dist, dist + MAXN, INT_MAX);
+    fill(dist, dist + MAXN, LLONG_MAX);
     memset(visitado, 0, sizeof(visitado));
 
-    priority_queue<pair<int, int>> q;
-    q.push({0, a});
+    priority_queue<pos> q;
+    q.push(pos{a, 0});
     dist[a] = 0;
 
     while(!q.empty()){
-        int nodo = q.top().second;
+        pos act = q.top();
         q.pop();
 
-        if(visitado[nodo]) continue;
-        visitado[nodo] = true;
+        if(visitado[act.from]) continue;
+        visitado[act.from] = true;
 
-        for(pair<int, int> it : grafo[nodo]){
-            int to, c; tie(to, c) = it;
-            if(dist[to] < dist[nodo] + c) continue;
+        for(edge &e : grafo[act.from]){
+            if(dist[e.to] < dist[act.from] + e.c) continue;
 
-            dist[to] = dist[nodo] + c;
-            q.push({-dist[to], to});
+            dist[e.to] = dist[act.from] + e.c;
+            q.push(pos{e.to, dist[e.to]});
         }
     }
     return dist[b];

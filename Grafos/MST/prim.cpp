@@ -16,6 +16,11 @@ struct edge{
     }
 };
 
+struct pos{
+    int from;
+    long long c;
+};
+
 vector<edge> grafo[MAXN];
 long long eCost[MAXN];
 bool visitado[MAXN];
@@ -25,8 +30,8 @@ long long prim(){
     fill(eCost, eCost + MAXN, LLONG_MAX);
 
     long long ans = 0;
-    priority_queue<edge> q;
-    q.push(edge{1, 0});
+    priority_queue<pos> q;
+    q.push(pos{1, 0});
     while(q.size()){
         int node = q.top().to;
         long long c = q.top().c;

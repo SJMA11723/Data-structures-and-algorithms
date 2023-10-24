@@ -4,37 +4,29 @@
 */
 
 #include <bits/stdc++.h>
-/**
-    Sparse table
-*/
+#define MAXN 500005
+#define LOGN 21
 
 using namespace std;
 
-struct SparseTable{
+struct sparse_table{
     int n, NEUTRO;
-    int **ST, *lg2;
+    int ST[LOGN][MAXN], lg2[LOGN];
 
     /// Funcion/operacion que se aplicara (suma, min, max, gcd, etc)
-    int (*f)(int a, int b);
+    int f(int a, int b){
+        return a + b;
+    }
 
     /// Recibe la cantidad de elementos, los elementos, la funcion/operacion y el neutro de la funcion
-    SparseTable(int n_size, int nums[], int (*func)(int a, int b), int neutro){
+    sparse_table(int n_size, int nums[]){
         n = n_size;
-        lg2 = new int[n + 1];
-        f = func;
-        NEUTRO = neutro;
+        NEUTRO = 0;
 
         /// Precalcula logaritmos
         lg2[1] = 0;
         for(int i = 2; i <= n; ++i)
             lg2[i] = lg2[i / 2] + 1;
-
-        /// Inicializa la sparse table con el neutro
-        ST = new int*[lg2[n] + 1];
-        for(int i = 0; i <= lg2[n]; ++i){
-            ST[i] = new int[n];
-            fill(ST[i], ST[i] + n, NEUTRO);
-        }
 
         /// Construye la sparse table
         for(int i = 0; i < n; ++i)
@@ -64,16 +56,7 @@ struct SparseTable{
         int lg = lg2[r - l + 1];
         return f(ST[lg][l], ST[lg][r - (1 << lg) + 1]);
     }
-
-    ~SparseTable(){
-        for(int i = 0; i <= lg2[n]; ++i) delete[] ST[i];
-        delete[] ST;
-        delete[] lg2;
-    }
 };
-
-int suma(int a, int b){return a + b;}
-int mini(int a, int b){return a < b ? a : b;}
 
 int main(){
     ios_base::sync_with_stdio(0);
@@ -91,14 +74,12 @@ int main(){
         cin >> arr[i];
     }
 
-    SparseTable st_sum = SparseTable(n, arr, suma, 0);
-    SparseTable st_min = SparseTable(n, arr, mini, INT_MAX);
+    sparse_table st(n, arr);
 
     /// read and answer q sum queries for [l, r], 0 <= l <= r < n
     for(int i = 0; i < q; ++i){
         int l, r;
         cin >> l >> r; r--; l--;
-        cout << "Suma: " << st_sum.query(l, r) << '\n';
-        cout << "Minimo: " << st_min.queryIdem(l, r) << '\n';
+        cout << "Suma: " << st.query(l, r) << '\n';
     }
 }

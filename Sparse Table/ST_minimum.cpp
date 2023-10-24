@@ -10,7 +10,7 @@ using namespace std;
 
 int n, q;
 int arr[MAXN];
-int STMIN[MAXN][LOGN];
+int STMIN[LOGN][MAXN];
 int lg2[MAXN];
 
 void buildST(){
@@ -20,14 +20,14 @@ void buildST(){
     }
 
     for(int i = 0; i < n; ++i){
-        STMIN[i][0] = arr[i];
+        STMIN[0][i] = arr[i];
     }
 
     ///construye el minimo
     for(int k = 1; k < LOGN; ++k){
         int fin = (1 << k) - 1;
         for(int i = 0; i + fin < n; ++i){
-            STMIN[i][k] = min(STMIN[i][k - 1], STMIN[i + (1 << (k - 1))][k - 1]);
+            STMIN[k][i] = min(STMIN[k - 1][i], STMIN[k - 1][i + (1 << (k - 1))]);
         }
     }
 }
@@ -38,7 +38,7 @@ int computeMin(int l, int r){
         la operacion min es idempotente
     */
     int lg = lg2[r - l + 1];
-    return min(STMIN[l][lg], STMIN[r - (1 << lg) + 1][lg]);
+    return min(STMIN[lg][l], STMIN[lg][r - (1 << lg) + 1]);
 }
 
 int main(){

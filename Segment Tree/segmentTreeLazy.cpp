@@ -4,10 +4,11 @@
 */
 
 #include <bits/stdc++.h>
+#define MAXN 10001
 
 using namespace std;
 
-struct SegmentTree{
+struct segment_tree{
     struct node{
         int val, lazy;
         node():val(0), lazy(0){}/// inicializa con el neutro y sin lazy pendiente
@@ -15,9 +16,8 @@ struct SegmentTree{
         const node operator+(const node &b)const{
             return node(val + b.val);
         }
-    }*nodes;
-    SegmentTree(int n, int data[]){
-        nodes = new node[4*n + 1];
+    }nodes[4 * MAXN + 1];
+    segment_tree(int n, int data[]){
         build(1, n, data);
     }
 
@@ -68,14 +68,10 @@ struct SegmentTree{
 
     node query(int l, int r, int left, int right, int pos = 1){
         pushLazy(pos, left, right);
-        if(r < left || right < l) return node(0); /// Devuelve el neutro
+        if(r < left || right < l) return node(); /// Devuelve el neutro
         if(l <= left && right <= r) return nodes[pos];
         int mid = (left + right) / 2;
         return query(l, r, left, mid, pos * 2) + query(l, r, mid + 1, right, pos * 2 + 1);
-    }
-
-    ~SegmentTree(){
-        delete[] nodes;
     }
 };
 
@@ -90,7 +86,7 @@ int main(){
         cin >> arr[i];
     }
 
-    SegmentTree seg(n, arr);
+    segment_tree seg(n, arr);
 
     while(q--){
         int a, b;

@@ -4,6 +4,7 @@
 */
 
 #include <bits/stdc++.h>
+#define MAXN 10001
 
 using namespace std;
 
@@ -15,13 +16,13 @@ struct edge{
     }
 };
 
-vector<edge> grafo[10001];
-long long eCost[10001];
-bool visitado[10001];
+vector<edge> grafo[MAXN];
+long long eCost[MAXN];
+bool visitado[MAXN];
 
 long long prim(){
     memset(visitado, 0, sizeof(visitado));
-    fill(eCost, eCost + 10001, LLONG_MAX);
+    fill(eCost, eCost + MAXN, LLONG_MAX);
 
     long long ans = 0;
     priority_queue<edge> q;

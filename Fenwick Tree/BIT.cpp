@@ -4,16 +4,16 @@
 */
 
 #include <bits/stdc++.h>
+#define MAXN 1000
 
 using namespace std;
 
 struct FenwickTree{
-    int n, *BIT;
+    int n, BIT[MAXN];
 
     FenwickTree(int n_size){
         n = n_size;
-        BIT = new int[n];
-        memset(BIT, 0, sizeof(int) * n);
+        memset(BIT, 0, sizeof(BIT));
     }
 
     void add(int pos, int x){
@@ -30,10 +30,6 @@ struct FenwickTree{
             pos -= pos & -pos;
         }
         return ret;
-    }
-
-    ~FenwickTree(){
-        delete[] BIT;
     }
 };
 

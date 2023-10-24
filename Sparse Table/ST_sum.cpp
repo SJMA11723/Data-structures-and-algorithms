@@ -10,7 +10,7 @@ using namespace std;
 
 int n, q;
 long long arr[MAXN];
-long long STSUM[MAXN][LOGN];
+long long STSUM[LOGN][MAXN];
 int lg2[MAXN];
 
 void buildST(){
@@ -21,14 +21,14 @@ void buildST(){
     }
 
     for(int i = 0; i < n; ++i){
-        STSUM[i][0] = arr[i];
+        STSUM[0][i] = arr[i];
     }
 
     ///build sum
     for(int k = 1; k < LOGN; ++k){
         int fin = (1 << k) - 1;
         for(int i = 0; i + fin < n; ++i){
-            STSUM[i][k] = STSUM[i][k - 1] + STSUM[i + (1 << (k - 1))][k - 1];
+            STSUM[k][i] = STSUM[k - 1][i] + STSUM[k - 1][i + (1 << (k - 1))];
         }
     }
 }
@@ -39,7 +39,7 @@ long long computeSum(int l, int r){
     for(int k = LOGN; 0 <= k; --k){
         if( r - l + 1 < (1 << k) ) continue;
 
-        sum += STSUM[l][k];
+        sum += STSUM[k][l];
         l += 1 << k;
     }
 

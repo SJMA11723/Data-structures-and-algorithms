@@ -16,7 +16,7 @@ struct min_stack{
 
     int top(){return st.top().first;}
 
-    void pop(){st.pop();}
+    void pop(){if(st.size() > 1)st.pop();}
 
     int minV(){return st.top().second;}
 

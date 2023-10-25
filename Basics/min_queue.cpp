@@ -16,7 +16,7 @@ struct min_stack{
 
     int top(){return st.top().first;}
 
-    void pop(){st.pop();}
+    void pop(){if(st.size() > 1)st.pop();}
 
     int minV(){return st.top().second;}
 
@@ -38,11 +38,11 @@ struct min_queue{
 
     bool empty(){ return size() == 0;}
     void transfer(){
-        if(p_out.empty()){
-            while(!p_in.empty()){
-                p_out.push(p_in.top());
-                p_in.pop();
-            }
+        if(p_out.size()) return;
+
+        while(p_in.size()){
+            p_out.push(p_in.top());
+            p_in.pop();
         }
     }
     min_stack p_in;

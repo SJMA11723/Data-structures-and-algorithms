@@ -9,16 +9,11 @@
 using namespace std;
 
 struct edge{
-    int to;
+    int from, to;
     long long c;
     const bool operator<(const edge &b)const{
         return c > b.c;
     }
-};
-
-struct pos{
-    int from;
-    long long c;
 };
 
 vector<edge> grafo[MAXN];
@@ -30,8 +25,8 @@ long long prim(){
     fill(eCost, eCost + MAXN, LLONG_MAX);
 
     long long ans = 0;
-    priority_queue<pos> q;
-    q.push(pos{1, 0});
+    priority_queue<edge> q;
+    q.push(edge{1, 1, 0});
     while(q.size()){
         int node = q.top().to;
         long long c = q.top().c;
@@ -42,7 +37,7 @@ long long prim(){
 
         ans += c;
 
-        for(edge it : grafo[node]){
+        for(edge &it : grafo[node]){
             if(visitado[it.to] || eCost[it.to] <= it.c) continue;
             eCost[it.to] = it.c;
             q.push(it);
@@ -61,8 +56,8 @@ int main(){
     while(m--){
         int i, j, k;
         cin >> i >> j >> k;
-        grafo[i].push_back(edge{j, k});
-        grafo[j].push_back(edge{i, k});
+        grafo[i].push_back(edge{i, j, k});
+        grafo[j].push_back(edge{j, i, k});
     }
 
     cout << prim();

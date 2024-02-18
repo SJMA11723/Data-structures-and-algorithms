@@ -47,10 +47,8 @@ void dfs(int node, bool keep, int p = 0){
     add(node, 1, p);
     /// answer queries here
 
-    if(big_child != -1)
-        big[big_child] = 0;
-    if(keep == 0)
-        add(node, -1, p);
+    if(big_child != -1) big[big_child] = 0;
+    if(!keep) add(node, -1, p);
 }
 
 int main(){

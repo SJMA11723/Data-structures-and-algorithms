@@ -10,24 +10,22 @@ using namespace std;
 
 struct edge{
     int to;
-    long long c;
+    int64_t w;
 };
 
 struct pos{
     int from;
-    long long c;
+    int64_t c;
     const bool operator<(const pos &b)const{
         return c > b.c;
     }
 };
 
-vector<edge> grafo[MAXN];
-long long dist[MAXN];
-bool visitado[MAXN];
-
-int dijkstra(int a, int b){
+int64_t dijkstra(int a, int b, vector<edge> graph[]){
+    int64_t dist[MAXN];
+    bool vis[MAXN];
     fill(dist, dist + MAXN, LLONG_MAX);
-    memset(visitado, 0, sizeof(visitado));
+    memset(vis, 0, sizeof(vis));
 
     priority_queue<pos> q;
     q.push(pos{a, 0});
@@ -37,13 +35,13 @@ int dijkstra(int a, int b){
         pos act = q.top();
         q.pop();
 
-        if(visitado[act.from]) continue;
-        visitado[act.from] = true;
+        if(vis[act.from]) continue;
+        vis[act.from] = true;
 
         for(edge &e : grafo[act.from]){
-            if(dist[e.to] < dist[act.from] + e.c) continue;
+            if(dist[e.to] < dist[act.from] + e.w) continue;
 
-            dist[e.to] = dist[act.from] + e.c;
+            dist[e.to] = dist[act.from] + e.w;
             q.push(pos{e.to, dist[e.to]});
         }
     }

@@ -9,7 +9,7 @@
 using namespace std;
 
 vector<int> graph[MAXN], inv_graph[MAXN];
-int components[MAXN];
+int scc[MAXN];
 bool vis[MAXN];
 
 void dfs(int node, vector<int> &order){
@@ -20,12 +20,12 @@ void dfs(int node, vector<int> &order){
     order.push_back(node);
 }
 
-void dfs2(int node, const int root){
+void scc(int node, const int root){
     if(vis[node]) return;
     vis[node] = true;
-    components[node] = root;
+    scc[node] = root;
 
-    for(int v : inv_graph[node]) dfs2(v, root);
+    for(int v : inv_graph[node]) scc(v, root);
 }
 
 int main(){
@@ -44,7 +44,7 @@ int main(){
     for(int i = 1; i <= n; ++i) dfs(i, order);
     reverse(order.begin(), order.end());
     memset(vis, 0, sizeof(vis));
-    for(int u : order) dfs2(u, u);
+    for(int u : order) scc(u, u);
 
-    for(int i = 1; i <= n;++i) cout << i << ": " << components[i] << '\n';
+    for(int i = 1; i <= n;++i) cout << i << ": " << scc[i] << '\n';
 }

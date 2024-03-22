@@ -68,6 +68,7 @@ struct two_sat{
         fill(vis.begin(), vis.end(), false);
 
         for(int i = 0; i < 2 * n; ++i) dfs(i, topo_ord);
+        fill(vis.begin(), vis.end(), false);
         reverse(topo_ord.begin(), topo_ord.end());
 
         int id = 0;

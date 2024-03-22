@@ -10,36 +10,34 @@ using namespace std;
 
 struct edge{
     int from, to;
-    long long c;
+    int64_t w;
     const bool operator<(const edge &b)const{
-        return c > b.c;
+        return w > b.w;
     }
 };
 
-vector<edge> grafo[MAXN];
-long long eCost[MAXN];
-bool visitado[MAXN];
-
-long long prim(){
-    memset(visitado, 0, sizeof(visitado));
+int64_t prim(vector<edge> grafo[]){
+    int64_t eCost[MAXN];
+    bool vis[MAXN];
+    memset(vis, 0, sizeof(vis));
     fill(eCost, eCost + MAXN, LLONG_MAX);
 
-    long long ans = 0;
+    int64_t ans = 0;
     priority_queue<edge> q;
     q.push(edge{1, 1, 0});
     while(q.size()){
         int node = q.top().to;
-        long long c = q.top().c;
+        int64_t w = q.top().w;
         q.pop();
 
-        if(visitado[node]) continue;
+        if(vis[node]) continue;
         visitado[node] = true;
 
-        ans += c;
+        ans += w;
 
         for(edge &it : grafo[node]){
-            if(visitado[it.to] || eCost[it.to] <= it.c) continue;
-            eCost[it.to] = it.c;
+            if(visitado[it.to] || eCost[it.to] <= it.w) continue;
+            eCost[it.to] = it.w;
             q.push(it);
         }
     }
@@ -53,6 +51,7 @@ int main(){
     cout.tie(0);
     int n, m;
     cin >> n >> m;
+    vector<edge> grafo[n + 1];
     while(m--){
         int i, j, k;
         cin >> i >> j >> k;

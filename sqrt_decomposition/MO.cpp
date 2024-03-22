@@ -32,23 +32,11 @@ vector<int> solve(vector<query> &queries) {
     int l_act = 0;
     int r_act = -1;
 
-    for (query q : queries) {
-        while (l_act > q.l) {
-            l_act--;
-            add(l_act);
-        }
-        while (r_act < q.r) {
-            r_act++;
-            add(r_act);
-        }
-        while (l_act < q.l) {
-            remove(l_act);
-            l_act++;
-        }
-        while (r_act > q.r) {
-            remove(r_act);
-            r_act--;
-        }
+    for(query q : queries){
+        while(l_act > q.l) add(--l_act);
+        while(r_act < q.r) add(++r_act);
+        while(l_act < q.l) remove(l_act++);
+        while(r_act > q.r) remove(r_act--);
         answers[q.i] = get_answer();
     }
     return answers;

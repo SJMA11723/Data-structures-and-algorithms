@@ -55,16 +55,16 @@ struct two_sat{
         order.push_back(node);
     }
 
-    void scc(int node, const int root){
+    void assign_scc(int node, const int root){
         if(vis[node]) return;
         vis[node] = true;
         scc[node] = root;
 
-        for(int v : inv_graph[node]) scc(v, root);
+        for(int v : inv_graph[node]) assign_scc(v, root);
     }
 
     /// construye respuesta
-    bool ans(){
+    bool buil_ans(){
         fill(vis.begin(), vis.end(), false);
 
         for(int i = 0; i < 2 * n; ++i) dfs(i, topo_ord);
@@ -72,7 +72,7 @@ struct two_sat{
         reverse(topo_ord.begin(), topo_ord.end());
 
         int id = 0;
-        for(int u : topo_ord) scc(u, id++);
+        for(int u : topo_ord) assign_scc(u, id++);
 
         for(int i = 0; i < n; ++i){
             if(scc[i] == scc[i + n]) return false;

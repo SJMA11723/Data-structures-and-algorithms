@@ -20,7 +20,7 @@ struct two_sat{
         graph.resize(2 * n);
         inv_graph.resize(2 * n);
         scc.resize(2 * n);
-        topo_ord.resize(2 * n);
+        vis.resize(2 * n);
         ans.resize(n);
     }
 

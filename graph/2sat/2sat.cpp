@@ -32,7 +32,7 @@ struct two_sat{
     /// al menos una es verdadera
     void add_or(int p, bool val_p, int q, bool val_q){
         add_edge(p + (val_p ? 0 : n), q + (val_q ? 0 : n));
-        add_edge(p + (val_p ? n : 0), q + (val_q ? n : 0));
+        add_edge(q + (val_q ? n : 0), p + (val_p ? n : 0));
     }
 
     /// exactamente una es verdadera

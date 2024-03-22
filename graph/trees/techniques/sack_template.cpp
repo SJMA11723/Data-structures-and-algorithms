@@ -40,9 +40,9 @@ void dfs(int node, bool keep, int p = 0){
 
     for(int v : tree[node])
         if(v != p && v != big_child)
-            dfs(v, false, node);  /// run a dfs on small childs and clear them from cnt
+            dfs(v, false, node);  /// run a dfs on small childs and clear them
     if(big_child != -1)
-        dfs(big_child, true, node), big[big_child] = 1;  /// big_child marked as big and not cleared from cnt
+        dfs(big_child, true, node), big[big_child] = 1;  /// big_child marked as big and not cleared
 
     add(node, 1, p);
     /// answer queries here

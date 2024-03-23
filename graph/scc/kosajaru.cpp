@@ -12,26 +12,26 @@ vector<int> graph[MAXN], inv_graph[MAXN];
 int scc[MAXN];
 bool vis[MAXN];
 
-void dfs(int node, vector<int> &order){
+void dfs(int node, vector<int> &topo_ord){
     if(vis[node]) return;
     vis[node] = true;
 
-    for(int v : graph[node]) dfs(v, order);
-    order.push_back(node);
+    for(int v : graph[node]) dfs(v, topo_ord);
+    topo_ord.push_back(node);
 }
 
-void scc(int node, const int id){
+void assign_scc(int node, const int id){
     if(vis[node]) return;
     vis[node] = true;
     scc[node] = id;
 
-    for(int v : inv_graph[node]) scc(v, id);
+    for(int v : inv_graph[node]) assign_scc(v, id);
 }
 
-int kosajaru(){
-    vector<int> order;
-    for(int i = 1; i <= n; ++i) dfs(i, order);
-    reverse(order.begin(), order.end());
+int kosajaru(int n){
+    vector<int> topo_ord;
+    for(int i = 1; i <= n; ++i) dfs(i, topo_ord);
+    reverse(topo_ord.begin(), topo_ord.end());
     memset(vis, 0, sizeof(vis));
     int id = 0;
     for(int u : topo_ord) if(!vis[u]) assign_scc(u, id++);
@@ -50,7 +50,7 @@ int main(){
         inv_graph[b].push_back(a);
     }
 
-    int cnt_comp = kosajaru();
+    int cnt_comp = kosajaru(n);
 
     for(int i = 1; i <= n;++i) cout << i << ": " << scc[i] << '\n';
 }

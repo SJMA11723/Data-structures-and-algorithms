@@ -29,6 +29,7 @@ void assign_scc(int node, const int id){
 }
 
 int kosajaru(int n){
+    memset(vis, 0, sizeof(vis));
     vector<int> topo_ord;
     for(int i = 1; i <= n; ++i) dfs(i, topo_ord);
     reverse(topo_ord.begin(), topo_ord.end());

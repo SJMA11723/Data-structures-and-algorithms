@@ -20,12 +20,22 @@ void dfs(int node, vector<int> &order){
     order.push_back(node);
 }
 
-void scc(int node, const int root){
+void scc(int node, const int id){
     if(vis[node]) return;
     vis[node] = true;
-    scc[node] = root;
+    scc[node] = id;
 
-    for(int v : inv_graph[node]) scc(v, root);
+    for(int v : inv_graph[node]) scc(v, id);
+}
+
+int kosajaru(){
+    vector<int> order;
+    for(int i = 1; i <= n; ++i) dfs(i, order);
+    reverse(order.begin(), order.end());
+    memset(vis, 0, sizeof(vis));
+    int id = 0;
+    for(int u : topo_ord) if(!vis[u]) assign_scc(u, id++);
+    return id;
 }
 
 int main(){
@@ -40,11 +50,7 @@ int main(){
         inv_graph[b].push_back(a);
     }
 
-    vector<int> order;
-    for(int i = 1; i <= n; ++i) dfs(i, order);
-    reverse(order.begin(), order.end());
-    memset(vis, 0, sizeof(vis));
-    for(int u : order) scc(u, u);
+    int cnt_comp = kosajaru();
 
     for(int i = 1; i <= n;++i) cout << i << ": " << scc[i] << '\n';
 }

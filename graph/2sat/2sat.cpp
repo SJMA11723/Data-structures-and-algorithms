@@ -64,7 +64,7 @@ struct two_sat{
     }
 
     /// construye respuesta
-    bool buil_ans(){
+    bool build_ans(){
         fill(vis.begin(), vis.end(), false);
 
         for(int i = 0; i < 2 * n; ++i) dfs(i, topo_ord);

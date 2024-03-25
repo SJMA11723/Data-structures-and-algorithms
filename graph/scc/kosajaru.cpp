@@ -39,6 +39,24 @@ int kosajaru(int n){
     return id;
 }
 
+vector<int> scc_graph[MAXN], inv_scc_graph[MAXN];
+
+void build_scc_graph(int n, int n_scc){
+    for(int u = 0; u < n; ++u)
+        for(int v : graph[u])
+            if(scc[u] != scc[v])
+                scc_graph[scc[u]].push_back(scc[v]);
+
+    for(int u = 0; u < n_scc; ++u){
+        sort(scc_graph[u].begin(), scc_graph[u].end());
+        auto it = unique(scc_graph[u].begin(), scc_graph[u].end());
+        scc_graph[u].resize(it - scc_graph[u].begin());
+
+        for(int v : scc_graph[u])
+            inv_scc_graph[v].push_back(u);
+    }
+}
+
 int main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0);

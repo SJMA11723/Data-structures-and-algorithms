@@ -47,20 +47,20 @@ struct two_sat{
     }
 
     /// Kosajaru
-    void dfs(int node, vector<int> &order){
+    void dfs(int node, vector<int> &topo_ord){
         if(vis[node]) return;
         vis[node] = true;
 
-        for(int v : graph[node]) dfs(v, order);
-        order.push_back(node);
+        for(int v : graph[node]) dfs(v, topo_ord);
+        topo_ord.push_back(node);
     }
 
-    void assign_scc(int node, const int root){
+    void assign_scc(int node, const int id){
         if(vis[node]) return;
         vis[node] = true;
-        scc[node] = root;
+        scc[node] = id;
 
-        for(int v : inv_graph[node]) assign_scc(v, root);
+        for(int v : inv_graph[node]) assign_scc(v, id);
     }
 
     /// construye respuesta

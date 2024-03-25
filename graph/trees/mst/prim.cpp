@@ -16,7 +16,7 @@ struct edge{
     }
 };
 
-int64_t prim(vector<edge> grafo[]){
+int64_t prim(vector<edge> graph[]){
     int64_t eCost[MAXN];
     bool vis[MAXN];
     memset(vis, 0, sizeof(vis));
@@ -31,12 +31,12 @@ int64_t prim(vector<edge> grafo[]){
         q.pop();
 
         if(vis[node]) continue;
-        visitado[node] = true;
+        vis[node] = true;
 
         ans += w;
 
-        for(edge &it : grafo[node]){
-            if(visitado[it.to] || eCost[it.to] <= it.w) continue;
+        for(edge &it : graph[node]){
+            if(vis[it.to] || eCost[it.to] <= it.w) continue;
             eCost[it.to] = it.w;
             q.push(it);
         }
@@ -51,13 +51,13 @@ int main(){
     cout.tie(0);
     int n, m;
     cin >> n >> m;
-    vector<edge> grafo[n + 1];
+    vector<edge> graph[n + 1];
     while(m--){
         int i, j, k;
         cin >> i >> j >> k;
-        grafo[i].push_back(edge{i, j, k});
-        grafo[j].push_back(edge{j, i, k});
+        graph[i].push_back(edge{i, j, k});
+        graph[j].push_back(edge{j, i, k});
     }
 
-    cout << prim();
+    cout << prim(graph);
 }

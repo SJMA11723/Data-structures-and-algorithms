@@ -35,10 +35,10 @@ int64_t prim(vector<edge> graph[]){
 
         ans += w;
 
-        for(edge &it : graph[node]){
-            if(vis[it.to] || eCost[it.to] <= it.w) continue;
-            eCost[it.to] = it.w;
-            q.push(it);
+        for(edge &e : graph[node]){
+            if(vis[e.to] || eCost[e.to] <= e.w) continue;
+            eCost[e.to] = e.w;
+            q.push(e);
         }
     }
 

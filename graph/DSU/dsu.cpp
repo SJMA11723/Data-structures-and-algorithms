@@ -24,12 +24,12 @@ struct dsu{
     }
 
     void join(int x, int y){
-        int Px = root(x);
-        int Py = root(y);
-        if(Px == Py) return;
-        if(RA[Px] >= RA[Py]) swap(Px, Py);
-        RA[Py] += RA[Px];
-        P[Px] = Py;
+        x = root(x);
+        y = root(y);
+        if(x == y) return;
+        if(RA[x] >= RA[y]) swap(x, y);
+        RA[y] += RA[x];
+        P[x] = y;
     }
 };
 

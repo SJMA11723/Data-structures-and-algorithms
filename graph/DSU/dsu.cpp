@@ -27,13 +27,9 @@ struct dsu{
         int Px = root(x);
         int Py = root(y);
         if(Px == Py) return;
-        if(RA[Px] < RA[Py]){
-            RA[Py] += RA[Py];
-            P[Px] = Py;
-        } else {
-            RA[Px] += RA[Py];
-            P[Py] = Px;
-        }
+        if(RA[Px] >= RA[Py]) swap(Px, Py);
+        RA[Py] += RA[Px];
+        P[Px] = Py;
     }
 };
 

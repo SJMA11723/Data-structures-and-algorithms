@@ -4,14 +4,14 @@
 */
 
 #include <bits/stdc++.h>
-#define MAXN 500005
 #define LOGN 21
 
 using namespace std;
 
 struct sparse_table{
     int n, NEUTRO;
-    int ST[LOGN][MAXN], lg2[LOGN];
+    vector<vector<int>> ST;
+    vector<int> lg2;
 
     /// Funcion/operacion que se aplicara (suma, min, max, gcd, etc)
     int f(int a, int b){
@@ -19,18 +19,19 @@ struct sparse_table{
     }
 
     /// Recibe la cantidad de elementos, los elementos, la funcion/operacion y el neutro de la funcion
-    sparse_table(int n_size, int nums[]){
-        n = n_size;
+    sparse_table(int _n, int data[]){
+        n = _n;
         NEUTRO = 0;
 
         /// Precalcula logaritmos
+        lg2.resize(n + 1);
         lg2[1] = 0;
         for(int i = 2; i <= n; ++i)
             lg2[i] = lg2[i / 2] + 1;
 
         /// Construye la sparse table
-        for(int i = 0; i < n; ++i)
-            ST[0][i] = nums[i];
+        ST.resize(lg2[n] + 1, vector<int>(n + 1, NEUTRO));
+        for(int i = 0; i < n; ++i) ST[0][i] = data[i];
         for(int k = 1; k <= lg2[n]; ++k){
             int fin = (1 << k) - 1;
             for(int i = 0; i + fin < n; ++i)
@@ -39,6 +40,7 @@ struct sparse_table{
     }
 
     int query(int l, int r){
+        if(l > r) return NEUTRO;
         int ans = NEUTRO;
         for(int k = lg2[n]; 0 <= k; --k){
             if( r - l + 1 < (1 << k) ) continue;
@@ -53,6 +55,7 @@ struct sparse_table{
             Para funciones/operaciones idempotentes podemos responder en O(1)
             Ejemplo: la funcion min es idempotente
         */
+        if(l > r) return NEUTRO;
         int lg = lg2[r - l + 1];
         return f(ST[lg][l], ST[lg][r - (1 << lg) + 1]);
     }

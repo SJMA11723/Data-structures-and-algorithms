@@ -9,7 +9,12 @@
 using namespace std;
 
 struct dsu{
+    struct action{
+        int x_p, y_p;
+        int rank_y;
+    };
     int RA[MAXN], P[MAXN];
+    vector<action> actions;
 
     dsu(int n){
         for(int i = 0; i < n; ++i){
@@ -23,13 +28,25 @@ struct dsu{
         return P[x] = root(P[x]);
     }
 
-    void join(int x, int y){
+    void join(int x, int y, bool recording){
         x = root(x);
         y = root(y);
         if(x == y) return;
         if(RA[x] >= RA[y]) swap(x, y);
+
+        if(recording) actions.push_back({x, y, RA[y]});
         RA[y] += RA[x];
         P[x] = y;
+    }
+
+    void rollback(int times){
+        while(times > 0 && actions.size()){
+            action act = actions.back();
+            actions.pop_back();
+
+            sets.RA[act.y_p] = act.rank_y;
+            sets.P[act.x_p] = act.x_p;
+        }
     }
 };
 

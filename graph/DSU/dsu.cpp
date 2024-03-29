@@ -44,8 +44,8 @@ struct dsu{
             action act = actions.back();
             actions.pop_back();
 
-            sets.RA[act.y_p] = act.rank_y;
-            sets.P[act.x_p] = act.x_p;
+            RA[act.y_p] = act.rank_y;
+            P[act.x_p] = act.x_p;
         }
     }
 };

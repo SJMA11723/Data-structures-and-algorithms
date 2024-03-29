@@ -40,7 +40,7 @@ struct dsu{
     }
 
     void rollback(int times){
-        while(times > 0 && actions.size()){
+        while(times-- > 0 && actions.size()){
             action act = actions.back();
             actions.pop_back();
 

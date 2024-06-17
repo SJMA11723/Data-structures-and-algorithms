@@ -43,15 +43,15 @@ int cuenta_primos(int n){
 
     const int S = sqrt(n);
 
-    vector<int> primosRaiz;
-    criba(sqrt(n) + 1, primosRaiz);
+    vector<int> primos_raiz;
+    criba(sqrt(n) + 1, primos_raiz);
 
     int ans = 0;
 
     vector<char> no_primo(S + 1);
     for(int ini = 0; ini <= n; ini += S){
         fill(no_primo.begin(), no_primo.end(), false);
-        for(int p : primosRaiz){
+        for(int p : primos_raiz){
             int m = p * max(p, (ini + p - 1) / p) - ini;
             for(; m <= S; m += p)
                 no_primo[m] = true;

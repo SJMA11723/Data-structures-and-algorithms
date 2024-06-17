@@ -38,7 +38,7 @@ void criba(int n, vector<int> &primos){
 */
 
 /// cuenta primos hasta n en O(sqrt(n)) de memoria - Criba segmentada
-int cuentaPrimos(int n){
+int cuenta_primos(int n){
     if(n < 2) return 0;
 
     const int S = sqrt(n);
@@ -48,7 +48,7 @@ int cuentaPrimos(int n){
 
     int ans = 0;
 
-    vector<char> no_primo(S);
+    vector<char> no_primo(S + 1);
     for(int ini = 0; ini <= n; ini += S){
         fill(no_primo.begin(), no_primo.end(), false);
         for(int p : primosRaiz){
@@ -71,5 +71,5 @@ int main(){
     cout.tie(0);
 
     int n = 11;
-    cout << cuentaPrimos(n);
+    cout << cuenta_primos(n);
 }

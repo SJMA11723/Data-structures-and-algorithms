@@ -7,14 +7,14 @@
 
 using namespace std;
 
-int gcdExtendido(int a, int b, int &x, int &y){
+int gcd_extendido(int a, int b, int &x, int &y){
     if(!b){
         x = 1;
         y = 0;
         return a;
     }
     int x1, y1;
-    int g = gcdExtendido(b, a % b, x1, y1);
+    int g = gcd_extendido(b, a % b, x1, y1);
     x = y1;
     y = x1 - y1 * (a / b);
     return g;
@@ -23,7 +23,7 @@ int gcdExtendido(int a, int b, int &x, int &y){
 /// Encuentra una solucion para la ecuacion ax + by = c y regresa true. Guarda la solucion en x e y
 /// Si la ecuacion no tiene solucion, entonces regresa false
 bool encuentra_solucion(int a, int b, int c, int &x, int &y, int &g){
-    g = gcdExtendido(abs(a), abs(b), x, y);
+    g = gcd_extendido(abs(a), abs(b), x, y);
     if(c % g) return false;
     x *= c / g;
     y *= c / g;

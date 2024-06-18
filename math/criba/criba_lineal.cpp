@@ -15,7 +15,7 @@ using namespace std;
 */
 
 /// hace la criba en O(n) y guarda los primos en el vector
-void cribaLineal(int n, vector<int> &primos){
+void criba_lineal(int n, vector<int> &primos){
     primos.clear();
     if(n < 2) return;
 
@@ -44,7 +44,7 @@ int main(){
 
     int n = 200;
     vector<int> primos;
-    cribaLineal(n, primos);
+    criba_lineal(n, primos);
     for(int it : primos){
         cout << it << ' ';
     }

@@ -38,20 +38,20 @@ void criba(int n, vector<int> &primos){
     Criba Segmentada
 */
 
-void cribaSobreRango(long long a, long long b, vector<long long> &primos){
+void criba_sobre_rango(long long a, long long b, vector<long long> &primos){
     a = max(a, 0ll);
     b = max(b, 0ll);
 
     long long tam = b - a + 1;
 
-    vector<int> primosRaiz;
-    criba(sqrt(b) + 1, primosRaiz);
+    vector<int> primos_raiz;
+    criba(sqrt(b) + 1, primos_raiz);
 
 
     vector<char> no_primo(tam);
     primos.clear();
-    for(long long p : primosRaiz){
-        /// va por todos los multiplos m de p tales que a <= m <= b
+    for(long long p : primos_raiz){
+        /// va por todos los multiplos 'm' de p tales que a <= m <= b
         long long ini = p * max(p, (a + p - 1) / p);
         for(long long m = ini; m <= b; m += p){
             no_primo[m - a] = true;
@@ -70,7 +70,7 @@ int main(){
     cout.tie(0);
 
     vector<long long> primos;
-    cribaSobreRango(-10, -2, primos);
+    criba_sobre_rango(-10, -2, primos);
     for(int it : primos)
         cout << it << ' ';
 }

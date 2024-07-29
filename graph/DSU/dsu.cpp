@@ -4,7 +4,6 @@
 */
 
 #include <bits/stdc++.h>
-#define MAXN 10001
 
 using namespace std;
 
@@ -13,19 +12,17 @@ struct dsu{
         int x_p, y_p;
         int rank_y;
     };
-    int RA[MAXN], P[MAXN];
+    vector<int> RA, P;
     vector<action> actions;
 
     dsu(int n){
-        for(int i = 0; i < n; ++i){
-            RA[i] = 1;
-            P[i] = i;
-        }
+        RA.resize(n, 1);
+        P.resize(n);
+        iota(P.begin(), P.end(), 0);
     }
 
     int root(int x){
-        if(x == P[x]) return x;
-        return P[x] = root(P[x]);
+        return x == P[x] ? x : P[x] = root(P[x]);
     }
 
     void join(int x, int y, bool recording){

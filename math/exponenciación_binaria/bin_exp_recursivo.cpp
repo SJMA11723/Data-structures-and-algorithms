@@ -7,9 +7,9 @@
 
 using namespace std;
 
-int binExp(int a, int b){
+int bin_exp(int a, int b){
     if(!b) return 1;
-    int tmp = binExp(a, b / 2);
+    int tmp = bin_exp(a, b / 2);
     if(b % 2) return tmp * tmp * a;
     return tmp * tmp;
 }
@@ -20,5 +20,5 @@ int main(){
     cout.tie(0);
     int a, b;
     cin >> a >> b;
-    cout << binExp(a, b);
+    cout << bin_exp(a, b);
 }

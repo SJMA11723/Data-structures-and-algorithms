@@ -4,32 +4,33 @@
 */
 
 #include <bits/stdc++.h>
-#define MAXN 1000
+#define lsb(S) (S & (-S))
 
 using namespace std;
 
-struct FenwickTree{
-    int n, BIT[MAXN];
+struct fenwick_tree{
+    int n;
+    vector<int> BIT;
 
-    FenwickTree(int n_size){
-        n = n_size;
-        memset(BIT, 0, sizeof(BIT));
+    fenwick_tree(int _n){
+        n = _n;
+        BIT.resize(n + 1);
     }
 
     void add(int pos, int x){
         while(pos <= n){
             BIT[pos] += x;
-            pos += pos & -pos;
+            pos += lsb(pos);
         }
     }
 
     int sum(int pos){
-        int ret = 0;
+        int res = 0;
         while(pos){
-            ret += BIT[pos];
-            pos -= pos & -pos;
+            res += BIT[pos];
+            pos -= lsb(pos);
         }
-        return ret;
+        return res;
     }
 };
 
@@ -40,7 +41,7 @@ int main(){
     int n;
     cin >> n;
 
-    FenwickTree BIT(n);
+    fenwick_tree BIT(n);
 
     for(int i = 1; i <= n; ++i){
         int x;

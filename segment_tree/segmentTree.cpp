@@ -16,8 +16,10 @@ struct segment_tree{
         const node operator+(const node &b)const{
             return node(val + b.val);
         }
-    }nodes[4 * MAXN + 1];
+    };
+    vector<node> nodes;
     segment_tree(int n, int data[]){
+        nodes.resize(4 * n + 1);
         build(1, n, data);
     }
 

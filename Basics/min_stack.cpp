@@ -7,18 +7,19 @@
 
 using namespace std;
 
+template<typename T>
 struct min_stack{
-    stack<pair<int, int>> st;
+    stack<pair<T, T>> st;
 
     min_stack(){st.push(make_pair(INT_MAX, INT_MAX));}
 
-    void push(int v){st.push(make_pair(v, min(v, st.top().second)));}
+    void push(T v){st.push(make_pair(v, min(v, st.top().second)));}
 
-    int top(){return st.top().first;}
+    T top(){return st.top().first;}
 
     void pop(){if(st.size() > 1)st.pop();}
 
-    int minV(){return st.top().second;}
+    T minV(){return st.top().second;}
 
     int size(){return st.size() -1;}
 
@@ -29,4 +30,5 @@ int main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
+    min_stack<int> st;
 }

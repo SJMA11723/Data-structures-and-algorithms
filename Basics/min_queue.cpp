@@ -7,34 +7,36 @@
 
 using namespace std;
 
+template<typename T>
 struct min_stack{
-    stack<pair<int, int>> st;
+    stack<pair<T, T>> st;
 
     min_stack(){st.push(make_pair(INT_MAX, INT_MAX));}
 
-    void push(int v){st.push(make_pair(v, min(v, st.top().second)));}
+    void push(T v){st.push(make_pair(v, min(v, st.top().second)));}
 
-    int top(){return st.top().first;}
+    T top(){return st.top().first;}
 
     void pop(){if(st.size() > 1)st.pop();}
 
-    int minV(){return st.top().second;}
+    T minV(){return st.top().second;}
 
     int size(){return st.size() -1;}
 
     bool empty(){return size() == 0;}
 };
 
+template<typename T>
 struct min_queue{
-    void push(int v){p_in.push(v);}
+    void push(T v){p_in.push(v);}
 
-    int front(){transfer(); return p_out.top();}
+    T front(){transfer(); return p_out.top();}
 
     void pop(){transfer(); p_out.pop();}
 
     int size(){return p_in.size() + p_out.size();}
 
-    int minV() {return min(p_in.minV(), p_out.minV());}
+    T minV() {return min(p_in.minV(), p_out.minV());}
 
     bool empty(){ return size() == 0;}
     void transfer(){
@@ -45,8 +47,8 @@ struct min_queue{
             p_in.pop();
         }
     }
-    min_stack p_in;
-    min_stack p_out;
+    min_stack<T> p_in;
+    min_stack<T> p_out;
 };
 
 int main(){

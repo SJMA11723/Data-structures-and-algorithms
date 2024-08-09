@@ -8,14 +8,15 @@
 using namespace std;
 
 struct edge {
-    int64_t c; // capacity
-    int64_t f; // flow
-    int to;
+    int from, to;
+    int64_t w; /// weight
+    int64_t c; /// capacity
+    int64_t f; /// flow
 };
 
 class ford_fulkerson {
 public:
-    ford_fulkerson (vector<vector<pair<int, int64_t>>> &graph) : graph(graph){}
+    ford_fulkerson (vector<vector<edge>> &graph) : graph(graph){}
     int64_t get_max_flow(int s, int t){
         init();
         int64_t f = 0;
@@ -23,18 +24,19 @@ public:
         return f;
     }
 private:
-    vector<vector<pair<int, int64_t>>> graph; // graph (to, capacity)
-    vector<edge> edges; // List of edges (including the inverse ones)
-    vector<vector<int>> edge_indexes; // indexes of edges going out from each vertex
+    vector<vector<edge>> graph; /// graph (to, capacity)
+    vector<edge> edges; /// List of edges (including the inverse ones)
+    vector<vector<int>> edge_indexes; /// indexes of edges going out from each vertex
+
     void init(){
         edges.clear();
         edge_indexes.clear(); edge_indexes.resize(graph.size());
-        for(int i = 0; i < graph.size(); i++){
-            for(int j = 0; j < graph[i].size(); j++){
-                edges.push_back({graph[i][j].second, 0, graph[i][j].first});
-                edges.push_back({0, 0, i});
-                edge_indexes[i].push_back(edges.size() - 2);
-                edge_indexes[graph[i][j].first].push_back(edges.size() - 1);
+        for(int u = 0; u < graph.size(); u++){
+            for(edge &e : graph[u]){
+                edges.push_back({u, e.to, e.w, e.c, 0});
+                edges.push_back({e.to, u, -e.w, 0, 0});
+                edge_indexes[u].push_back(edges.size() - 2);
+                edge_indexes[e.to].push_back(edges.size() - 1);
             }
         }
 }
@@ -48,8 +50,7 @@ private:
         bool found = false;
         while(q.size() && (!found)){
             int u = q.front(); q.pop();
-            for(int i = 0; i < edge_indexes[u].size(); i++){
-                int eI = edge_indexes[u][i];
+            for(int eI : edge_indexes[u]){
                 if((edges[eI].c > edges[eI].f) && (from[edges[eI].to].first == -1)){
                     from[edges[eI].to] = make_pair(u, eI);
                     q.push(edges[eI].to);

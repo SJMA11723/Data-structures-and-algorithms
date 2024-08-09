@@ -39,7 +39,7 @@ int64_t dijkstra(int a, int b, vector<edge> graph[]){
         vis[act.from] = true;
 
         for(edge &e : graph[act.from]){
-            if(dist[e.to] < dist[act.from] + e.w) continue;
+            if(dist[e.to] <= dist[act.from] + e.w) continue;
 
             dist[e.to] = dist[act.from] + e.w;
             q.push(pos{e.to, dist[e.to]});

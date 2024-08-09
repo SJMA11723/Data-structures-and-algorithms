@@ -39,7 +39,7 @@ private:
                 edge_indexes[e.to].push_back(edges.size() - 1);
             }
         }
-}
+    }
     bool find_and_update(int s, int t, int64_t &flow){
         // Encontrar camino desat con BFS
         queue<int> q;

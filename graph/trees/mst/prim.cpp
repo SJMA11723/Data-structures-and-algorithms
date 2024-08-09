@@ -17,10 +17,10 @@ struct edge{
 };
 
 int64_t prim(vector<edge> graph[]){
-    int64_t eCost[MAXN];
+    int64_t e_cost[MAXN];
     bool vis[MAXN];
     memset(vis, 0, sizeof(vis));
-    fill(eCost, eCost + MAXN, LLONG_MAX);
+    fill(e_cost, e_cost + MAXN, LLONG_MAX);
 
     int64_t ans = 0;
     priority_queue<edge> q;
@@ -36,8 +36,8 @@ int64_t prim(vector<edge> graph[]){
         ans += w;
 
         for(edge &e : graph[node]){
-            if(vis[e.to] || eCost[e.to] <= e.w) continue;
-            eCost[e.to] = e.w;
+            if(vis[e.to] || e_cost[e.to] <= e.w) continue;
+            e_cost[e.to] = e.w;
             q.push(e);
         }
     }

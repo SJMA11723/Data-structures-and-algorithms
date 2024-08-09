@@ -36,8 +36,8 @@ struct dsu{
         P[x] = y;
     }
 
-    void rollback(int times){
-        while(times-- > 0 && actions.size()){
+    void rollback(int cnt){
+        while(cnt-- > 0 && actions.size()){
             action act = actions.back();
             actions.pop_back();
 

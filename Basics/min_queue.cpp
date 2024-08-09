@@ -11,9 +11,13 @@ template<typename T>
 struct min_stack{
     stack<pair<T, T>> st;
 
-    min_stack(){st.push(make_pair(INT_MAX, INT_MAX));}
+    min_stack(){}
 
-    void push(T v){st.push(make_pair(v, min(v, st.top().second)));}
+    min_stack(const T MAXVAL){init(MAXVAL);}
+
+    void init(const T MAXVAL){st.push(make_pair(MAXVAL, MAXVAL));}
+
+    void push(const T &v){st.push(make_pair(v, min(v, st.top().second)));}
 
     T top(){return st.top().first;}
 
@@ -21,14 +25,19 @@ struct min_stack{
 
     T minV(){return st.top().second;}
 
-    int size(){return st.size() -1;}
+    int size(){return st.size() - 1;}
 
     bool empty(){return size() == 0;}
 };
 
 template<typename T>
 struct min_queue{
-    void push(T v){p_in.push(v);}
+    min_queue(const T &MAXVAL){
+        p_in.init(MAXVAL);
+        p_out.init(MAXVAL);
+    }
+
+    void push(const T &v){p_in.push(v);}
 
     T front(){transfer(); return p_out.top();}
 
@@ -47,8 +56,7 @@ struct min_queue{
             p_in.pop();
         }
     }
-    min_stack<T> p_in;
-    min_stack<T> p_out;
+    min_stack<T> p_in, p_out;
 };
 
 int main(){

@@ -13,9 +13,9 @@ struct min_stack{
 
     min_stack(){}
 
-    min_stack(const T MAXVAL){init(MAXVAL);}
+    min_stack(const T &MAXVAL){init(MAXVAL);}
 
-    void init(const T MAXVAL){st.push(make_pair(MAXVAL, MAXVAL));}
+    void init(const T &MAXVAL){st.push(make_pair(MAXVAL, MAXVAL));}
 
     void push(const T &v){st.push(make_pair(v, min(v, st.top().second)));}
 

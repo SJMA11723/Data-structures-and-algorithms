@@ -34,31 +34,31 @@ struct segment_tree{
         nodes[pos] = nodes[pos * 2] + nodes[pos * 2 + 1];
     }
 
-    void combineLazy(int lz, int pos){
+    void combine_lazy(int lz, int pos){
         nodes[pos].lazy += lz;
     }
 
     /// IMPORTANTE: ESTE UPDATE ES PARA SUMA/RESTA. CAMBIAR SI ES NECESARIO
-    void applyLazy(int pos, int tam){
+    void apply_lazy(int pos, int tam){
         nodes[pos].val += nodes[pos].lazy * tam;
         nodes[pos].lazy = 0;
     }
 
-    void pushLazy(int pos, int left, int right){
+    void push_lazy(int pos, int left, int right){
         int tam = abs(right - left + 1);
         if(1 < tam){
-            combineLazy(nodes[pos].lazy, pos * 2);
-            combineLazy(nodes[pos].lazy, pos * 2 + 1);
+            combine_lazy(nodes[pos].lazy, pos * 2);
+            combine_lazy(nodes[pos].lazy, pos * 2 + 1);
         }
-        applyLazy(pos, tam);
+        apply_lazy(pos, tam);
     }
 
     void update(int x, int l, int r, int left, int right, int pos = 1){
-        pushLazy(pos, left, right);
+        push_lazy(pos, left, right);
         if(r < left || right < l) return;
         if(l <= left && right <= r){
-            combineLazy(x, pos);
-            pushLazy(pos, left, right);
+            combine_lazy(x, pos);
+            push_lazy(pos, left, right);
             return;
         }
 
@@ -69,7 +69,7 @@ struct segment_tree{
     }
 
     node query(int l, int r, int left, int right, int pos = 1){
-        pushLazy(pos, left, right);
+        push_lazy(pos, left, right);
         if(r < left || right < l) return node(); /// Devuelve el neutro
         if(l <= left && right <= r) return nodes[pos];
         int mid = (left + right) / 2;

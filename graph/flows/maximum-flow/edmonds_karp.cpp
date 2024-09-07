@@ -23,6 +23,28 @@ public:
         while(find_and_update(s, t, f)){}
         return f;
     }
+
+    vector<int> get_st_cut(const int &s){
+        bool vis[graph.size()] = {};
+        vector<int> S;
+        queue<int> q;
+        q.push(s);
+        S.push_back(s);
+        vis[s] = true;
+
+        while(q.size()){
+            int u = q.front(); q.pop();
+
+            for(int eI : edge_indexes[u]){
+                if(edges[eI].c > edges[eI].f && !vis[edges[eI].to]){
+                    q.push(edges[eI].to);
+                    vis[edges[eI].to] = true;
+                    S.push_back(edges[eI].to);
+                }
+            }
+        }
+        return S;
+    }
 private:
     vector<vector<edge>> graph; /// graph (to, capacity)
     vector<edge> edges; /// List of edges (including the inverse ones)

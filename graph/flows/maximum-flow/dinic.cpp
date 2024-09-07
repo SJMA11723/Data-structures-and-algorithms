@@ -78,11 +78,12 @@ template<class T = int64_t> struct dinic{
         return false;
     }
 
-    T dfs(short u, T flow){ /// Encuentra camino, bloquea aristas
+    T dfs(short u, T flow, vector<int> &S, bool save = false){ /// Encuentra camino, bloquea aristas
+        if(save) S.push_back(u);
         if(u == t) return flow;
         for(; ptr[u] < adj_current[u].size(); ++ptr[u]){
             edge &e = adj[u][adj_current[u][ptr[u]]];
-            if(T pushed = dfs(e.to, min(flow, e.cap - e.flow))){
+            if(T pushed = dfs(e.to, min(flow, e.cap - e.flow), S, save)){
                 e.flow += pushed;
                 adj[e.to][e.rev].flow -= pushed;
                 if(e.cap - e.flow < lim) ptr[u]++;
@@ -92,18 +93,26 @@ template<class T = int64_t> struct dinic{
         return 0;
     }
 
-    int64_t get_max_flow(short source, short sink){
+    int64_t get_max_flow(int source, int sink){
         s = source;
         t = sink;
         mysort();
+        vector<int> S;
         int64_t flow = 0;
         for(lim = SCALING ? (1 << 30) : 1; 0 < lim; lim >>= 1){
             while(bfs()){
-                fill(ptr, ptr + V, 0);
-                while(T pushed = dfs(s, INF)) flow += pushed; /// Bloquear flujo
+                memset(ptr, 0, sizeof(ptr));
+                while(T pushed = dfs(s, INF, S)) flow += pushed; /// Bloquear flujo
             }
         }
         return flow;
+    }
+
+    vector<int> get_st_cut(const int &s){
+        vector<int> S;
+        memset(ptr, 0, sizeof(ptr));
+        dfs(s, INF, S, true);
+        return S;
     }
 };
 

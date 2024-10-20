@@ -33,8 +33,9 @@ template<class T = int64_t> struct dinic{
 
     void add_edge(int u, int v, T cap, bool is_directed = true){
         if(u == v) return;
-        adj[u].push_back({v, (short)adj[v].size(), cap, 0, cap + (is_directed ? 0 : cap)});
-        adj[v].push_back({u, (short)adj[u].size() - 1, is_directed ? 0 : cap, 0, cap + (is_directed ? 0 : cap)});
+        T add = (is_directed ? 0 : cap);
+        adj[u].push_back({v, adj[v].size(), cap, 0, cap + add, 0});
+        adj[v].push_back({u, (short)adj[u].size() - 1, add, 0, cap + add, 1});
     }
 
     void mysort(){
@@ -93,12 +94,12 @@ template<class T = int64_t> struct dinic{
         return 0;
     }
 
-    int64_t get_max_flow(int source, int sink){
+    T get_max_flow(short source, short sink){
         s = source;
         t = sink;
         mysort();
         vector<int> S;
-        int64_t flow = 0;
+        T flow = 0;
         for(lim = SCALING ? (1 << 30) : 1; 0 < lim; lim >>= 1){
             while(bfs()){
                 memset(ptr, 0, sizeof(ptr));
@@ -108,7 +109,7 @@ template<class T = int64_t> struct dinic{
         return flow;
     }
 
-    vector<int> get_st_cut(const int &s){
+    vector<int> get_st_cut(){
         vector<int> S;
         memset(ptr, 0, sizeof(ptr));
         dfs(s, INF, S, true);

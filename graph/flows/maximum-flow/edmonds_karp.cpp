@@ -69,18 +69,18 @@ private:
         vector<pair<int, int>> from(graph.size(), make_pair(-1, -1));
         q.push(s);
         from[s] = make_pair(s, -1);
-        bool found = false;
-        while(q.size() && (!found)){
+        while(q.size()){
             int u = q.front(); q.pop();
             for(int eI : edge_indexes[u]){
-                if((edges[eI].c > edges[eI].f) && (from[edges[eI].to].first == -1)){
-                    from[edges[eI].to] = make_pair(u, eI);
-                    q.push(edges[eI].to);
-                    if(edges[eI].to == t) found = true;
+                edge &e = edges[eI];
+                if(e.c > e.f && from[e.to].first == -1){
+                    from[e.to] = make_pair(u, eI);
+                    q.push(e.to);
+                    if(e.to == t) break;
                 }
             }
         }
-        if(!found) return false;
+        if(from[t].first == -1) return false;
         // Encontrar cap. minima del camino de aumento
         int64_t u_flow = LLONG_MAX;
         int current = t;

@@ -9,7 +9,7 @@ using namespace std;
 
 struct aho_corasick{
     const static int K = 26;
-    char index = 'a';
+    const char index = 'a';
 
     struct vertex{
         int next[K];
@@ -43,8 +43,6 @@ struct aho_corasick{
         aho[u].terminal = true;
     }
 
-    int go(int u, char c);
-
     int get_link(int u){
         if(aho[u].link == -1){
             if(!u || !aho[u].p) aho[u].link = 0;
@@ -57,7 +55,7 @@ struct aho_corasick{
         int e = c - index;
         if(aho[u].go[e] == -1){
             if(aho[u].next[e] != -1) aho[u].go[e] = aho[u].next[e];
-            else aho[u].go[e] = !v ? 0 : go(get_link(u), c);
+            else aho[u].go[e] = !u ? 0 : go(get_link(u), c);
         }
         return aho[u].go[e];
     }

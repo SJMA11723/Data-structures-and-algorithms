@@ -9,8 +9,8 @@
 using namespace std;
 
 int SA[MAXN], mrank[MAXN];
-int tmpSA[MAXN], tmpMrank[MAXN];
-void countingSort(int k, int n){
+int tmpSA[MAXN], tmp_mrank[MAXN];
+void counting_sort(int k, int n){
     int freqs[MAXN] = {};
     for(int i = 0; i < n; ++i){
         if(i + k < n) freqs[ mrank[i + k] ]++;
@@ -36,17 +36,17 @@ void buildSA(string &str){
         SA[i] = i;
     }
     for(int k = 1; k < n; k <<= 1){
-        countingSort(k, n);
-        countingSort(0, n);
+        counting_sort(k, n);
+        counting_sort(0, n);
         int r = 0;
-        tmpMrank[ SA[0] ] = 0;
+        tmp_mrank[ SA[0] ] = 0;
         for(int i = 1; i < n; ++i){
             if(mrank[ SA[i] ] != mrank[ SA[i - 1] ] || mrank[ SA[i] + k ] != mrank[ SA[i - 1] + k ])
-                tmpMrank[ SA[i] ] = ++r;
+                tmp_mrank[ SA[i] ] = ++r;
             else
-                tmpMrank[ SA[i] ] = r;
+                tmp_mrank[ SA[i] ] = r;
         }
-        for(int i = 0; i < n; ++i) mrank[i] = tmpMrank[i];
+        for(int i = 0; i < n; ++i) mrank[i] = tmp_mrank[i];
     }
 }
 
@@ -65,7 +65,7 @@ pair<int,int> match(const string &pattern) {
 
 
 int lcp[MAXN];
-void buildLCP(string &str){
+void build_lcp(string &str){
     int n = str.size();
     int phi[n];
     phi[SA[0]] = -1;

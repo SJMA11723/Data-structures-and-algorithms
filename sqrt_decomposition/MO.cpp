@@ -29,14 +29,14 @@ vector<int> solve(vector<query> &queries) {
     vector<int> answers(queries.size());
     sort(queries.begin(), queries.end());
 
-    int l_act = 0;
-    int r_act = -1;
+    int cur_l = 0;
+    int cur_r = -1;
 
     for(query q : queries){
-        while(l_act > q.l) add(--l_act);
-        while(r_act < q.r) add(++r_act);
-        while(l_act < q.l) remove(l_act++);
-        while(r_act > q.r) remove(r_act--);
+        while(cur_l > q.l) add(--cur_l);
+        while(cur_r < q.r) add(++cur_r);
+        while(cur_l < q.l) remove(cur_l++);
+        while(cur_r > q.r) remove(cur_r--);
         answers[q.i] = get_answer();
     }
     return answers;

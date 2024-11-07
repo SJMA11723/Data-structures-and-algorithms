@@ -18,8 +18,7 @@ struct edge{
 
 int64_t prim(vector<edge> graph[]){
     int64_t e_cost[MAXN];
-    bool vis[MAXN];
-    memset(vis, 0, sizeof(vis));
+    bool vis[MAXN] = {};
     fill(e_cost, e_cost + MAXN, LLONG_MAX);
 
     int64_t ans = 0;

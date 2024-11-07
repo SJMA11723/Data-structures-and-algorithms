@@ -34,8 +34,8 @@ template<class T = int64_t> struct dinic{
     void add_edge(int u, int v, T cap, bool is_directed = true){
         if(u == v) return;
         T add = (is_directed ? 0 : cap);
-        adj[u].push_back({v, adj[v].size(), cap, 0, cap + add, 0});
-        adj[v].push_back({u, (short)adj[u].size() - 1, add, 0, cap + add, 1});
+        adj[u].push_back({v, adj[v].size(), cap, 0, cap + add});
+        adj[v].push_back({u, (short)adj[u].size() - 1, add, 0, cap + add});
     }
 
     void mysort(){

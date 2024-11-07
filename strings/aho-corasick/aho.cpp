@@ -17,6 +17,7 @@ struct aho_corasick{
         int p = -1;
         char p_edge;
         int link = -1;
+        int terminal_link = -1;
         int go[K];
         vertex(int p = -1, char c = '$') : p(p), p_edge(c){
             fill(next, next + K, -1);
@@ -58,6 +59,14 @@ struct aho_corasick{
             else aho[u].go[e] = !u ? 0 : go(get_link(u), c);
         }
         return aho[u].go[e];
+    }
+
+    int get_terminal_link(int u){
+        if(aho[u].terminal_link == -1){
+            if(!u || !aho[u].p) aho[u].terminal_link = 0;
+            else aho[u].terminal_link = get_terminal_link(get_link(u));
+        }
+        return aho[u].terminal_link;
     }
 };
 

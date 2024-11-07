@@ -23,9 +23,8 @@ struct pos{
 
 int64_t dijkstra(int a, int b, vector<edge> graph[]){
     int64_t dist[MAXN];
-    bool vis[MAXN];
+    bool vis[MAXN] = {};
     fill(dist, dist + MAXN, LLONG_MAX);
-    memset(vis, 0, sizeof(vis));
 
     priority_queue<pos> q;
     q.push(pos{a, 0});

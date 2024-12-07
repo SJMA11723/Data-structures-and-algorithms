@@ -31,7 +31,7 @@ void assign_scc(int node, const int id){
 int kosajaru(int n){
     memset(vis, 0, sizeof(vis));
     vector<int> topo_ord;
-    for(int i = 1; i <= n; ++i) dfs(i, topo_ord);
+    for(int i = 0; i < n; ++i) dfs(i, topo_ord);
     reverse(topo_ord.begin(), topo_ord.end());
     memset(vis, 0, sizeof(vis));
     int id = 0;
@@ -65,6 +65,7 @@ int main(){
     for(int i = 0; i < m; ++i){
         int a, b;
         cin >> a >> b;
+        a--, b--;
         graph[a].push_back(b);
         inv_graph[b].push_back(a);
     }

@@ -29,9 +29,9 @@ template<class T = int64_t> struct dinic{
     };
 
     vector<edge> adj[MAXV];
-    vector<short> adj_current[MAXV]; /// aristas del grafo de nivel
+    vector<int> adj_current[MAXV]; /// aristas del grafo de nivel
 
-    void add_edge(int u, int v, T cap, bool is_directed = true){
+    void add_edge(short u, short v, T cap, bool is_directed = true){
         if(u == v) return;
         T add = (is_directed ? 0 : cap);
         adj[u].push_back({v, adj[v].size(), cap, 0, cap + add});
@@ -79,7 +79,7 @@ template<class T = int64_t> struct dinic{
         return false;
     }
 
-    T dfs(short u, T flow, vector<int> &S, bool save = false){ /// Encuentra camino, bloquea aristas
+    T dfs(short u, T flow, vector<short> &S, bool save = false){ /// Encuentra camino, bloquea aristas
         if(save) S.push_back(u);
         if(u == t) return flow;
         for(; ptr[u] < adj_current[u].size(); ++ptr[u]){
@@ -98,19 +98,19 @@ template<class T = int64_t> struct dinic{
         s = source;
         t = sink;
         mysort();
-        vector<int> S;
+        vector<short> S;
         T flow = 0;
         for(lim = SCALING ? (1 << 30) : 1; 0 < lim; lim >>= 1){
             while(bfs()){
                 memset(ptr, 0, sizeof(ptr));
-                while(T pushed = dfs(s, INF, S)) flow += pushed; /// Bloquear flujo
+                while(T pushed = dfs(s, INF, S)) flow += pushed;
             }
         }
         return flow;
     }
 
-    vector<int> get_st_cut(){
-        vector<int> S;
+    vector<short> get_st_cut(){
+        vector<short> S;
         memset(ptr, 0, sizeof(ptr));
         dfs(s, INF, S, true);
         return S;

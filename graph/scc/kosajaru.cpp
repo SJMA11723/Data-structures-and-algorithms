@@ -8,40 +8,35 @@
 
 using namespace std;
 
-vector<int> graph[MAXN], inv_graph[MAXN];
-int scc[MAXN];
-bool vis[MAXN];
-
-void dfs(int node, vector<int> &topo_ord){
+void dfs(int node, vector<int> graph[], bool vis[], vector<int> &topo_ord){
     if(vis[node]) return;
     vis[node] = true;
 
-    for(int v : graph[node]) dfs(v, topo_ord);
+    for(int v : graph[node]) dfs(v, graph, vis, topo_ord);
     topo_ord.push_back(node);
 }
 
-void assign_scc(int node, const int id){
+void assign_scc(int node, vector<int> inv_graph[], bool vis[], vector<int> &scc, const int id){
     if(vis[node]) return;
     vis[node] = true;
     scc[node] = id;
-
-    for(int v : inv_graph[node]) assign_scc(v, id);
+    for(int v : inv_graph[node]) assign_scc(v, inv_graph, vis, scc, id);
 }
 
-int kosajaru(int n){
-    memset(vis, 0, sizeof(vis));
+pair<int, vector<int>> kosajaru(int n, vector<int> graph[], vector<int> inv_graph[]){
+    bool vis[n] = {};
     vector<int> topo_ord;
-    for(int i = 0; i < n; ++i) dfs(i, topo_ord);
+    for(int i = 0; i < n; ++i) dfs(i, graph, vis, topo_ord);
     reverse(topo_ord.begin(), topo_ord.end());
     memset(vis, 0, sizeof(vis));
+    vector<int> scc(n);
     int id = 0;
-    for(int u : topo_ord) if(!vis[u]) assign_scc(u, id++);
-    return id;
+    for(int u : topo_ord) if(!vis[u]) assign_scc(u, inv_graph, vis, scc, id++);
+    return {id, scc};
 }
 
-vector<int> scc_graph[MAXN], inv_scc_graph[MAXN];
-
-void build_scc_graph(int n, int n_scc){
+pair<vector<vector<int>>, vector<vector<int>>> build_scc_graph(int n, vector<int> graph[], int n_scc, const vector<int> &scc){
+    vector<vector<int>> scc_graph, inv_scc_graph;
     for(int u = 0; u < n; ++u)
         for(int v : graph[u])
             if(scc[u] != scc[v])
@@ -62,6 +57,7 @@ int main(){
     cin.tie(0);
     cout.tie(0);
     int n, m; cin >> n >> m;
+    vector<int> graph[n], inv_graph[n];
     for(int i = 0; i < m; ++i){
         int a, b;
         cin >> a >> b;
@@ -70,7 +66,10 @@ int main(){
         inv_graph[b].push_back(a);
     }
 
-    int cnt_comp = kosajaru(n);
 
-    for(int i = 1; i <= n;++i) cout << i << ": " << scc[i] << '\n';
+    int n_scc;
+    vector<int> scc;
+    tie(n_scc, scc) = kosajaru(n, graph, inv_graph);
+
+    for(int i = 0; i < n;++i) cout << i << ": " << scc[i] << '\n';
 }

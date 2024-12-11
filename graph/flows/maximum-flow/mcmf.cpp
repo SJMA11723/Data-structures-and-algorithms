@@ -10,7 +10,7 @@ using namespace std;
 const int MAXV = (1 << 15) - 1;
 
 template<class T = int64_t> struct mcmf{
-    dinic(short V){this->V = V; if(V > MAXV){cout << "ERROR"; exit(0);}}
+    mcmf(short V){this->V = V; if(V > MAXV){cout << "ERROR"; exit(0);}}
 
     short s;
     short t;

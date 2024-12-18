@@ -15,7 +15,7 @@ vector<vector<int>> floyd_warshall(int n){
         for(int i = 0; i < n; ++i){
             for(int j = 0; j < n; ++j){
                 if(d[i][k] == INT_MAX) continue;
-                if(d[k][i] == INT_MAX) continue;
+                if(d[k][j] == INT_MAX) continue;
                 if(d[i][j] > d[i][k] + d[k][j]) d[i][j] = d[i][k] + d[k][j];
             }
         }

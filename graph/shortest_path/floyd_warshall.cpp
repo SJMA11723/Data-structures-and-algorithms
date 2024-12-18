@@ -8,14 +8,15 @@
 using namespace std;
 
 vector<vector<int>> floyd_warshall(int n){
-    vector<vector<int>> d(n, vector<int>(n, INT_MAX));
+    const int INF = INT_MAX;
+    vector<vector<int>> d(n, vector<int>(n, INF));
     /// aqui inicializa con la lista/matriz de adyacencia
     /// luego calcula la dp
     for(int k = 0; k < n; ++k){
         for(int i = 0; i < n; ++i){
             for(int j = 0; j < n; ++j){
-                if(d[i][k] == INT_MAX) continue;
-                if(d[k][j] == INT_MAX) continue;
+                if(d[i][k] == INF) continue;
+                if(d[k][j] == INF) continue;
                 if(d[i][j] > d[i][k] + d[k][j]) d[i][j] = d[i][k] + d[k][j];
             }
         }

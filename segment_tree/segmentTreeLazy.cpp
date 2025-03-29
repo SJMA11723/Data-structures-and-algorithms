@@ -45,12 +45,12 @@ struct segment_tree{
     }
 
     void push_lazy(int pos, int left, int right){
-        int tam = abs(right - left + 1);
-        if(1 < tam){
+        int len = abs(right - left + 1);
+        if(1 < len){
             combine_lazy(nodes[pos].lazy, pos * 2);
             combine_lazy(nodes[pos].lazy, pos * 2 + 1);
         }
-        apply_lazy(pos, tam);
+        apply_lazy(pos, len);
     }
 
     void update(int x, int l, int r, int left, int right, int pos = 1){

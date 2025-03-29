@@ -11,7 +11,6 @@ struct node{
     int64_t lazy, maxi, sum;
     node *left = nullptr, *right = nullptr;
     node(): lazy(0), maxi(0), sum(0){}
-    node(int64_t x): lazy(0), maxi(x), sum(x){}
 
     void extend(){
         if(left) return;

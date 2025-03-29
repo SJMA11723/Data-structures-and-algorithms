@@ -50,6 +50,8 @@ pair<vector<vector<int>>, vector<vector<int>>> build_scc_graph(int n, vector<int
         for(int v : scc_graph[u])
             inv_scc_graph[v].push_back(u);
     }
+
+    return {scc_graph, inv_scc_graph};
 }
 
 int main(){

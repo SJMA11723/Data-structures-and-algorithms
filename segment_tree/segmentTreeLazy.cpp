@@ -25,7 +25,7 @@ struct segment_tree{
 
     void build(int left, int right, int data[], int pos = 1){
         if(left == right){
-            nodes[pos].val = data[left];
+            nodes[pos] = node(data[left]);
             return;
         }
         int mid = (left + right) / 2;

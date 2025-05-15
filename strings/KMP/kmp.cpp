@@ -19,7 +19,6 @@ vector<int> prefix_function(const string &s){
 }
 
 void compute_automaton(const string &s, vector<vector<int>>& aut){
-    s += '#';
     int n = s.size();
     vector<int> pi = prefix_function(s);
     aut.assign(n, vector<int>(26));

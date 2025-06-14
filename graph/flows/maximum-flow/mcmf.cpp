@@ -108,7 +108,7 @@ template<class T = int64_t> struct mcmf{
         return {flow, new_cost};
     }
 
-    pair<T, T> get_max_flow(short source, short sink, const T MAX_FLOW = 1e8){
+    pair<T, T> get_max_flow(short source, short sink, const T MAX_FLOW = numeric_limits<T>::max()){
         s = source;
         t = sink;
         p = bellman_ford();
@@ -128,7 +128,7 @@ int main(){
     cin.tie(0);
     cout.tie(0);
     int n, m, k; cin >> n >> m >> k;
-    dinic<int> MF(n);
+    mcmf<int> MF(n);
     for(int i = 0; i < m; ++i){
         int a, b, r, c;
         cin >> a >> b >> r >> c;

@@ -31,6 +31,11 @@ struct aho_corasick{
         aho.resize(1);
     }
 
+    aho_corasick(int n){
+        aho.resize(1);
+        aho.reserve(n + 1);
+    }
+
     void add_string(const string &s){
         int u = 0;
         for(char c : s){

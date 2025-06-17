@@ -1,2 +1,8 @@
 *.exe
 *.o
+*.aux
+*.log
+*.out
+*.gz
+*.toc
+_minted

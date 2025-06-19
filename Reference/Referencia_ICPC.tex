@@ -104,7 +104,140 @@
     \item Temario (no oficial): \href{https://youkn0wwho.academy/topic-list}{Topic list}.
     \item agréguenle errores/consejos que hay que tener en cuenta sobre las implementaciones y no estemos mucho tiempo tratando de encontrar el error.
 \end{enumerate}
+\section{Templates y Testing}
 
+\subsection{Template y archivos}
+Crear una carpeta donde se estará usando la terminal y copiar lo siguiente en template.cpp
+
+ \begin{minted}{cpp}
+ #include<bits/stdc++.h>
+using namespace std;
+typedef int64_t ll;
+typedef pair<int, int> pii;
+typedef pair<ll, ll> pll;
+typedef vector<int> vi;
+typedef vector<ll> vll;
+typedef vector<pii> vpii;
+typedef vector<pll> vpll;
+
+#define fi first
+#define se second
+#define all(x) (x).begin(), (x).end()
+#define pb push_back
+const int MOD = 1e9 + 7;
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(0);
+    return 0;
+}
+
+ \end{minted}
+
+Despues de crear template.cpp, ejecutar en la terminal de carpeta
+\begin{minted}{bash}
+     for f in {a..o}; do cp template.cpp $f.cpp;
+\end{minted}
+\subsection{Logger}
+Para debuggear, llamamos al metodo $deb(x,y,z,...)$ con el numero de variables que ocupemos.
+\begin{minted}{cpp}
+    template<typename A, typename B> ostream& operator<<(ostream &os, const pair<A, B> &p){return os << '(' << p.fi << ", " << p.se << ')';}
+template<typename C, typename T = typename enable_if<!is_same<C, string>::value, typename C::value_type>::type>
+ostream& operator<<(ostream &os, const C &v){string sep; for(const T &x : v) os << sep << x, sep = " "; return os;}
+#define deb(...) logger(#__VA_ARGS__, __VA_ARGS__)
+template<typename ...Args>
+void logger(string vars, Args&&... values){
+    cout << "[Debug]\n\t" << vars << " = ";
+    string d = "[";
+    (..., (cout << d << values, d = "] ["));
+    cout << "]\n";
+}
+\end{minted}
+
+\subsection{Stress testing (diff)}
+Para stress testing en problemas donde existe solo una respuesta, usamos el siguiente script y lo guardamos en $stress.sh$.
+
+$code.cpp$ será mi código a testear, $brute.cpp$ el código bruto pero correcto y $gen.cpp$ el generador de casos. Este ultimo recibirá como semilla el valor $i$.
+\begin{minted}{bash}
+    set -e
+g++ code.cpp -o code
+g++ gen.cpp -o gen
+g++ brute.cpp -o brute
+for((i = 1; ; ++i)); do
+    ./gen $i > input_file
+    ./code < input_file > myAnswer
+    ./brute < input_file > correctAnswer
+    diff -Z myAnswer correctAnswer > /dev/null || break
+    echo "Passed test: "  $i
+done
+echo "WA on the following test:"
+cat input_file
+echo "Your answer is:"
+cat myAnswer
+echo "Correct answer is:"
+cat correctAnswer
+\end{minted}
+
+Para extraer la semilla en gen.cpp leemos desde argv
+
+\begin{minted}{cpp}
+int rnd(int a, int b){
+    return a + rand() % (b - a + 1);
+}
+int main(int argc, char* argv[]){
+int seed = atoi(argv[1]);
+srand(seed);
+int n = rnd(1, 5);
+}
+\end{minted}
+
+\subsection{Stress testing (checker)}
+
+Usaremos el script similar al anterior $stress.sh$. Aquí el $brute.cpp$ es opcional.
+
+\begin{minted}{cpp}
+set -e
+g++ code.cpp -o code
+g++ gen.cpp -o gen
+g++ brute.cpp -o brute
+g++ checker.cpp -o checker
+for((i = 1; ; ++i)); do
+    ./gen $i > input_file
+    ./code < input_file > myAnswer
+    ./brute < input_file > correctAnswer
+    ./checker > checker_log
+    echo "Passed test: "  $i
+done
+\end{minted}
+
+Se ejecutara mientras el return value de checker sea $0$. Ejemplo de la implementación de un checker
+
+\begin{minted}{cpp}
+bool validAns(ifstream &fin, int n, int* arr){
+    fin>>n;
+    //aquí validariamos nuestra respuesta, fin sera el input stream que le pase
+    if(algunacosa) return true
+    else return false
+    
+}
+int main(int argc, char * argv[]){
+    //input stream del caso
+    ifstream fin("input_file", ifstream::in);
+    //input stream de mi respuesta
+    ifstream ans("myAnswer", ifstream::in);
+    //input stream de respuesta bruta
+    ifstream cor("correctAnswer", ifstream::in);
+    //aqui fin puede procesar lo que me interese del input original
+    fin>>n;
+    int arr[n];
+    for(int x = 0; x < n; x++) cin>>arr[x];
+    if(!validAns(ans, n, arr)) {
+        cout<<"WA x algun motivo, esto saldrá en cheker_log\n";
+        return -1; 
+    }
+    //si todo salio bien, retorno 0
+    return 0;
+}
+\end{minted}
 \section{Ideas}
 
 \subsection{Ideas de Catalán}
@@ -114,7 +247,6 @@ Ideas que se usan en las demostraciones de que algo se cuenta con Catalán y sir
     \item \textit{Partir en dos conjuntos y distribuir}. Usar la misma idea de la recurrencia de los números de Catalán: $(0, n - 1), (1, n - 2), \dots, (k, n - 1 - k)$.
     \item \textit{Reflejar los caminos malos}. Si queremos contar caminos monótonos que $(0, 0)$ y $(n, m)$, por debajo de una diagonal paralela a la que une dichas esquinas, en una cuadrícula de $n \times m$, contemos todos los caminos $\binom{n + m}{n}$ y restemos los caminos que pasan sobre la diagonal. Digamos que la diagonal es $y = x + k$, entonces los caminos malos pasan al menos una vez por $y = x + k + 1$: toma el primer punto $(x', x' + k + 1)$ sobre el que un camino pasa por $y = x + k + 1$ y refléjalo, nota que todos empiezan en $(x', x' + k + 1) - (x' + k + 1, x') = (- k - 1, k + 1)$. Entonces los caminos malos son biyectivos a los caminos que van de $(- k - 1, k + 1)$ a $(n, m)$.
 \end{enumerate}
-
 \section{Estructuras básicas}
 \subsection{Min stack}
 \begin{minted}{cpp}
@@ -2226,6 +2358,74 @@ void compute_automaton(const string &s, vvi& aut){
         }
     }
 }
+\end{minted}
+
+\subsection{Suffix Automata}
+
+Complejidad: Tiempo $O(|s|)$, memoria $O(|S|)$. 
+
+Construye un autómata sobre los sufijos de $s$, donde cada nodo terminal es un sufijo de $s$. Esta construcción se hace online. Donde $alpha$ es el tamaño del alfabeto y $offset$ el primer caracter.
+
+Si se hace uso de los nodos terminales llamar a markTerminalNodes() primero (este método no es online). 
+
+
+\begin{minted}{cpp}
+constexpr short alpha = 26;
+constexpr char offset = 'a';
+struct state{
+    //max(state) = len, min(state) = sa[link].len
+    int len, link;
+    bool is_terminal;
+    array<int,alpha> next;
+    state(){
+        len = 0; link = -1; is_terminal = false;
+        next.fill(0);
+    }
+};
+struct SuffixAutomaton{
+    int n;
+    vector<state> sa;
+    int sz = 1, last = 0;
+    SuffixAutomaton(int n) : n(n), sa(2*n + 1){}
+    void add(char ch_){
+        short ch = ch_-offset;
+        int curr = sz++;
+        sa[curr].len = sa[last].len + 1;
+        int p = last;
+        while(p!=-1 && !sa[p].next[ch]){
+            sa[p].next[ch] = curr;
+            p = sa[p].link;
+        }
+        if(p == -1){
+            sa[curr].link = 0;
+        }else{
+            int q = sa[p].next[ch];
+            if(sa[p].len+1 == sa[q].len){
+                sa[curr].link = q;
+            }else{
+                int clone = sz++;
+                sa[clone].len = sa[p].len + 1;
+                sa[clone].next = sa[q].next;
+                sa[clone].link = sa[q].link;
+                while(p!=-1 && sa[p].next[ch] == q){
+                    sa[p].next[ch] = clone;
+                    p = sa[p].link;
+                }
+                sa[q].link = sa[curr].link = clone;
+            }
+        }
+        last = curr;
+        return;
+    }
+    void markTerminalNodes(){
+        int curr = last;
+        while(curr){
+            sa[curr].is_terminal = true;
+            curr = sa[curr].link;
+        }
+        return;
+    }
+};
 \end{minted}
 
 \subsection{Suffix array}

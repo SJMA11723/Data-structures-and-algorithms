@@ -82,8 +82,8 @@
 \setlength{\columnseprule}{1pt}
 \setlength{\parindent}{0pt}
 
-\titlespacing\section{0pt}{0pt plus 2pt minus 2pt}{0pt plus 2pt minus 2pt}
-\titlespacing\subsection{0pt}{0pt plus 2pt minus 2pt}{0pt plus 2pt minus 2pt}
+\titlespacing\section{0pt}{0pt}{0pt}
+\titlespacing\subsection{0pt}{0pt}{0pt}
 
 % Header
 \pagestyle{fancy}
@@ -1615,9 +1615,6 @@ vi DMST(int n, int root, const vector<edge> &edges) {
         if (u[nxt_root] == -1) head = nxt_root;
         else {
             int j = nxt_root;
-            //Nota: no estoy seguro de que esto sea correcto para la complejidad deseada:
-            //¿no es obligatorio detectar primero cuál es el más grande para tener el
-            //análisis tipo light?
             do {
                 Q[j].add(-par_edge[j].w);
                 //Q[super].merge(move(Q[j]));
@@ -2773,7 +2770,7 @@ template<int len = 1> void func(int sz){
 #define modulo(S, N) ((S) & ((N) - 1)) // S % N, N potencia de 2
 \end{minted}
 
-\vspace{-1.2\baselineskip}
+\vspace{-0.7\baselineskip}
 \hrulefill
 \subsection{Bitwise - builtin}
 \begin{minted}{cpp}

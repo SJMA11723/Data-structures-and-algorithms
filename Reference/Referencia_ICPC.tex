@@ -282,9 +282,9 @@ template<typename T> struct min_stack{
         st.push(make_pair(MAXVAL, MAXVAL));}
     void push(const T &v){st.push(make_pair(v, min(v, st.top().second)));}
     T top(){return st.top().first;}
-    void pop(){if(st.size() > 1)st.pop();}
+    void pop(){if(sz(st) > 1)st.pop();}
     T minV(){return st.top().second;}
-    int size(){return st.size() - 1;}
+    int size(){return sz(st) - 1;}
     bool empty(){return size() == 0;}
 };
 \end{minted}
@@ -299,13 +299,13 @@ template<typename T> struct min_queue{
     void push(const T &v){p_in.push(v);}
     T front(){transfer(); return p_out.top();}
     void pop(){transfer(); p_out.pop();}
-    int size(){return p_in.size()+p_out.size();}
+    int size(){return sz(p_in)+sz(p_out);}
     T minV() {
         return min(p_in.minV(), p_out.minV());}
     bool empty(){ return size() == 0;}
     void transfer(){
-        if(p_out.size()) return;
-        while(p_in.size()){
+        if(sz(p_out)) return;
+        while(sz(p_in)){
             p_out.push(p_in.top());
             p_in.pop();
         }
@@ -323,13 +323,13 @@ public:
         TPriority a;
         TKey b;
         nodes.clear();
-        nodes.push_back( make_pair(a, b) );
+        nodes.pb( make_pair(a, b) );
     }
     pair<TPriority, TKey> top() {return nodes[1];}
     void pop(){
-        if(nodes.size() == 1) return;
+        if(sz(nodes) == 1) return;
         TKey k = nodes[1].second;
-        swap_nodes(1, nodes.size() - 1);
+        swap_nodes(1, sz(nodes) - 1);
         nodes.pop_back();
         position.erase(k);
         heapify(1);
@@ -340,8 +340,8 @@ public:
             pos = position[k];
             nodes[pos].first += p;
         } else {
-            position[k] = pos = nodes.size();
-            nodes.push_back( make_pair(p, k) );
+            position[k] = pos = sz(nodes);
+            nodes.pb( make_pair(p, k) );
         }
         heapify(pos);
     }
@@ -349,12 +349,12 @@ public:
         return position.count(k);
     }
     int get_size() {
-        return (int)nodes.size() - 1;
+        return sz(nodes) - 1;
     }
     void erase(const TKey &k){
         if(!is_inserted(k)) return;
         int pos = position[k];
-        swap_nodes(pos, nodes.size() - 1);
+        swap_nodes(pos, sz(nodes) - 1);
         nodes.pop_back();
         position.erase(k);
         heapify(pos);
@@ -363,14 +363,14 @@ private:
     vector<pair<TPriority, TKey>> nodes;
     map<TKey, int> position;
     void heapify(int pos){
-        if(pos >= nodes.size()) return;
+        if(pos >= sz(nodes)) return;
         while(1 < pos && nodes[pos / 2] <= nodes[pos]){
             swap_nodes(pos / 2, pos);
             pos /= 2;
         }
         int l = pos * 2, r = pos * 2 + 1, maxi = pos;
-        if(l < nodes.size() && nodes[l] > nodes[maxi]) maxi = l;
-        if(r < nodes.size() && nodes[r] > nodes[maxi]) maxi = r;
+        if(l < sz(nodes) && nodes[l] > nodes[maxi]) maxi = l;
+        if(r < sz(nodes) && nodes[r] > nodes[maxi]) maxi = r;
         if(maxi != pos){
             swap_nodes(pos, maxi);
             heapify(maxi);
@@ -400,9 +400,9 @@ void criba(int n, vi &primos){
         for(ll j = i * i; j <= n; j += 2 * i)
             no_primo[j] = true;
     }
-    primos.push_back(2);
+    primos.pb(2);
     for(int i = 3; i <= n; i += 2)
-        if(!no_primo[i]) primos.push_back(i);
+        if(!no_primo[i]) primos.pb(i);
 }
 \end{minted}
 
@@ -425,7 +425,7 @@ void criba_rango(ll a, ll b, vector<ll> &primos){
     }
     for(ll i = 0; i < tam; ++i)
     if(!(no_primo[i] || i + a < 2))
-        primos.push_back(i + a);
+        primos.pb(i + a);
 }
 \end{minted}
 
@@ -460,7 +460,7 @@ void criba_lineal(int n, vi &primos){
     if(n < 2) return;
     vi lp(n + 1);
     for(ll i = 2; i <= n; ++i){
-        if(!lp[i]) primos.push_back(lp[i] = i);
+        if(!lp[i]) primos.pb(lp[i] = i);
         for(int j = 0; i * primos[j] <= n; ++j){
             lp[i * primos[j]] = primos[j];
             if(primos[j] == lp[i]) break;
@@ -688,7 +688,7 @@ namespace PollardRho {
         if(miller_rabin(n)) return vector<ll>{n};
         vector<ll> v, w;
         while(n > 1 && n < P){
-            v.push_back(spf[n]); n /= spf[n];
+            v.pb(spf[n]); n /= spf[n];
         }
         if(n >= P){
             ll x = pollard_rho(n);
@@ -812,7 +812,7 @@ p(n) \sim \frac{1}{4n\sqrt{3}} \exp\left( \pi \sqrt{\frac{2n}{3}} \right)
 using comp = complex<double>;
 const double PI = acos(-1);
 vector<comp> FFT(vector<comp> &P, bool inversa){
-    int n = P.size();
+    int n = sz(P);
     if(n == 1) return P;
     vector<comp> Pe, Po;
     for(int i = 0; i < n; ++i)
@@ -839,7 +839,7 @@ vector<comp> FFT(vector<comp> &P, bool inversa){
 vi multiplicar(vi A, vi B){
     vector<comp> cA(all(A)), cB(all(B));
     int n = 1;
-    while(n < A.size() + B.size()) n *= 2;
+    while(n < sz(A) + sz(B)) n *= 2;
     cA.resize(n);
     cB.resize(n);
     vector<comp> val_A = FFT(cA, false);
@@ -974,7 +974,7 @@ Complejidad: Tiempo $O\left(n^3\right)$ - Memoria $O\left(n^2\right)$
 \begin{minted}{cpp}
 #define eps 0.0001
 vector<vector<double>> gauss(vector<vector<double>> m){
-    int tam = m.size();
+    int tam = sz(m);
     vector<vector<double>> id(tam, vector<double>(tam));
     for(int i=0; i<tam; i++) id[i][i] = 1;
     for(int i=0; i<tam; i++){
@@ -1004,9 +1004,9 @@ vector<vector<double>> gauss(vector<vector<double>> m){
     } return id;
 }
 vector<double> matporvec(vector<vector<double>> &m, vector<double> &b){
-    vector<double> ans(b.size());
-    for(int i=0; i<b.size(); i++)
-    for(int k=0; k<b.size(); k++)
+    vector<double> ans(sz(b));
+    for(int i=0; i<sz(b); i++)
+    for(int k=0; k<sz(b); k++)
         ans[i] += m[i][k]*b[k];
     return ans;
 }
@@ -1020,8 +1020,8 @@ Dado un sistema de $n$ ecuaciones  con $m$ incógnitas. Devuelve el numero de so
 const double EPS = 1e-9;
 const int INF = 2; // it doesn't actually have to be infinity or a big number
 int gauss(vector<vector<double>> a, vector<double> &ans){
-    int n = (int) a.size();
-    int m = (int) a[0].size() - 1;
+    int n = (int) sz(a);
+    int m = (int) sz(a[0]) - 1;
     vi where (m, -1);
     for(int col=0,row=0; col<m && row<n; ++col){
         int sel = row;
@@ -1325,7 +1325,7 @@ void add(int idx){/// TO-DO}
 void remove(int idx){/// TO-DO}
 int get_answer(){return 0; /// TO-DO}
 vi solve(vector<query> &queries) {
-    vi answers(queries.size());
+    vi answers(sz(queries));
     sort(queries.begin(), queries.end());
     int cur_l = 0, cur_r = -1;
     for(query q : queries){
@@ -1363,7 +1363,7 @@ vi solve(vector<query> &queries) {
 %         y = root(y);
 %         if(x == y) return false;
 %         if(RA[x] >= RA[y]) swap(x, y);
-%         if(recording) actions.push_back({x, y, RA[y]});
+%         if(recording) actions.pb({x, y, RA[y]});
 %         RA[y] += RA[x];
 %         P[x] = y;
 %         return true;
@@ -1498,7 +1498,7 @@ ll prim(vector<edge> graph[]){
     fill(e_cost, e_cost + MAXN, LLONG_MAX);
     priority_queue<edge> q;
     q.push(edge{1, 1, 0});
-    while(q.size()){
+    while(sz(q)){
         int node = q.top().to;
         ll w = q.top().w; q.pop();
         if(vis[node]) continue; vis[node] = true;
@@ -1538,7 +1538,7 @@ ll boruvka(vector<edge> &edges, int n){
     ll res = 0;
     while(mset.cnt_comp > 1){
         fill(min_edge, min_edge + n, -1);
-        for(int i = 0; i < edges.size(); ++i){
+        for(int i = 0; i < sz(edges); ++i){
             int u = mset.root(edges[i].from);
             int v = mset.root(edges[i].to);
             if(u == v) continue;
@@ -1566,14 +1566,14 @@ template<typename T> struct PQ {
     priority_queue<T, vector<T>, greater<T>> Q;
     void push(T x) { x.w -= sum; Q.push(x); }
     T pop() { auto ans = Q.top(); Q.pop(); ans.w += sum; return ans; }
-    int size() { return Q.size(); }
+    int size() { return sz(Q); }
     void add(ll x) { sum += x; }
     void merge(PQ &x){
-        if (size() < x.size()){
+        if (size() < sz(x)){
             swap(sum, x.sum);
             Q.swap(x.Q);
         }
-        while(x.size()){
+        while(sz(x)){
             auto tmp = x.pop();
             tmp.w -= sum;
             Q.push(tmp);
@@ -1606,7 +1606,7 @@ vi DMST(int n, int root, const vector<edge> &edges) {
     int super = n;
     DSU dsu(2 * n - 1);
     int head = 0;
-    while (Q[head].size()) {
+    while(sz(Q[head])) {
         auto x = Q[head].pop();
         int nxt_root = dsu.root(x.u);
         if (nxt_root == head) continue;
@@ -1620,7 +1620,7 @@ vi DMST(int n, int root, const vector<edge> &edges) {
                 //Q[super].merge(move(Q[j]));
                 Q[super].merge(Q[j]);
                 assert(u[j] != -1);
-                child[super].push_back(j);
+                child[super].pb(j);
                 j = dsu.root(u[j]);
             } while (j != nxt_root);
             for(auto u : child[super]) par[u] = super, dsu.set_par(u, super);
@@ -1629,7 +1629,7 @@ vi DMST(int n, int root, const vector<edge> &edges) {
     }
     vi res(2 * n - 1, -1);
     queue<int> q; q.push(root);
-    while (q.size()) {
+    while (sz(q)) {
         int u = q.front();
         q.pop();
         while (par[u] != -1) {
@@ -1676,7 +1676,7 @@ int id;
 int sz;
 void dfs_biconnected(vvi &g, int u, int pre){
   low[u] = num[u] = ++id;
-  st.push_back(u);
+  st.pb(u);
   for(auto v: g[u]) {
     if(!num[v]) {
       dfs_biconnected(g, v, u);
@@ -1687,10 +1687,10 @@ void dfs_biconnected(vvi &g, int u, int pre){
         do {
           x = st.back();
           st.pop_back();
-          bcc[x].push_back(sz);
+          bcc[x].pb(sz);
           comps.back().pb(x);
         } while(x ^ v);
-        bcc[u].push_back(sz);
+        bcc[u].pb(sz);
         comps.back().pb(u);
         sz++;
       }
@@ -1701,7 +1701,7 @@ vi utoubt;//its component or its AP index
 vb uisart;//u is AP?
 vvi bt;//block cut tree
 void generateBlockCutTree(vvi &g){
-    int n = g.size();
+    int n = sz(g);
     sz = id = 0;
     bcc.resize(0); low.resize(0); num.resize(0);
     bcc.resize(n); low.resize(n); num.resize(n);
@@ -1710,7 +1710,7 @@ void generateBlockCutTree(vvi &g){
     utoubt.resize(0); utoubt.resize(n);
     uisart.resize(0); uisart.resize(n);
     for(int u = 0; u < n; u++){
-        if(bcc[u].size() > 1) { //Articulation
+        if(sz(bcc[u]) > 1) { //Articulation
             utoubt[u] = sz++;
             uisart[u] = true;
             bt.pb(vi());
@@ -1830,13 +1830,13 @@ public:
         return f;
     }
     vi get_st_cut(const int &s){
-        bool vis[graph.size()] = {};
+        bool vis[sz(graph)] = {};
         vi S;
         queue<int> q;
         q.push(s);
         S.pb(s);
         vis[s] = true;
-        while(q.size()){
+        while(sz(q)){
             int u = q.front(); q.pop();
             for(int eI : edge_indexes[u]){
                 if(edges[eI].c > edges[eI].f && !vis[edges[eI].to]){
@@ -1849,8 +1849,8 @@ public:
         return S;
     }
     vector<vector<edge>> get_residual_graph(){
-        vector<vector<edge>> residual(graph.size());
-        for(int i=0; i<edges.size(); i+=2){
+        vector<vector<edge>> residual(sz(graph));
+        for(int i=0; i<sz(edges); i+=2){
             const edge& e = edges[i];
             if(e.c > 0){
                 residual[e.from].pb({e.from, e.to, e.w, e.c - e.f, e.f});
@@ -1865,24 +1865,24 @@ private:
     void init(){
       edges.clear();
       edge_indexes.clear();
-      edge_indexes.resize(graph.size());
-      for(int u = 0; u < graph.size(); u++){
+      edge_indexes.resize(sz(graph));
+      for(int u = 0; u < sz(graph); u++){
          for(edge &e : graph[u]){
            edges.pb({u, e.to, e.w, e.c, 0});
            edges.pb({e.to, u, -e.w, 0, 0});
-           edge_indexes[u].pb(edges.size()-2);
-           edge_indexes[e.to].pb(edges.size()-1);
+           edge_indexes[u].pb(sz(edges)-2);
+           edge_indexes[e.to].pb(sz(edges)-1);
          }
       }
     }
     bool find_and_update(int s, int t, ll &flow){
         queue<int> q;
         // Desde donde llego y con que arista
-        vpii from(graph.size(), {-1, -1});
+        vpii from(sz(graph), {-1, -1});
         q.push(s);
         from[s] = {s, -1};
         bool found = 0;
-        while(q.size() && !found){
+        while(sz(q) && !found){
             int u = q.front(); q.pop();
             for(int eI : edge_indexes[u]){
                 if(edges[eI].c > edges[eI].f &&
@@ -1936,47 +1936,47 @@ template<class T = ll> struct dinic{
     void add_edge(short u, short v, T cap, bool is_directed = 1){
         if(u == v) return;
         T add = (is_directed ? 0 : cap);
-        adj[u].push_back({v, adj[v].size(), cap, 0, cap + add});
-        adj[v].push_back({u, (short)adj[u].size() - 1, add, 0, cap + add});
+        adj[u].pb({v, sz(adj[v]), cap, 0 ,cap+add});
+        adj[v].pb({u, sz(adj[u])-1, add, 0, cap+add});
     }
     void mysort(){
         if(sorted) return;
         sorted = 1;
         for(int i = 0; i < V; ++i){
             sort(all(adj[i]));
-            for(int j=0; j<adj[i].size(); ++j)
+            for(int j=0; j<sz(adj[i]); ++j)
             adj[adj[i][j].to][adj[i][j].rev].rev = j;
         }
     }
     bool bfs(){
         for(int i = 0; i < V; ++i){
             adj_cur[i].clear();
-            adj_cur[i].reserve(adj[i].size());
+            adj_cur[i].reserve(sz(adj[i]));
         }
         queue<short> q;
         q.push(s);
         fill(level, level + V, -1);
         level[s] = 0;
-        while(q.size()){
+        while(sz(q)){
             short u = q.front(); q.pop();
             if(u == t) return 1;
-            for(int i=0; i < adj[u].size(); ++i){
+            for(int i=0; i < sz(adj[u]); ++i){
                 edge &e = adj[u][i];
                 if(e.mcap < lim) break;
                 if(level[e.to] == -1 && e.cap - e.flow >= lim){
                     level[e.to] = level[u] + 1;
-                    adj_cur[u].push_back(i);
+                    adj_cur[u].pb(i);
                     q.push(e.to);
                 } else if(level[e.to]==level[u]+1 && e.cap - e.flow >= lim){
-                    adj_cur[u].push_back(i);
+                    adj_cur[u].pb(i);
                 }
             }
         } return 0;
     }
     T dfs(short u, T flow, vector<short> &S, bool save = 0){
-        if(save) S.push_back(u);
+        if(save) S.pb(u);
         if(u == t) return flow;
-        for(; ptr[u] < adj_cur[u].size(); ++ptr[u]){
+        for(; ptr[u] < sz(adj_cur[u]); ++ptr[u]){
             edge &e = adj[u][adj_cur[u][ptr[u]]];
             if(T pushed = dfs(e.to, min(flow, e.cap - e.flow), S, save)){
                 e.flow += pushed;
@@ -2028,8 +2028,8 @@ template<class T = ll> struct mcmf{
     void add_edge(short u, short v, T cap, T w, bool is_directed = 1){
         if(u == v) return;
         T add = (is_directed ? 0 : cap);
-        adj[u].push_back({v, adj[v].size(), cap, 0, cap + add, w});
-        adj[v].push_back({u, (short)adj[u].size() - 1, add, 0, cap + add, -w});
+        adj[u].pb({v, sz(adj[v]), cap, 0, cap + add, w});
+        adj[v].pb({u, sz(adj[u]) - 1, add, 0, cap + add, -w});
     }
     struct pos{
         short from;
@@ -2054,10 +2054,10 @@ template<class T = ll> struct mcmf{
         priority_queue<pos> q;
         q.push({s, 0});
         d[s] = 0;
-        while(q.size()){
+        while(sz(q)){
             pos act = q.top(); q.pop();
             if(act.c != d[act.from]) continue;
-            for(int j=0; j<adj[act.from].size(); ++j){
+            for(int j=0; j<sz(adj[act.from]); ++j){
                 edge &e = adj[act.from][j];
                 if(e.cap - e.flow <= 0) continue;
                 T _w = e.w+p[act.from] - p[e.to];
@@ -2117,7 +2117,7 @@ void dfs(int node, vi graph[], bool vis[], vi &topo_ord){
     vis[node] = true;
     for(int v : graph[node])
         dfs(v, graph, vis, topo_ord);
-    topo_ord.push_back(node);
+    topo_ord.pb(node);
 }
 void assign_scc(int node, vi inv_graph[], bool vis[], vi &scc, const int id){
     if(vis[node]) return;
@@ -2144,13 +2144,13 @@ pair<vvi, vvi> build_scc_graph(int n, vi graph[], int n_scc, const vi &scc){
     for(int u = 0; u < n; ++u)
     for(int v : graph[u])
     if(scc[u] != scc[v])
-        scc_graph[scc[u]].push_back(scc[v]);
+        scc_graph[scc[u]].pb(scc[v]);
     for(int u = 0; u < n_scc; ++u){
         sort(all(scc_graph[u]));
         auto it = unique(all(scc_graph[u]));
         scc_graph[u].resize(it - scc_graph[u].begin());
         for(int v : scc_graph[u])
-            inv_scc_graph[v].push_back(u);
+            inv_scc_graph[v].pb(u);
     } return {scc_graph, inv_scc_graph};
 }
 \end{minted}
@@ -2175,8 +2175,8 @@ struct two_sat{
         ans.resize(n);
     }
     void add_edge(int u, int v){
-        graph[u].push_back(v);
-        inv_graph[v].push_back(u);
+        graph[u].pb(v);
+        inv_graph[v].pb(u);
     }
     /// al menos una es verdadera
     void add_or(int p, bool val_p, int q, bool val_q){
@@ -2305,7 +2305,7 @@ struct treap{
 Complejidad: Tiempo $O(|s|)$ - Memoria extra $O(|s|)$.
 \begin{minted}{cpp}
 vi prefix_function(const string &s){
-    int n = s.size();
+    int n = sz(s);
     vi pi(n);
     for(int i = 1; i < n; ++i){
         int j = pi[i - 1];
@@ -2321,7 +2321,7 @@ vi prefix_function(const string &s){
 \begin{minted}{cpp}
 void compute_automaton(const string &s, vvi& aut){
     s += '#';
-    int n = s.size();
+    int n = sz(s);
     vi pi = prefix_function(s);
     aut.assign(n, vi(26));
     for(int i = 0; i < n; ++i){
@@ -2423,7 +2423,7 @@ void counting_sort(int k, int n){
     for(int i = 0; i < n; ++i) SA[i] = tmpSA[i];
 }
 void buildSA(string &str){
-    int n = str.size();
+    int n = sz(str);
     for(int i = 0; i < n; ++i){
         mrank[i] = str[i] - '#';
         SA[i] = i;
@@ -2442,14 +2442,14 @@ void buildSA(string &str){
     }
 }
 inline bool suff_compare1(int idx,const string &pattern) {
-    return (s.substr(idx).compare(0, pattern.size(), pattern) < 0);
+    return (s.substr(idx).compare(0, sz(pattern), pattern) < 0);
 }
 inline bool suff_compare2(const string &pattern,int idx) {
-    return (s.substr(idx).compare(0, pattern.size(), pattern) > 0);
+    return (s.substr(idx).compare(0, sz(pattern), pattern) > 0);
 }
 pair<int,int> match(const string &pattern) {
-    int *low = lower_bound (SA, SA + s.size(), pattern, suff_compare1);
-    int *up = upper_bound (SA, SA + s.size(), pattern, suff_compare2);
+    int *low = lower_bound (SA, SA + sz(s), pattern, suff_compare1);
+    int *up = upper_bound (SA, SA + sz(s), pattern, suff_compare2);
     return make_pair((int)(low - SA),(int)(up - SA));
 }
 \end{minted}
@@ -2460,7 +2460,7 @@ pair<int,int> match(const string &pattern) {
 \begin{minted}{cpp}
 int lcp[MAXN];
 void build_lcp(string &str){
-    int n = str.size();
+    int n = sz(str);
     int phi[n];
     phi[SA[0]] = -1;
     for(int i = 1; i < n; ++i) phi[ SA[i] ] = SA[i - 1];
@@ -2507,7 +2507,7 @@ struct aho_corasick{
         for(char c : s){
             int e = c - index;
             if(aho[u].next[e] == -1){
-                aho[u].next[e] = aho.size();
+                aho[u].next[e] = sz(aho);
                 aho.emplace_back(u, c);
             }
             u = aho[u].next[e];
@@ -2622,16 +2622,16 @@ void build(string &s){
     sz = 1;
     node = pos = n = 0;
     len[0] = inf;
-    for(int i = 0; i < s.size(); i++)
+    for(int i = 0; i < sz(s); i++)
         add_letter(s[i]);
-    correct(s.size());
+    correct(sz(s));
 }
 void cutGeneralized(vi &finishPoints){
     for (int i = 0; i < sz; i++){
         int init = f_pos[i];
         int end = f_pos[i] + len[i] - 1;
-        int idx = lower_bound(finishPoints.begin(), finishPoints.end(), init) - finishPoints.begin();
-        if ((idx != finishPoints.size()) && (finishPoints[idx] <= end)){//Must be cut
+        int idx = lower_bound(all(finishPoints), init) - finishPoints.begin();
+        if ((idx != sz(finishPoints)) && (finishPoints[idx] <= end)){//Must be cut
             len[i] = (finishPoints[idx] - f_pos[i] + 1);
             to[i].clear();
         }
@@ -2647,12 +2647,12 @@ void build_generalized(vector<string> &ss){
     int sep = 256;
     vi finishPoints;
     int next = 0;
-    for (int i = 0; i < ss.size(); i++){
-        for (int j = 0; j < ss[i].size(); j++){
+    for (int i = 0; i < sz(ss); i++){
+        for (int j = 0; j < sz(ss[i]); j++){
             add_letter(ss[i][j]);
         }
-        next += ss[i].size();
-        finishPoints.push_back(next);
+        next += sz(ss[i]);
+        finishPoints.pb(next);
         add_letter(sep++);
         next++;
     }
@@ -2695,13 +2695,13 @@ void convex_hull(vector<pt>& a, bool include_collinear = 0){
         return o < 0;
     });
     if(include_collinear){
-        int i = (int)a.size()-1;
+        int i = sz(a)-1;
         while(i >= 0 && collinear(p0, a[i], a.back())) i--;
         reverse(a.begin()+i+1, a.end());
     }
     vector<pt> st;
-    for(int i = 0; i < a.size(); i++){
-        while(st.size()>1 && !cw(st[st.size()-2], st.back(), a[i], include_collinear))
+    for(int i = 0; i < sz(a); i++){
+        while(sz(st)>1 && !cw(st[sz(st)-2], st.back(), a[i], include_collinear))
             st.pop_back();
         st.pb(a[i]);
     }
@@ -2717,7 +2717,7 @@ Complejidad: $O(N\sqrt{N})$. Si queremos obtener calcular el conjunto de sumas p
 \begin{minted}{cpp}
 vi compress(vector<ll>& a){
     sort(a.rbegin(), a.rend());
-    int n = a.size();
+    int n = sz(a);
     a.pb(0);
     vi weights;
     int pi = 0;
@@ -2853,8 +2853,8 @@ struct LiChaoTree {
     LiChaoTree(vector<ll> &values_){
         values = values_;
         sort(all(values));
-        functions =new Function[values.size()*4];
-        maxV = values.size();
+        functions =new Function[sz(values)*4];
+        maxV = sz(values);
     }
     //Range from l to r - 1
     ll get(ll x){

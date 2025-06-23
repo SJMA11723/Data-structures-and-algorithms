@@ -280,10 +280,10 @@ template<typename T> struct min_stack{
     min_stack(const T &MAXVAL){init(MAXVAL);}
     void init(const T &MAXVAL){
         st.push(make_pair(MAXVAL, MAXVAL));}
-    void push(const T &v){st.push(make_pair(v, min(v, st.top().second)));}
-    T top(){return st.top().first;}
+    void push(const T &v){st.push(make_pair(v, min(v, st.top().se)));}
+    T top(){return st.top().fi;}
     void pop(){if(sz(st) > 1)st.pop();}
-    T minV(){return st.top().second;}
+    T minV(){return st.top().se;}
     int size(){return sz(st) - 1;}
     bool empty(){return size() == 0;}
 };
@@ -328,7 +328,7 @@ public:
     pair<TPriority, TKey> top() {return nodes[1];}
     void pop(){
         if(sz(nodes) == 1) return;
-        TKey k = nodes[1].second;
+        TKey k = nodes[1].se;
         swap_nodes(1, sz(nodes) - 1);
         nodes.pop_back();
         position.erase(k);
@@ -338,7 +338,7 @@ public:
         int pos;
         if(is_inserted(k)){
             pos = position[k];
-            nodes[pos].first += p;
+            nodes[pos].fi += p;
         } else {
             position[k] = pos = sz(nodes);
             nodes.pb( make_pair(p, k) );
@@ -377,8 +377,8 @@ private:
         }
     }
     void swap_nodes(int a, int b){
-        position[ nodes[a].second ] = b;
-        position[ nodes[b].second ] = a;
+        position[ nodes[a].se ] = b;
+        position[ nodes[b].se ] = a;
         swap(nodes[a], nodes[b]);
     }
 };
@@ -1886,7 +1886,7 @@ private:
             int u = q.front(); q.pop();
             for(int eI : edge_indexes[u]){
                 if(edges[eI].c > edges[eI].f &&
-                  from[edges[eI].to].first== -1){
+                  from[edges[eI].to].fi== -1){
                     from[edges[eI].to] = {u, eI};
                     q.push(edges[eI].to);
                     if(edges[eI].to == t)found=1;
@@ -2097,9 +2097,9 @@ template<class T = ll> struct mcmf{
         T flow = 0, cost = 0;
         while(flow < MAX_FLOW){
             pair<T, T> pushed = dijkstra(MAX_FLOW - flow);
-            if(!pushed.first) break;
-            flow += pushed.first;
-            cost += pushed.second;
+            if(!pushed.fi) break;
+            flow += pushed.fi;
+            cost += pushed.se;
         }
         return {flow, cost};
     }
@@ -2263,10 +2263,10 @@ struct treap{
         if(!n) return;
         int cur_pos = (n->l) ? (l_nodes + n->l->cnt) : l_nodes;
         if(cur_pos < pos){
-            splitFirstNodes(n->r, pos, n->r, r, cur_pos + 1);
+            splitfiNodes(n->r, pos, n->r, r, cur_pos + 1);
             l = n;
         } else {
-            splitFirstNodes(n->l, pos, l, n->l, l_nodes);
+            splitfiNodes(n->l, pos, l, n->l, l_nodes);
             r = n;
         }
         n->recalc();
@@ -2608,11 +2608,11 @@ void print_suffix_tree(int from){
     cout << " and starts in " << f_pos[from] << endl;
     cout << "Node " << from << " goes to: ";
     for (auto u : to[from]){
-        cout << u.second << " with " << (char)u.first << " ";
+        cout << u.se << " with " << (char)u.fi << " ";
     }
     cout << endl;
     for (auto u : to[from]){
-        print_suffix_tree(u.second);
+        print_suffix_tree(u.se);
     }
 }
 void build(string &s){

@@ -262,12 +262,16 @@ int main(int argc, char * argv[]){
 \vspace{-1.2\baselineskip}
 \hrulefill
 \section{Ideas}
-\subsection{Ideas de Catalán}
 
-Ideas que se usan en las demostraciones de que algo se cuenta con Catalán y sirven para conteos similares:
+\textbf{Ideas de Catalán.} Ideas que se usan en las demostraciones de que algo se cuenta con Catalán y sirven para conteos similares:
 \begin{enumerate}[1.]
     \item \textit{Partir en dos conjuntos y distribuir}. Usar la misma idea de la recurrencia de los números de Catalán: $(0, n - 1), (1, n - 2), \dots, (k, n - 1 - k)$.
     \item \textit{Reflejar los caminos malos}. Si queremos contar caminos monótonos que $(0, 0)$ y $(n, m)$, por debajo de una diagonal paralela a la que une dichas esquinas, en una cuadrícula de $n \times m$, contemos todos los caminos $\binom{n + m}{n}$ y restemos los caminos que pasan sobre la diagonal. Digamos que la diagonal es $y = x + k$, entonces los caminos malos pasan al menos una vez por $y = x + k + 1$: toma el primer punto $(x', x' + k + 1)$ sobre el que un camino pasa por $y = x + k + 1$ y refléjalo, nota que todos empiezan en $(x', x' + k + 1) - (x' + k + 1, x') = (- k - 1, k + 1)$. Entonces los caminos malos son biyectivos a los caminos que van de $(- k - 1, k + 1)$ a $(n, m)$.
+\end{enumerate}
+
+\textbf{Optimización}. Ideas para optimizar funciones.
+\begin{enumerate}[1.]
+    \item \textit{Fijar coordenadas secuencialmente}. Hay funciones en $R^n$ que se pueden optimizar fijando la primera coordenada y resolviendo para $R^{n - 1}$ y así sucesivamente.
 \end{enumerate}
 
 \hrulefill

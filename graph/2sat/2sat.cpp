@@ -1,16 +1,9 @@
-/**
-* Author: Jorge Raul Tzab Lopez
-* Github: https://github.com/SJMA11723
-*/
-
-#include <bits/stdc++.h>
-
-using namespace std;
+#include "../../template.h"
 
 struct two_sat{
     int n;
-    vector<vector<int>> graph, inv_graph;
-    vector<int> scc, ans;
+    vvi graph, inv_graph;
+    vi scc, ans;
     vector<bool> vis;
 
     two_sat(){}
@@ -25,8 +18,8 @@ struct two_sat{
     }
 
     void add_edge(int u, int v){
-        graph[u].push_back(v);
-        inv_graph[v].push_back(u);
+        graph[u].pb(v);
+        inv_graph[v].pb(u);
     }
 
     /// al menos una es verdadera
@@ -47,30 +40,30 @@ struct two_sat{
     }
 
     /// Kosajaru
-    void dfs(int node, vector<int> &topo_ord){
-        if(vis[node]) return;
-        vis[node] = true;
+    void dfs(int u, vi &topo_ord){
+        if(vis[u]) return;
+        vis[u] = true;
 
-        for(int v : graph[node]) dfs(v, topo_ord);
-        topo_ord.push_back(node);
+        for(int v : graph[u]) dfs(v, topo_ord);
+        topo_ord.pb(u);
     }
 
-    void assign_scc(int node, const int id){
-        if(vis[node]) return;
-        vis[node] = true;
-        scc[node] = id;
+    void assign_scc(int u, const int id){
+        if(vis[u]) return;
+        vis[u] = true;
+        scc[u] = id;
 
-        for(int v : inv_graph[node]) assign_scc(v, id);
+        for(int v : inv_graph[u]) assign_scc(v, id);
     }
 
     /// construye respuesta
     bool build_ans(){
-        fill(vis.begin(), vis.end(), false);
-        vector<int> topo_ord;
+        fill(all(vis), false);
+        vi topo_ord;
 
         for(int i = 0; i < 2 * n; ++i) dfs(i, topo_ord);
-        fill(vis.begin(), vis.end(), false);
-        reverse(topo_ord.begin(), topo_ord.end());
+        fill(all(vis), false);
+        reverse(all(topo_ord));
 
         int id = 0;
         for(int u : topo_ord) if(!vis[u]) assign_scc(u, id++);

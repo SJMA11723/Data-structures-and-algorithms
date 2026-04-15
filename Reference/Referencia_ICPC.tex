@@ -2122,8 +2122,7 @@ Complejidad: Tiempo $O(n)$.
 void dfs(int u, vi graph[], bool vis[], vi &topo_ord){
     if(vis[u]) return;
     vis[u] = true;
-    for(int v : graph[u])
-        dfs(v, graph, vis, topo_ord);
+    for(int v : graph[u])dfs(v, graph, vis, topo_ord);
     topo_ord.pb(u);
 }
 void assign_scc(int u, vi inv_graph[], bool vis[], vi &scc, const int id){
@@ -2136,8 +2135,7 @@ void assign_scc(int u, vi inv_graph[], bool vis[], vi &scc, const int id){
 pair<int, vi> kosajaru(int n, vi graph[], vi inv_graph[]){
     bool vis[n] = {};
     vi topo_ord;
-    for(int i = 0; i < n; ++i)
-        dfs(i, graph, vis, topo_ord);
+    for(int i=0; i<n; ++i) dfs(i,graph,vis,topo_ord);
     reverse(all(topo_ord));
     memset(vis, 0, sizeof(vis));
     vi scc(n);
@@ -2854,7 +2852,7 @@ struct Function {
     Function(){ m = LLONG_MIN;}
     Function(ll m_, ll b_): m(m_), b(b_){ }
 };
-struct LiChaoTree {
+struct LiChaoTree{
     vll values;
     ll maxV;
     Function *functions;

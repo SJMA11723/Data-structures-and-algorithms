@@ -1,24 +1,4 @@
-/**
-* Author: Jorge Raul Tzab Lopez
-* Github: https://github.com/SJMA11723
-*/
-
-#include <bits/stdc++.h>
-
-using namespace std;
-
-typedef long long ll;
-typedef pair<int, int> pii;
-typedef pair<ll, ll> pll;
-typedef vector<int> vi;
-typedef vector<ll> vll;
-typedef vector<pii> vpii;
-typedef vector<pll> vpll;
-
-#define all(x) (x).begin(), (x).end()
-#define fi first
-#define se second
-#define sz(x) (int)(x).size()
+#include "../../../template.h"
 
 const int MAXV = 32767; /// 2^15 - 1
 

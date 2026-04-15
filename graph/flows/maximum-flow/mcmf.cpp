@@ -1,25 +1,4 @@
-/**
-* Author: Jorge Raul Tzab Lopez
-* Github: https://github.com/SJMA11723
-*/
-
-#include <bits/stdc++.h>
-
-using namespace std;
-
-typedef long long ll;
-typedef pair<int, int> pii;
-typedef pair<ll, ll> pll;
-typedef vector<int> vi;
-typedef vector<ll> vll;
-typedef vector<pii> vpii;
-typedef vector<pll> vpll;
-
-#define all(x) (x).begin(), (x).end()
-#define fi first
-#define se second
-#define pb push_back
-#define sz(x) (int)(x).size()
+#include "../../../template.h"
 
 const ll MOD = 1e9 + 7;
 
@@ -107,7 +86,7 @@ template<class T = ll> struct mcmf{
         T flow = 0, cost = 0;
         while(flow < MAX_FLOW){
             pair<T, T> pushed = dijkstra(MAX_FLOW - flow);
-            if(!pushed.first) break;
+            if(!pushed.fi) break;
             flow += pushed.fi;
             cost += pushed.se;
         }
@@ -128,7 +107,7 @@ int main(){
         MF.add_edge(a, b, r, c);
     }
 
-    pair<int, int> ans = MF.get_max_flow(0, n - 1, k);
-    if(ans.first < k) cout << "-1\n";
-    else cout << ans.second << '\n';
+    pii ans = MF.get_max_flow(0, n - 1, k);
+    if(ans.fi < k) cout << "-1\n";
+    else cout << ans.se << '\n';
 }

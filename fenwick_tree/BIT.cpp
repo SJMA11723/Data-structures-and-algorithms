@@ -1,16 +1,12 @@
-/**
-* Author: Jorge Raul Tzab Lopez
-* Github: https://github.com/SJMA11723
-*/
+#include "../template.h"
 
-#include <bits/stdc++.h>
-#define lsb(S) (S & (-S))
+#define lsb(S) ((S) & (-S))
 
 using namespace std;
 
 struct fenwick_tree{
     int n;
-    vector<int> BIT;
+    vi BIT;
 
     fenwick_tree(int _n){
         n = _n;

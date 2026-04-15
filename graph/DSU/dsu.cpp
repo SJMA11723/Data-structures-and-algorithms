@@ -1,24 +1,17 @@
-/**
-* Author: Jorge Raul Tzab Lopez
-* Github: https://github.com/SJMA11723
-*/
-
-#include <bits/stdc++.h>
-
-using namespace std;
+#include "../../template.h"
 
 struct dsu{
     struct action{
         int x_p, y_p;
         int rank_y;
     };
-    vector<int> RA, P;
+    vi RA, P;
     vector<action> actions;
 
     dsu(int n){
         RA.resize(n, 1);
         P.resize(n);
-        iota(P.begin(), P.end(), 0);
+        iota(all(P), 0);
     }
 
     int root(int x){
@@ -31,13 +24,13 @@ struct dsu{
         if(x == y) return;
         if(RA[x] >= RA[y]) swap(x, y);
 
-        if(recording) actions.push_back({x, y, RA[y]});
+        if(recording) actions.pb({x, y, RA[y]});
         RA[y] += RA[x];
         P[x] = y;
     }
 
     void rollback(int cnt){
-        while(cnt-- > 0 && actions.size()){
+        while(cnt-- > 0 && sz(actions)){
             action act = actions.back();
             actions.pop_back();
 

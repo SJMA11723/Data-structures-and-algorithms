@@ -15,6 +15,8 @@ typedef pair<int, int> pii;
 typedef pair<ll, ll> pll;
 typedef vector<int> vi;
 typedef vector<ll> vll;
+typedef vector<vi> vvi;
+typedef vector<vll> vvll;
 typedef vector<pii> vpii;
 typedef vector<pll> vpll;
 typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> ordered_set;
@@ -29,9 +31,3 @@ mt19937_64 gen(chrono::steady_clock::now().time_since_epoch().count());
 uniform_int_distribution<ll> distr(1, LLONG_MAX);
 
 const ll MOD = 1e9 + 7;
-
-int main(){
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    cout.tie(0);    
-}

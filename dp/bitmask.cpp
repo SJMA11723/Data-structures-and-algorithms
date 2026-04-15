@@ -1,14 +1,21 @@
 /*
 Bits Mask
 */
-#include <bits/stdc++.h>
-using namespace std;
+#include "../template.h"
 
-
-#define isOn(S, j) (S & (1ll << (j)))
-#define setBit(S, j) (S |= (1ll << (j)))
-#define clearBit(S, j) (S &= ~(1ll << (j)))
-#define toggleBit(S, j) (S ^= (1ll << (j)))
+#define is_on(S, j) (S & (1ll << (j)))
+#define set_bit(S, j) (S |= (1ll << (j)))
+#define clear_bit(S, j) (S &= ˜(1ll << (j)))
+#define toggle_bit(S, j) (S ˆ= (1ll << (j)))
+#define lsb(S) ((S) & -(S))
+#define clear_lsb(S) (S &= (S - 1))
+#define set_all(S, n) (S = (1ll << (n)) - 1ll)
+#define clear_trailing_ones(S) (S &= (S + 1))
+#define set_last_bit_off(S) (S |= (S + 1))
+#define is_power_of_two(S) (!((S) & ((S) - 1)))
+#define nearest_power_of_two(S) ((int)pow(2, (int)((log((double)(S)) / log(2)) + 0.5)) )
+#define is_divisible_by_power_of_two(n, k) !((n) & ((1ll << (k)) - 1))
+#define modulo(S, N) ((S) & ((N) - 1)) // S % N, N potencia de 2
 
 /* one plus the index of the least significant 1-bit of x, or if x is zero, returns zero. */
 //int __builtin_ffs (int x)
@@ -28,50 +35,34 @@ using namespace std;
 /* hay versiones que acaban con "ll" que operan con long long */
 //int __builtin_ffsll (long long)
 
-void GospersHack(int k, int n) {
-    int set = (1 << k) - 1;
+/* Gospers’ Hack
+	Sirve para generar todos las máscaras de n bits, 
+	que tengan exactamente k bits a 1 (y que sean menores o iguales que $2^n$)
+*/
+void GospersHack(int n, int k) {
+    int mask = (1 << k) - 1;
     int limit = (1 << n);
-    while (set < limit){
-    	//DoStuff() is meant to be replaced with a function that processes each different value that set takes.
-		//DoStuff(set);
-
-        // Gosper's hack:
-        int c = set & - set;
-        int r = set + c;
-        set = (((r ^ set) >> 2) / c) | r;
+    while(mask < limit){
+		// Calcula la siguiente mask mayor con la misma cantidad de bits
+        int c = mask & - mask;
+        int r = mask + c;
+        mask = (((r ^ mask) >> 2) / c) | r;
     }
 }
 
-int main(void){
+// Dada una mascara m, iterar sobre todos sus subconjuntos 
+void submasks(int mask){
+	for( int x = mask; x;){
+    	--x &= mask;
+	}
+}
+
+int main(){
 	ios_base::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-
-	// iterar en orden natural 
 	int n = 20;
-	for (int i = 0; i < (1<<n); i++){
-		// ...
-	}
-	
-	//Dada una mascara m, iterar sobre todos sus subconjuntos 
-	int m;
-	for( int x=m; x;  ){
-    	--x &= m;
-    	// ...
-	}	
-	
-	/* Gospers’ Hack
-	Sirve para generar todos las máscaras de n bits, 
-	que tengan exactamente k bits a 1 (y que sean menores o iguales que $2^n$)
-	*/
 	int k=10;
-	int mask = (1 << k) - 1, r,c;
-	while(mask <= (1 << n) - (1 <<  (n-k) ) ){
-	    //...
-	    c = mask & -mask;
-	    r = mask + c;
-	    mask = r | ( (r^mask) >> 2/c );
-	}
-	
+	GospersHack(n, k);
 	return 0;
 }

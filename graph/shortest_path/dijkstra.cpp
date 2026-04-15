@@ -1,28 +1,22 @@
-/**
-* Author: Jorge Raul Tzab Lopez
-* Github: https://github.com/SJMA11723
-*/
+#include "../../template.h"
 
-#include <bits/stdc++.h>
 #define MAXN 100000
-
-using namespace std;
 
 struct edge{
     int to;
-    int64_t w;
+    ll w;
 };
 
 struct pos{
     int from;
-    int64_t c;
+    ll c;
     const bool operator<(const pos &b)const{
         return c > b.c;
     }
 };
 
-int64_t dijkstra(int a, int b, vector<edge> graph[]){
-    int64_t dist[MAXN];
+ll dijkstra(int a, int b, vector<edge> graph[]){
+    ll dist[MAXN];
     bool vis[MAXN] = {};
     fill(dist, dist + MAXN, LLONG_MAX);
 
@@ -30,17 +24,17 @@ int64_t dijkstra(int a, int b, vector<edge> graph[]){
     q.push(pos{a, 0});
     dist[a] = 0;
 
-    while(!q.empty()){
-        pos act = q.top();
+    while(sz(q)){
+        pos cur = q.top();
         q.pop();
 
-        if(vis[act.from]) continue;
-        vis[act.from] = true;
+        if(vis[cur.from]) continue;
+        vis[cur.from] = true;
 
-        for(edge &e : graph[act.from]){
-            if(dist[e.to] <= dist[act.from] + e.w) continue;
+        for(edge &e : graph[cur.from]){
+            if(dist[e.to] <= dist[cur.from] + e.w) continue;
 
-            dist[e.to] = dist[act.from] + e.w;
+            dist[e.to] = dist[cur.from] + e.w;
             q.push(pos{e.to, dist[e.to]});
         }
     }

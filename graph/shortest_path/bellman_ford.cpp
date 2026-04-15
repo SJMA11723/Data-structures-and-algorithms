@@ -1,21 +1,14 @@
-/**
-* Author: Jorge Raul Tzab Lopez
-* Github: https://github.com/SJMA11723
-*/
-
-#include <bits/stdc++.h>
-
-using namespace std;
+#include "../../template.h"
 
 struct edge{
     int from, to;
     int w;
 };
 
-vector<int> bellman_ford(int s, int n, vector<edge> &edges, bool cycles = false){
-    vector<int> d(n, (cycles ? 0 : INT_MAX));
+vi bellman_ford(int s, int n, vector<edge> &edges, bool cycles = false){
+    vi d(n, (cycles ? 0 : INT_MAX));
     d[s] = 0;
-    vector<int> P(n, -1); /// Predecesor
+    vi P(n, -1); /// Predecesor
 
     for(int i = 0; i < n - 1; ++i){
         for(edge &e : edges){

@@ -1,15 +1,8 @@
-/**
-* Author: Jorge Raul Tzab Lopez
-* Github: https://github.com/SJMA11723
-*/
+#include "../../template.h"
 
-#include <bits/stdc++.h>
-
-using namespace std;
-
-vector<vector<int>> floyd_warshall(int n){
+vvi floyd_warshall(int n){
     const int INF = INT_MAX;
-    vector<vector<int>> d(n, vector<int>(n, INF));
+    vvi d(n, vector<int>(n, INF));
     /// aqui inicializa con la lista/matriz de adyacencia
     /// luego calcula la dp
     for(int k = 0; k < n; ++k){
@@ -28,5 +21,4 @@ int main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-
 }

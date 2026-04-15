@@ -1418,14 +1418,12 @@ ll dijkstra(int a, int b, vector<edge> graph[]){
     bool vis[MAXN] = {};
     fill(dist, dist + MAXN, LLONG_MAX);
     priority_queue<pos> q;
-    q.push(pos{a, 0});
-    dist[a] = 0;
-    while(!q.empty()){
-        pos act = q.top();
-        q.pop();
-        if(vis[act.from]) continue;
-        vis[act.from] = true;
-        for(edge &e : graph[act.from]){
+    q.push(pos{a, 0}); dist[a] = 0;
+    while(sz(q)){
+        pos cur = q.top(); q.pop();
+        if(vis[cur.from]) continue;
+        vis[cur.from] = true;
+        for(edge &e : graph[cur.from]){
             if(dist[e.to] <= dist[e.from] + e.w) continue;
             dist[e.to] = dist[e.from] + e.w;
             q.push(pos{e.to, dist[e.to]});
@@ -1465,7 +1463,7 @@ vi bellman_ford(int s, int n, vector<edge> &edges, bool cycles = false){
 \end{minted}
 
 \vspace{-1.2\baselineskip}
-\hrulefill \\
+\hrulefill\\
 \textbf{Floyd-Warshall.} Complejidad: $O\pa{\abs{V}^3}$.
 \begin{minted}{cpp}
 vvi floyd_warshall(int n){

@@ -1,11 +1,4 @@
-/**
-* Author: Jorge Raul Tzab Lopez
-* Github: https://github.com/SJMA11723
-*/
-
-#include <bits/stdc++.h>
-
-using namespace std;
+#include "../template.h"
 
 template<class TPriority, class TKey> class UpdatableHeap{
 public:
@@ -13,15 +6,15 @@ public:
         TPriority a;
         TKey b;
         nodes.clear();
-        nodes.push_back( make_pair(a, b) );
+        nodes.pb( make_pair(a, b) );
     }
     pair<TPriority, TKey> top() {
         return nodes[1];
     }
     void pop(){
-        if(nodes.size() == 1) return;
+        if(sz(nodes) == 1) return;
         TKey k = nodes[1].second;
-        swap_nodes(1, nodes.size() - 1);
+        swap_nodes(1, sz(nodes) - 1);
         nodes.pop_back();
         position.erase(k);
         heapify(1);
@@ -32,8 +25,8 @@ public:
             pos = position[k];
             nodes[pos].first += p;
         } else {
-            position[k] = pos = nodes.size();
-            nodes.push_back( make_pair(p, k) );
+            position[k] = pos = sz(nodes);
+            nodes.pb( make_pair(p, k) );
         }
         heapify(pos);
     }
@@ -41,12 +34,12 @@ public:
         return position.count(k);
     }
     int get_size() {
-        return (int)nodes.size() - 1;
+        return sz(nodes) - 1;
     }
     void erase(const TKey &k){
         if(!is_inserted(k)) return;
         int pos = position[k];
-        swap_nodes(pos, nodes.size() - 1);
+        swap_nodes(pos, sz(nodes) - 1);
         nodes.pop_back();
         position.erase(k);
         heapify(pos);
@@ -56,14 +49,14 @@ private:
     map<TKey, int> position;
 
     void heapify(int pos){
-        if(pos >= nodes.size()) return;
+        if(pos >= sz(nodes)) return;
         while(1 < pos && nodes[pos / 2] <= nodes[pos]){
             swap_nodes(pos / 2, pos);
             pos /= 2;
         }
         int l = pos * 2, r = pos * 2 + 1, maxi = pos;
-        if(l < nodes.size() && nodes[l] > nodes[maxi]) maxi = l;
-        if(r < nodes.size() && nodes[r] > nodes[maxi]) maxi = r;
+        if(l < sz(nodes) && nodes[l] > nodes[maxi]) maxi = l;
+        if(r < sz(nodes) && nodes[r] > nodes[maxi]) maxi = r;
         if(maxi != pos){
             swap_nodes(pos, maxi);
             heapify(maxi);

@@ -1,11 +1,4 @@
-/**
-* Author: Jorge Raul Tzab Lopez
-* Github: https://github.com/SJMA11723
-*/
-
-#include <bits/stdc++.h>
-
-using namespace std;
+#include "../template.h"
 
 template<typename T>
 struct min_stack{
@@ -17,15 +10,15 @@ struct min_stack{
 
     void init(const T &MAXVAL){st.push(make_pair(MAXVAL, MAXVAL));}
 
-    void push(const T &v){st.push(make_pair(v, min(v, st.top().second)));}
+    void push(const T &v){st.push(make_pair(v, min(v, st.top().se)));}
 
     T top(){return st.top().first;}
 
-    void pop(){if(st.size() > 1)st.pop();}
+    void pop(){if(sz(st) > 1)st.pop();}
 
-    T minV(){return st.top().second;}
+    T minV(){return st.top().se;}
 
-    int size(){return st.size() - 1;}
+    int size(){return sz(st) - 1;}
 
     bool empty(){return size() == 0;}
 };
@@ -43,15 +36,15 @@ struct min_queue{
 
     void pop(){transfer(); p_out.pop();}
 
-    int size(){return p_in.size() + p_out.size();}
+    int size(){return sz(p_in) + sz(p_out);}
 
     T minV() {return min(p_in.minV(), p_out.minV());}
 
     bool empty(){ return size() == 0;}
     void transfer(){
-        if(p_out.size()) return;
+        if(sz(p_out)) return;
 
-        while(p_in.size()){
+        while(sz(p_in)){
             p_out.push(p_in.top());
             p_in.pop();
         }

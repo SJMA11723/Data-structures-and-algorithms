@@ -1,0 +1,826 @@
+\section{Grafos}
+\begin{minted}{cpp}
+struct edge{
+    int from, to;
+    ll w;
+    const bool operator<(const edge &b)const{
+        return w > b.w;
+    }
+};
+struct pos{
+    int from;
+    ll c;
+    const bool operator<(const pos &b)const{
+        return c > b.c;
+    }
+};
+\end{minted}
+
+\vspace{-\baselineskip}
+
+\subsection{Caminos mínimos}
+\textbf{Dijkstra.} Complejidad: Tiempo $O(|E| \log |V|)$ - Memoria extra $O(|E|)$.
+\begin{minted}{cpp}
+ll dijkstra(int a, int b, vector<edge> graph[]){
+    ll dist[MAXN];
+    bool vis[MAXN] = {};
+    fill(dist, dist + MAXN, LLONG_MAX);
+    priority_queue<pos> q;
+    q.push(pos{a, 0}); dist[a] = 0;
+    while(sz(q)){
+        pos cur = q.top(); q.pop();
+        if(vis[cur.from]) continue;
+        vis[cur.from] = true;
+        for(edge &e : graph[cur.from]){
+            if(dist[e.to] <= dist[e.from] + e.w) continue;
+            dist[e.to] = dist[e.from] + e.w;
+            q.push(pos{e.to, dist[e.to]});
+        }
+    } return dist[b];
+}
+\end{minted}
+
+
+
+\textbf{Bellman-Ford.} Complejidad: $O(\abs{V}\abs{E})$.
+\begin{minted}{cpp}
+vi bellman_ford(int s, int n, vector<edge> &edges, bool cycles = false){
+    vi d(n, (cycles ? 0 : INT_MAX));
+    d[s] = 0;
+    vi P(n, -1); /// Predecesor
+    for(int i = 0; i < n - 1; ++i)
+    for(edge &e : edges){
+        if(d[e.from] == INT_MAX) continue;
+        if(d[e.to] > d[e.from] + e.w){
+            d[e.to] = d[e.from] + e.w;
+            P[e.to] = e.from;
+        }
+    }
+    int last_relax = -1;
+    for(edge &e : edges){
+        if(d[e.from] == INT_MAX) continue;
+        if(d[e.to] > d[e.from] + e.w){
+            d[e.to] = d[e.from] + e.w;
+            P[e.to] = e.from;
+            last_relax = e.to;
+        }
+    }
+    if(last_relax == -1) return d;
+    return {}; /// VACIO
+}
+\end{minted}
+
+
+
+\textbf{Floyd-Warshall.} Complejidad: $O\pa{\abs{V}^3}$.
+\begin{minted}{cpp}
+vvi floyd_warshall(int n){
+    const int INF = INT_MAX; // para evitar overflow después
+    vvi d(n, vi(n, INF));
+    /// aqui inicializa con la lista/matriz de adyacencia
+    /// luego calcula la dp
+    for(int k = 0; k < n; ++k){
+        for(int i = 0; i < n; ++i){
+            for(int j = 0; j < n; ++j){
+                if(d[i][k]==INF || d[k][j]==INF)
+                    continue;
+                if(d[i][j] > d[i][k] + d[k][j]) d[i][j] = d[i][k] + d[k][j];
+            }
+        }
+    } return d;
+}
+\end{minted}
+
+
+
+\textbf{Johnson's algorithm.} Complejidad: $O(\abs{V}\abs{E}\log\abs{V})$. Sea $p: V \to \R$ una función potencial del grafo. El algoritmo es como sigue:
+\begin{enumerate}[1.]
+    \item Hacemos una transformación en el grafo cambiando los pesos $w$ a $w'(u, v) = w(u, v) + p(u) - p(v)$.
+    \item Calculamos la distancia mínima $d': V \times V \to \R$ desde cada nodo a todos los demás con Dijkstra.
+    \item Finalmente, la distancia mínima de $u$ a $v$ en el grafo original es $d(u, v) = d'(u, v) - p(u) + p(v)$.
+\end{enumerate}
+La función potencial $p$ puede ser cualquiera. Usando Bellman-Ford se puede calcular el potencial $p(u)$ como el camino más corto que termina (o empieza) en $u$.
+
+
+\subsection{Árboles}
+\textbf{Prim.} Complejidad: Tiempo $O(|E| \log |V|)$. \mintinline{cpp}{eCost[MAXN]} es el arreglo de costos mínimos de cada nodo para incluirlo en el MST.
+\begin{minted}{cpp}
+ll prim(vector<edge> graph[]){
+    ll e_cost[MAXN], ans = 0;
+    bool vis[MAXN] = {};
+    fill(e_cost, e_cost + MAXN, LLONG_MAX);
+    priority_queue<edge> q;
+    q.push(edge{1, 1, 0});
+    while(sz(q)){
+        int node = q.top().to;
+        ll w = q.top().w; q.pop();
+        if(vis[node]) continue; vis[node] = true;
+        for(edge &e : graph[node]){
+            if(vis[e.to] || e_cost[e.to] <= e.w) continue;
+            e_cost[e.to] = e.w;
+            q.push(e);
+        } ans += w;
+    } return ans;
+}
+\end{minted}
+
+
+
+\textbf{Kruskal.} Complejidad: Tiempo $O\pa{|E|\log |E|}$.
+\begin{minted}{cpp}
+ll kruskal(vector<edge> &edges, int n){
+    sort(all(edges));
+    dsu mset(n);
+    ll res = 0;
+    for(edge &e : edges){
+        if(mset.root(e.from) == mset.root(e.to)) continue;
+        mset.join(e.from, e.to);
+        res += e.w;
+    }
+    return res;
+}
+\end{minted}
+
+
+
+\textbf{Boruvka.} Complejidad: Tiempo $O\pa{|E|\log |V|}$. $|V| = n$. \mintinline{cpp}{dsu.join()} devuelve \mintinline{cpp}{true} si la unión se llevó a cabo o \mintinline{cpp}{false} en otro caso.
+\begin{minted}{cpp}
+ll boruvka(vector<edge> &edges, int n){
+    dsu mset(n);
+    int min_edge[n];
+    ll res = 0;
+    while(mset.cnt_comp > 1){
+        fill(min_edge, min_edge + n, -1);
+        for(int i = 0; i < sz(edges); ++i){
+            int u = mset.root(edges[i].from);
+            int v = mset.root(edges[i].to);
+            if(u == v) continue;
+            if(min_edge[u] == -1 || edges[i].w < edges[min_edge[u]].w) min_edge[u] = i;
+            if(min_edge[v] == -1 || edges[i].w < edges[min_edge[v]].w) min_edge[v] = i;
+        }
+        for(int i = 0; i < n; ++i){
+            int idx_e = min_edge[i];
+            if(idx_e == -1) continue;
+            res += mset.join(edges[idx_e].from, edges[idx_e].to) * edges[idx_e].w;
+        }
+    } return res;
+}
+\end{minted}
+
+
+
+\textbf{MST dirigido.} Complejidad: $O(|E|\log|V|)$. AGREGAR PEQUEÑA DESCRIPCIÓN.
+\begin{minted}{cpp}
+/// MEJORAR ESTA COSA, SOLO LO COPIE Y PEGUÉ porcuestionesdetiempo
+const int N = 3e5 + 9;
+const ll inf = 1e18;
+template<typename T> struct PQ {
+    ll sum = 0;
+    priority_queue<T, vector<T>, greater<T>> Q;
+    void push(T x) { x.w -= sum; Q.push(x); }
+    T pop() { auto ans = Q.top(); Q.pop(); ans.w += sum; return ans; }
+    int size() { return sz(Q); }
+    void add(ll x) { sum += x; }
+    void merge(PQ &x){
+        if (size() < sz(x)){
+            swap(sum, x.sum);
+            Q.swap(x.Q);
+        }
+        while(sz(x)){
+            auto tmp = x.pop();
+            tmp.w -= sum;
+            Q.push(tmp);
+        }
+    }
+};
+struct edge {
+    int u, v; ll w;
+    bool operator > (const edge &rhs) const { return w > rhs.w; }
+};
+struct DSU {
+    vi par;
+    DSU (int n) : par(n, -1) {}
+    int root(int i) { return par[i] < 0 ? i : par[i] = root(par[i]); }
+    void set_par(int c, int p) { par[c] = p; }
+};
+// returns parents of each vertex
+// each edge should be distinct
+// it assumes that a solution exists (all vertices are reachable from root)
+// 0 indexed
+// Takes ~300ms for n = 2e5
+vi DMST(int n, int root, const vector<edge> &edges) {
+    vi u(2 * n - 1, -1), par(2 * n - 1, -1);
+    edge par_edge[2 * n - 1];
+    vi child[2 * n - 1];
+    PQ<edge> Q[2 * n - 1];
+    for(auto e : edges) Q[e.v].push(e);
+    for(int i = 0; i < n; i++)
+        Q[(i+1) % n].push({i, (i+1) % n, inf});
+    int super = n;
+    DSU dsu(2 * n - 1);
+    int head = 0;
+    while(sz(Q[head])) {
+        auto x = Q[head].pop();
+        int nxt_root = dsu.root(x.u);
+        if (nxt_root == head) continue;
+        u[head] = nxt_root;
+        par_edge[head] = x;
+        if (u[nxt_root] == -1) head = nxt_root;
+        else {
+            int j = nxt_root;
+            do {
+                Q[j].add(-par_edge[j].w);
+                //Q[super].merge(move(Q[j]));
+                Q[super].merge(Q[j]);
+                assert(u[j] != -1);
+                child[super].pb(j);
+                j = dsu.root(u[j]);
+            } while (j != nxt_root);
+            for(auto u : child[super]) par[u] = super, dsu.set_par(u, super);
+            head = super++;
+        }
+    }
+    vi res(2 * n - 1, -1);
+    queue<int> q; q.push(root);
+    while (sz(q)) {
+        int u = q.front();
+        q.pop();
+        while (par[u] != -1) {
+            for (auto v : child[par[u]]) {
+                if (v != u) {
+                    res[par_edge[v].v] = par_edge[v].u;
+                    q.push(par_edge[v].v);
+                    par[v] = -1;
+                }
+            }
+            u = par[u];
+        }
+    }
+    res[root] = root; res.resize(n);
+    return res;
+}
+int main() {
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    int n, m, root; cin >> n >> m >> root;
+    vector<edge> edges(m);
+    for(auto &e : edges) cin >> e.u >> e.v >> e.w;
+    auto res = DMST(n, root, edges);
+    unordered_map<int, int> W[n];
+    for (auto u : edges) W[u.v][u.u] = u.w;
+    ll ans = 0;
+    for(int i = 0; i < n; i++) if(i != root)
+        ans += W[i][res[i]];
+    cout << ans << '\n';
+    for(auto x : res) cout << x << ' ';
+    cout << '\n';
+}
+\end{minted}
+
+
+
+\textbf{Block-Cut Tree} Complejidad: $O(n)$?
+\begin{minted}{cpp}
+/// MEJORAR ESTA COSA, SOLO LO COPIE Y PEGUÉ porcuestionesdetiempo
+vvi comps;//nodes in each component
+vvi bcc;//nodes to components that it belong
+vi st;//internal stack
+vi low, num;
+int id;
+int sz;
+void dfs_biconnected(vvi &g, int u, int pre){
+  low[u] = num[u] = ++id;
+  st.pb(u);
+  for(auto v: g[u]) {
+    if(!num[v]) {
+      dfs_biconnected(g, v, u);
+      low[u] = min(low[u], low[v]);
+      if(low[v] >= num[u]) {
+        int x;
+        comps.pb(vi());
+        do {
+          x = st.back();
+          st.pop_back();
+          bcc[x].pb(sz);
+          comps.back().pb(x);
+        } while(x ^ v);
+        bcc[u].pb(sz);
+        comps.back().pb(u);
+        sz++;
+      }
+    } else if(v != pre) low[u] = min(low[u], num[v]);
+  }
+}
+vi utoubt;//its component or its AP index
+vb uisart;//u is AP?
+vvi bt;//block cut tree
+void generateBlockCutTree(vvi &g){
+    int n = sz(g);
+    sz = id = 0;
+    bcc.resize(0); low.resize(0); num.resize(0);
+    bcc.resize(n); low.resize(n); num.resize(n);
+    dfs_biconnected(g, 0, 0);
+    bt.resize(sz);
+    utoubt.resize(0); utoubt.resize(n);
+    uisart.resize(0); uisart.resize(n);
+    for(int u = 0; u < n; u++){
+        if(sz(bcc[u]) > 1) { //Articulation
+            utoubt[u] = sz++;
+            uisart[u] = true;
+            bt.pb(vi());
+            for(auto v: bcc[u]){
+                bt[utoubt[u]].pb(v);
+                bt[v].pb(utoubt[u]);
+            }
+        } else //Not articulation point
+            utoubt[u] = bcc[u][0];
+    }
+}
+\end{minted}
+
+
+
+\textbf{LCA.} Complejidad: Tiempo de preproceso $O(|V|\log |V|)$. Tiempo de LCA y $n$-ésimo ancestro $O(\log |V|)$. $1$-index.
+\begin{minted}{cpp}
+void precalc(int node, int p = 0, int d = 1){
+    depth[node] = d;
+    P[0][node] = p;
+    for(int k = 1; k <= LOGN; ++k)
+        P[k][node] = P[k - 1][P[k - 1][node]];
+    for(int child : tree[node]) if(p != child)
+        precalc(child, node, d + 1);
+}
+int LCA(int a, int b){
+    if(depth[b] < depth[a]) swap(a, b);
+    int dif = depth[b] - depth[a];
+    for(int k = LOGN; 0 <= k; --k)
+        if(is_on(dif, k)) b = P[k][b];
+    if(a == b) return a;
+    for(int k = LOGN; 0 <= k; --k){
+        if(P[k][a] != P[k][b]){
+            a = P[k][a];
+            b = P[k][b];
+        }
+    }
+    return P[0][a];
+}
+int nth_ancestor(int u, int n){
+    for(int k = LOGN; 0 <= k; --k)
+        if(is_on(n, k)) u = P[k][u];
+    return u;
+}
+\end{minted}
+
+
+
+\textbf{Sack.} Complejidad: Tiempo $O(\abs{V}\log \abs{V})$. $1$-index.
+\begin{minted}{cpp}
+void precalc(int node, int p = 0){
+    subtree_size[node] = 1;
+    depth[node] = depth[p] + 1;
+    for(int v : tree[node]){
+        if(v == p) continue;
+        precalc(v, node);
+        subtree_size[node] += subtree_size[v];
+    }
+}
+void add(int node, int x, int p = 0){
+    /// add node here
+    /// add subtree
+    for(int v: tree[node])
+        if(v != p && !big[v])
+            add(v, x, node);
+}
+void dfs(int node, bool keep, int p = 0){
+    int maxi = -1, big_child = -1;
+    for(int v : tree[node])///Searchfor big_child
+       if(v != p && subtree_size[v] > maxi)
+          maxi = subtree_size[v], big_child = v;
+    for(int v : tree[node])
+        if(v != p && v != big_child)
+            dfs(v, false, node);  /// run a dfs on small childs and clear them
+    if(big_child != -1)
+        dfs(big_child, true, node), big[big_child] = 1;  /// big_child marked as big and not cleared
+    add(node, 1, p);
+    /// answer queries here
+    if(big_child != -1) big[big_child] = 0;
+    if(!keep) add(node, -1, p);
+}
+\end{minted}
+
+
+
+\subsection{Máximo flujo}
+
+\textbf{Algunos problemas de flujos}
+\begin{itemize}
+    \item \textit{Maximum Weight Closure}. Sea $N_1$ una clausura de $G$ y $N_2 = V \setminus N_1$, tenemos que $w\pa{N_1} = \sum_{i \in N_1^+} w_i - \sum_{i \in N_1^-} |w_i|$ y $Cap.Corte = \sum_{i \in N_2^+} w_i + \sum_{i \in N_1^-} |w_i|$. Entonces
+    $$Cap.Corte + w(N_1) = \sum_{i \in N_1^+} w_i + \sum_{i \in N_2^+} w_i.$$
+    \item \textit{Mínima cobertura de vértices}. En grafos generales es NP-Completo. En grafos bipartitos el máximo emparejamiento es igual al numero de vertices en la mínima cobertura. Para el problema con pesos en los nodos, unimos $s$ a todos los nodos en $L$ con capacidad igual al peso de cada nodo, unimos los nodos de $R$ a $t$ de la misma manera y unimos los nodos de $L$ a $R$ con capacidad infinita. El máximo flujo es el peso mínimo de la mínima cobertura.
+    \item \textit{Máximo conjunto independiente}. Cualquier conjunto independiente es el complemento de alguna cobertura de vértices.
+    \item \textit{Mínimo cubrimiento de caminos independientes}. En grafos generales es NP-hard. En DAG's duplicamos los nodos en un lado IN y un lado OUT. Conectamos $s$ al lado OUT y el lado IN a $t$. Las aristas del DAG las agregamos del lado OUT al lado IN. Sea $M$ el máximo emparejamiento de la red anterior, entonces el mínimo cubrimiento es $\abs{V} - M$.
+    \item \textit{Mínimo cubrimiento de caminos NO necesariamente independientes}. En grafos generales es NP-hard. En DAG's transformamos el DAG a su clausura transitiva y aplicamos el problema anterior.
+    \item \textit{Teorema de Menger}. Sea $G$ un grafo finito (sin pesos) con vértices $s$, $t$ distintos. El corte mínimo (por aristas) entre $s$ y $t$ es igual a la cantidad máxima de caminos independientes por aristas de $s$ a $t$. Si $s$ y $t$ no son adyacentes, el corte mínimo por vértices entre $s$ y $t$ es igual a la cantidad máxima de caminos independientes por vértices de $s$ a $t$.
+    \item \textit{Teorema de Mirsky}. En todo POSET, el tamaño de la cadena de mayor tamaño es igual al número de anticadenas necesarias para cubrir todos los elementos del conjunto.
+    \item \textit{Teorema de Dilworth}. En todo POSET, el tamaño de la anticadena de mayor tamaño es igual al número de cadenas necesarias para cubrir todos los elementos del conjunto.
+    \item \textit{Teorema de Hall}. Un grafo bipartito con subconjuntos $L$ y $R$ tiene un emparejamiento de tamaño $|L|$ si y sólo si para todo subconjunto $W$ de $L$, se cumple que $|W| \leq |N_G(W)|$, donde $N_G(W)$ es el conjunto de vértices vecinos de alguno de los vértices en $W$.
+\end{itemize}
+
+
+\textbf{Edmonds-Karp}
+Complejidad: Ford-Fulkerson $O(|E| \cdot F)$, Edmonds-Karp $O(\abs{V}\abs{E}^2)$.
+\begin{minted}{cpp}
+struct edge {
+    int from, to;
+    ll w, c, f;
+    // weight, capacity, flow
+};
+class ford_fulkerson {
+public:
+    ford_fulkerson (vector<vector<edge>> &graph) : graph(graph){}
+    ll get_max_flow(int s, int t){
+        init();
+        ll f = 0;
+        while(find_and_update(s, t, f)){}
+        return f;
+    }
+    vi get_st_cut(const int &s){
+        bool vis[sz(graph)] = {};
+        vi S;
+        queue<int> q;
+        q.push(s);
+        S.pb(s);
+        vis[s] = true;
+        while(sz(q)){
+            int u = q.front(); q.pop();
+            for(int eI : edge_indexes[u]){
+                if(edges[eI].c > edges[eI].f && !vis[edges[eI].to]){
+                    q.push(edges[eI].to);
+                    vis[edges[eI].to] = true;
+                    S.pb(edges[eI].to);
+                }
+            }
+        }
+        return S;
+    }
+    vector<vector<edge>> get_residual_graph(){
+        vector<vector<edge>> residual(sz(graph));
+        for(int i=0; i<sz(edges); i+=2){
+            const edge& e = edges[i];
+            if(e.c > 0){
+                residual[e.from].pb({e.from, e.to, e.w, e.c - e.f, e.f});
+                residual[e.to].pb({e.to, e.from, -e.w, e.f, -e.f});
+            }
+        } return residual;
+    }
+private:
+    vector<vector<edge>> graph;
+    vector<edge> edges;
+    vvi edge_indexes;
+    void init(){
+      edges.clear();
+      edge_indexes.clear();
+      edge_indexes.resize(sz(graph));
+      for(int u = 0; u < sz(graph); u++){
+         for(edge &e : graph[u]){
+           edges.pb({u, e.to, e.w, e.c, 0});
+           edges.pb({e.to, u, -e.w, 0, 0});
+           edge_indexes[u].pb(sz(edges)-2);
+           edge_indexes[e.to].pb(sz(edges)-1);
+         }
+      }
+    }
+    bool find_and_update(int s, int t, ll &flow){
+        queue<int> q;
+        // Desde donde llego y con que arista
+        vpii from(sz(graph), {-1, -1});
+        q.push(s);
+        from[s] = {s, -1};
+        bool found = 0;
+        while(sz(q) && !found){
+            int u = q.front(); q.pop();
+            for(int eI : edge_indexes[u]){
+                if(edges[eI].c > edges[eI].f &&
+                  from[edges[eI].to].fi== -1){
+                    from[edges[eI].to] = {u, eI};
+                    q.push(edges[eI].to);
+                    if(edges[eI].to == t)found=1;
+                }
+            }
+        }
+        if(!found) return false;
+        ll u_flow = LLONG_MAX;
+        int cur = t;
+        while(cur != s) {
+            u_flow = min(u_flow, edges[from[cur].se].c - edges[from[cur].se].f);
+            cur = from[cur].fi;
+        }
+        cur = t;
+        while(cur != s){
+            edges[from[cur].se].f += u_flow;
+            edges[from[cur].se^1].f -= u_flow;
+            cur = from[cur].fi;
+        }
+        flow += u_flow;
+        return 1;
+    }
+};
+\end{minted}
+
+
+
+\textbf{Dinic.} Complejidad: $O(\abs{V}^2\abs{E})$.
+\begin{minted}{cpp}
+const int MAXV = 32767; /// 2^15 - 1
+template<class T = ll> struct dinic{
+    dinic(short V){this->V = V;}
+    const static bool SCALING = 1;
+    bool sorted = 0;
+    short s, t, V;
+    int lim = 1; /// Para escalado
+    const T INF = numeric_limits<T>::max();
+    short level[MAXV]; /// distancia desde s
+    short ptr[MAXV]; /// arista que va explorando
+    struct edge{
+        short to, rev;
+        T cap, flow, mcap;
+        bool operator<(const edge &b)const{return mcap > b.mcap;}
+    };
+    vector<edge> adj[MAXV];
+    vi adj_cur[MAXV]; /// aristas del grafo de nivel
+    void add_edge(short u, short v, T cap, bool is_directed = 1){
+        if(u == v) return;
+        T add = (is_directed ? 0 : cap);
+        adj[u].pb({v, sz(adj[v]), cap, 0 ,cap+add});
+        adj[v].pb({u, sz(adj[u])-1, add, 0, cap+add});
+    }
+    void mysort(){
+        if(sorted) return;
+        sorted = 1;
+        for(int i = 0; i < V; ++i){
+            sort(all(adj[i]));
+            for(int j=0; j<sz(adj[i]); ++j)
+            adj[adj[i][j].to][adj[i][j].rev].rev = j;
+        }
+    }
+    bool bfs(){
+        for(int i = 0; i < V; ++i){
+            adj_cur[i].clear();
+            adj_cur[i].reserve(sz(adj[i]));
+        }
+        queue<short> q;
+        q.push(s);
+        fill(level, level + V, -1);
+        level[s] = 0;
+        while(sz(q)){
+            short u = q.front(); q.pop();
+            if(u == t) return 1;
+            for(int i=0; i < sz(adj[u]); ++i){
+                edge &e = adj[u][i];
+                if(e.mcap < lim) break;
+                if(level[e.to] == -1 && e.cap - e.flow >= lim){
+                    level[e.to] = level[u] + 1;
+                    adj_cur[u].pb(i);
+                    q.push(e.to);
+                } else if(level[e.to]==level[u]+1 && e.cap - e.flow >= lim){
+                    adj_cur[u].pb(i);
+                }
+            }
+        } return 0;
+    }
+    T dfs(short u, T flow, vector<short> &S, bool save = 0){
+        if(save) S.pb(u);
+        if(u == t) return flow;
+        for(; ptr[u] < sz(adj_cur[u]); ++ptr[u]){
+            edge &e = adj[u][adj_cur[u][ptr[u]]];
+            if(T pushed = dfs(e.to, min(flow, e.cap - e.flow), S, save)){
+                e.flow += pushed;
+                adj[e.to][e.rev].flow -= pushed;
+                if(e.cap-e.flow < lim) ptr[u]++;
+                return pushed;
+            }
+        } return 0;
+    }
+    ll get_max_flow(short source, short sink){
+        s = source; t = sink;
+        mysort();
+        vector<short> S;
+        ll flow = 0;
+        lim = SCALING ? (1<<30) : 1;
+        for(; 0 < lim; lim >>= 1){
+            while(bfs()){
+                memset(ptr, 0, sizeof(ptr));
+                while(T pushed = dfs(s, INF, S))
+                    flow += pushed;
+            }
+        } return flow;
+    }
+    vector<short> get_st_cut(){
+        vector<short> S;
+        memset(ptr, 0, sizeof(ptr));
+        dfs(s, INF, S, true);
+        return S;
+    }
+};
+\end{minted}
+
+
+
+\textbf{MCMF.} Complejidad: $O(\min\{|E|^2|V|\log |V|, \; F|E|\log |V|\}).$
+\begin{minted}{cpp}
+const int MAXV = (1 << 15) - 1;
+template<class T = ll> struct mcmf{
+    mcmf(short V){this->V = V;}
+    short s, t, V;
+    const T INF = numeric_limits<T>::max();
+    vector<T> p;
+    struct edge{
+        short to, rev;
+        T cap, flow, mcap, w;
+        bool operator<(const edge &b)const{return mcap > b.mcap;}
+    };
+    vector<edge> adj[MAXV];
+    void add_edge(short u, short v, T cap, T w, bool is_directed = 1){
+        if(u == v) return;
+        T add = (is_directed ? 0 : cap);
+        adj[u].pb({v, sz(adj[v]), cap, 0, cap + add, w});
+        adj[v].pb({u, sz(adj[u]) - 1, add, 0, cap + add, -w});
+    }
+    struct pos{
+        short from;
+        T c;
+        const bool operator<(const pos &b)const{return c > b.c;}
+    };
+    vector<T> bellman_ford(){
+        vector<T> d(V);
+        for(int i = 0; i < V - 1; ++i){
+            for(int u = 0; u < V; ++u){
+                for(edge &e : adj[u]){
+                    if(d[e.to] > d[u] + e.w && e.cap > 0){
+                        d[e.to] = d[u] + e.w;
+                    }
+                }
+            }
+        } return d;
+    }
+    pair<T, T> dijkstra(const T MAX_FLOW){
+        vector<T> d(V, INF);
+        vi P(V, -1), P_e(V, -1);
+        priority_queue<pos> q;
+        q.push({s, 0});
+        d[s] = 0;
+        while(sz(q)){
+            pos act = q.top(); q.pop();
+            if(act.c != d[act.from]) continue;
+            for(int j=0; j<sz(adj[act.from]); ++j){
+                edge &e = adj[act.from][j];
+                if(e.cap - e.flow <= 0) continue;
+                T _w = e.w+p[act.from] - p[e.to];
+                if(d[e.to] <= d[act.from] + _w)
+                    continue;
+                d[e.to] = d[act.from] + _w;
+                q.push(pos{e.to, d[e.to]});
+                P[e.to] = act.from;
+                P_e[e.to] = j;
+            }
+        }
+        for(int i = 0; i < V; ++i) if(d[i] < INF)
+            d[i] += -p[s] + p[i];
+        for(int i = 0; i < V; ++i) if(d[i] < INF)
+            p[i] = d[i];
+        if(P[t] == -1) return {0, 0};
+        T flow = MAX_FLOW;
+        int cur_node = t;
+        while(cur_node != s){
+            flow = min(flow, adj[ P[cur_node] ][ P_e[cur_node] ].cap - adj[ P[cur_node] ][ P_e[cur_node] ].flow);
+            cur_node = P[cur_node];
+        }
+        T new_cost = 0;
+        cur_node = t;
+        while(cur_node != s){
+            adj[ P[cur_node] ][ P_e[cur_node] ].flow += flow;
+            new_cost += adj[ P[cur_node] ][ P_e[cur_node] ].w * flow;
+            adj[cur_node][adj[ P[cur_node] ][ P_e[cur_node] ].rev ].flow -= flow;
+            cur_node = P[cur_node];
+        }
+        return {flow, new_cost};
+    }
+    pair<T, T> get_max_flow(short source, short sink, const T MAX_FLOW = 1e8){
+        s = source;
+        t = sink;
+        p = bellman_ford();
+        T flow = 0, cost = 0;
+        while(flow < MAX_FLOW){
+            pair<T, T> pushed = dijkstra(MAX_FLOW - flow);
+            if(!pushed.fi) break;
+            flow += pushed.fi;
+            cost += pushed.se;
+        }
+        return {flow, cost};
+    }
+};
+\end{minted}
+
+
+
+\subsection{SCC}
+\textbf{Kosajaru}
+Complejidad: Tiempo $O(n)$.
+\begin{minted}{cpp}
+void dfs(int u, vi graph[], bool vis[], vi &topo_ord){
+    if(vis[u]) return;
+    vis[u] = true;
+    for(int v : graph[u])dfs(v, graph, vis, topo_ord);
+    topo_ord.pb(u);
+}
+void assign_scc(int u, vi inv_graph[], bool vis[], vi &scc, const int id){
+    if(vis[u]) return;
+    vis[u] = true;
+    scc[u] = id;
+    for(int v : inv_graph[u])
+        assign_scc(v, inv_graph, vis, scc, id);
+}
+pair<int, vi> kosajaru(int n, vi graph[], vi inv_graph[]){
+    bool vis[n] = {};
+    vi topo_ord;
+    for(int i=0; i<n; ++i) dfs(i,graph,vis,topo_ord);
+    reverse(all(topo_ord));
+    memset(vis, 0, sizeof(vis));
+    vi scc(n);
+    int id = 0;
+    for(int u : topo_ord) if(!vis[u])
+        assign_scc(u, inv_graph, vis, scc, id++);
+    return {id, scc};
+}
+pair<vvi, vvi> build_scc_graph(int n, vi graph[], int max_scc, const vi &scc){
+    vvi scc_graph(max_scc), inv_scc_graph(max_scc);
+    for(int u = 0; u < n; ++u)
+    for(int v : graph[u])
+    if(scc[u] != scc[v])
+        scc_graph[scc[u]].pb(scc[v]);
+    for(int u = 0; u < n_scc; ++u){
+        sort(all(scc_graph[u]));
+        auto it = unique(all(scc_graph[u]));
+        scc_graph[u].resize(it - scc_graph[u].begin());
+        for(int v : scc_graph[u])
+            inv_scc_graph[v].pb(u);
+    } return {scc_graph, inv_scc_graph};
+}
+\end{minted}
+
+
+
+\subsection{2-Sat}
+Complejidad: Tiempo en responder $O(n)$.
+\begin{minted}{cpp}
+struct two_sat{
+    int n;
+    vvi graph, inv_graph;
+    vi scc, ans;
+    vector<bool> vis;
+    two_sat(){}
+    two_sat(int _n){
+        n = _n;
+        graph.resize(2 * n);
+        inv_graph.resize(2 * n);
+        scc.resize(2 * n);
+        vis.resize(2 * n);
+        ans.resize(n);
+    }
+    void add_edge(int u, int v){
+        graph[u].pb(v);
+        inv_graph[v].pb(u);
+    }
+    /// al menos una es verdadera
+    void add_or(int p, bool val_p, int q, bool val_q){
+        add_edge(p+(val_p? n:0), q+(val_q? 0:n));
+        add_edge(q+(val_q? n:0), p+(val_p? 0:n));
+    }
+    /// exactamente una es verdadera
+    void add_xor(int p, bool val_p, int q, bool val_q){
+        add_or(p, val_p, q, val_q);
+        add_or(p, !val_p, q, !val_q);
+    }
+    /// p y q tienen el mismo valor
+    void add_and(int p, bool val_p, int q, bool val_q){
+        add_xor(p, !val_p, q, val_q);
+    }
+    /// Kosajaru
+    void dfs(int node, vi &topo_ord){...}
+    void assign_scc(int node, const int id){...}
+    /// construye respuesta
+    bool build_ans(){
+        fill(all(vis), false);
+        vi topo_ord;
+        for(int i=0; i<2*n; ++i)dfs(i, topo_ord);
+        fill(all(vis), false);
+        reverse(all(topo_ord));
+        int id = 0;
+        for(int u : topo_ord) if(!vis[u])
+            assign_scc(u, id++);
+        for(int i = 0; i < n; ++i){
+            if(scc[i] == scc[i + n]) return 0;
+            ans[i] = (scc[i]<scc[i + n] ? 0:1);
+        } return 1;
+    }
+};
+\end{minted}

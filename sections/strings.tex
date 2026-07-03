@@ -1,0 +1,360 @@
+\section{Strings}
+\subsection{KMP}
+Complejidad: Tiempo $O(|s|)$ - Memoria extra $O(|s|)$.
+\begin{minted}{cpp}
+vi prefix_function(const string &s){
+    int n = sz(s);
+    vi pi(n);
+    for(int i = 1; i < n; ++i){
+        int j = pi[i - 1];
+        while(j && s[i] != s[j]) j = pi[j - 1];
+        pi[i] = j + (s[i] == s[j]);
+    } return pi;
+}
+\end{minted}
+
+
+
+\textbf{Autómata de KMP.} Complejidad: Tiempo $O(|s|k)$ - Memoria extra $O(|s|k)$, donde $k$ es el tamaño del alfabeto.
+\begin{minted}{cpp}
+void compute_automaton(const string &s, vvi& aut){
+    s += '#';
+    int n = sz(s);
+    vi pi = prefix_function(s);
+    aut.assign(n, vi(26));
+    for(int i = 0; i < n; ++i){
+        for(int c = 0; c < 26; ++c){
+            if(i && 'a' + c != s[i])
+                aut[i][c] = aut[pi[i - 1]][c];
+            else aut[i][c] = i + ('a'+c == s[i]);
+        }
+    }
+}
+\end{minted}
+
+
+
+\subsection{Suffix Automata}
+Complejidad: Tiempo $O(|s|)$, memoria $O(|S|)$. Construye un autómata sobre los sufijos de $s$, donde cada nodo terminal es un sufijo de $s$. Esta construcción se hace online. Donde $alpha$ es el tamaño del alfabeto y $offset$ el primer caracter. Si se hace uso de los nodos terminales llamar a markTerminalNodes() primero (este método no es online).
+\begin{minted}{cpp}
+constexpr short alpha = 26;
+constexpr char offset = 'a';
+struct state{
+    //max(state) = len, min(state) = sa[link].len
+    int len, link;
+    bool is_terminal;
+    array<int,alpha> next;
+    state(){
+        len = 0; link = -1; is_terminal = false;
+        next.fill(0);
+    }
+};
+struct SuffixAutomaton{
+    int n;
+    vector<state> sa;
+    int sz = 1, last = 0;
+    SuffixAutomaton(int n) : n(n), sa(2*n + 1){}
+    void add(char ch_){
+        short ch = ch_-offset;
+        int curr = sz++;
+        sa[curr].len = sa[last].len + 1;
+        int p = last;
+        while(p!=-1 && !sa[p].next[ch]){
+            sa[p].next[ch] = curr;
+            p = sa[p].link;
+        }
+        if(p == -1){
+            sa[curr].link = 0;
+        }else{
+            int q = sa[p].next[ch];
+            if(sa[p].len+1 == sa[q].len){
+                sa[curr].link = q;
+            }else{
+                int clone = sz++;
+                sa[clone].len = sa[p].len + 1;
+                sa[clone].next = sa[q].next;
+                sa[clone].link = sa[q].link;
+                while(p!=-1 && sa[p].next[ch] == q){
+                    sa[p].next[ch] = clone;
+                    p = sa[p].link;
+                }
+                sa[q].link = sa[curr].link = clone;
+            }
+        }
+        last = curr;
+        return;
+    }
+    void markTerminalNodes(){
+        int curr = last;
+        while(curr){
+            sa[curr].is_terminal = true;
+            curr = sa[curr].link;
+        }
+        return;
+    }
+};
+\end{minted}
+
+
+
+\subsection{Suffix array}
+\textbf{Construcción.} Complejidad: Tiempo $O(|s|\log(|s|))$ - Memoria $O(|s|)$. Calcula la permutación que corresponde a los sufijos ordenados lexicográficamente. \mintinline{cpp}{SA[i]} es el índice en el cual empieza el $i$-ésimo sufijo ordenado.
+\begin{minted}{cpp}
+int SA[MAXN], mrank[MAXN];
+int tmpSA[MAXN], tmp_mrank[MAXN];
+void counting_sort(int k, int n){
+    int freqs[MAXN] = {};
+    for(int i = 0; i < n; ++i){
+        if(i + k < n) freqs[ mrank[i + k] ]++;
+        else freqs[0]++;
+    }
+    int m = max(100, n);
+    for(int i = 0, sfs = 0; i < m; ++i){
+        int f = freqs[i];
+        freqs[i] = sfs;
+        sfs += f;
+    }
+    for(int i = 0; i < n; ++i){
+        if(SA[i] + k < n) tmpSA[ freqs[mrank[ SA[i] + k ]]++ ] = SA[i];
+        else tmpSA[ freqs[0]++ ] = SA[i];
+    }
+    for(int i = 0; i < n; ++i) SA[i] = tmpSA[i];
+}
+void buildSA(string &str){
+    int n = sz(str);
+    for(int i = 0; i < n; ++i){
+        mrank[i] = str[i] - '#';
+        SA[i] = i;
+    }
+    for(int k = 1; k < n; k <<= 1){
+        counting_sort(k, n);
+        counting_sort(0, n);
+        int r = 0;
+        tmp_mrank[ SA[0] ] = 0;
+        for(int i = 1; i < n; ++i){
+            if(mrank[ SA[i] ] != mrank[ SA[i - 1] ] || mrank[ SA[i] + k ] != mrank[ SA[i - 1] + k ])
+                tmp_mrank[ SA[i] ] = ++r;
+            else tmp_mrank[ SA[i] ] = r;
+        }
+        for(int i = 0; i < n; ++i) mrank[i] = tmp_mrank[i];
+    }
+}
+inline bool suff_compare1(int idx,const string &pattern) {
+    return (s.substr(idx).compare(0, sz(pattern), pattern) < 0);
+}
+inline bool suff_compare2(const string &pattern,int idx) {
+    return (s.substr(idx).compare(0, sz(pattern), pattern) > 0);
+}
+pair<int,int> match(const string &pattern) {
+    int *low = lower_bound (SA, SA + sz(s), pattern, suff_compare1);
+    int *up = upper_bound (SA, SA + sz(s), pattern, suff_compare2);
+    return make_pair((int)(low - SA),(int)(up - SA));
+}
+\end{minted}
+
+
+
+\textbf{Prefijo común más largo.} Complejidad: Tiempo $O(|s|)$ - Memoria $O(|s|)$. Calcula la longitud del prefijo común más largo entre dos sufijos consecutivos (lexicográficamente) de \mintinline{cpp}{s}. $lcp[i]$ guarda la respuesta para el $i$-ésimo sufijo y el $(i - 1)$-ésimo sufijo.
+\begin{minted}{cpp}
+int lcp[MAXN];
+void build_lcp(string &str){
+    int n = sz(str);
+    int phi[n];
+    phi[SA[0]] = -1;
+    for(int i = 1; i < n; ++i) phi[ SA[i] ] = SA[i - 1];
+    int plcp[n];
+    int k = 0;
+    for(int i = 0; i < n; ++i){
+        if(phi[i] == -1){
+            plcp[i] = 0;
+            continue;
+        }
+        while(i + k < n && phi[i] + k < n && str[i + k] == str[phi[i] + k]) k++;
+        plcp[i] = k;
+        k = max(k - 1, 0);
+    }
+    for(int i = 0; i < n; ++i) lcp[i] = plcp[SA[i]];
+}
+\end{minted}
+
+
+
+\subsection{Aho-Corasick}
+Construción en $O(mk)$, donde $m$ es el tamaño total de los strings y $k$ el tamaño del alfabeto.
+\begin{minted}{cpp}
+struct aho_corasick{
+    const static int K = 26;
+    const char index = 'a';
+    struct vertex{
+        int next[K];
+        bool terminal = false;
+        int p = -1;
+        char p_edge;
+        int link = -1;
+        int terminal_link = -1;
+        int go[K];
+        vertex(int p = -1, char c = '$') : p(p), p_edge(c){
+            memset(next, -1, K*sizeof(int));
+            memset(go, -1, K*sizeof(int));
+        }
+    };
+    vector<vertex> aho;
+    aho_corasick(){ aho.resize(1); }
+    void add_string(const string &s){
+        int u = 0;
+        for(char c : s){
+            int e = c - index;
+            if(aho[u].next[e] == -1){
+                aho[u].next[e] = sz(aho);
+                aho.emplace_back(u, c);
+            }
+            u = aho[u].next[e];
+        } aho[u].terminal = 1;
+    }
+    int get_link(int u){
+        if(aho[u].link == -1){
+            if(!u || !aho[u].p) aho[u].link = 0;
+            else aho[u].link = go(get_link(aho[u].p), aho[u].p_edge);
+        } return aho[u].link;
+    }
+    int go(int u, char c){
+        int e = c - index;
+        if(aho[u].go[e] == -1){
+            if(aho[u].next[e] != -1)
+                aho[u].go[e] = aho[u].next[e];
+            else aho[u].go[e] = !u ? 0 : go(get_link(u), c);
+        } return aho[u].go[e];
+    }
+    int get_terminal_link(int u){
+        if(aho[u].terminal_link == -1){
+            if(!u || !aho[u].p)
+                aho[u].terminal_link = 0;
+            else aho[u].terminal_link = get_terminal_link(get_link(u));
+        } return aho[u].terminal_link;
+    }
+};
+\end{minted}
+
+
+
+\subsection{Suffix tree}
+\begin{minted}{cpp}
+/// MEJORAR ESTA COSA, SOLO LO COPIE Y PEGUÉ porcuestionesdetiempo
+const int inf = 1e9;
+const int maxn = 1e6;
+int s[maxn];
+map<int, int> to[maxn];
+//Root is the vertex 0
+//f_pos[i] is the initial index with the letter of the edge that goes from the parent of i to i
+//len[i] is the number of letters in the edge that enters in i
+//slink[i] is the suffix link
+int len[maxn], f_pos[maxn], slink[maxn];
+int node, pos;
+int sz = 1, n = 0;
+int make_node(int _pos, int _len){
+    f_pos[sz] = _pos;
+    len [sz] = _len;
+    return sz++;
+}
+void go_edge(){
+    while(pos > len[to[node][s[n - pos]]]){
+        node = to[node][s[n - pos]];
+        pos -= len[node];
+    }
+}
+void add_letter(int c){
+    s[n++] = c;
+    pos++;
+    int last = 0;
+    while(pos > 0){
+        go_edge();
+        int edge = s[n - pos];
+        int &v = to[node][edge];
+        int t = s[f_pos[v] + pos - 1];
+        if(v == 0){
+            v = make_node(n - pos, inf);
+            //v = make_node(n - pos, 1);
+            slink[last] = node;
+            last = 0;
+        } else if(t == c) {
+            slink[last] = node;
+            return;
+        } else {
+            int u = make_node(f_pos[v], pos - 1);
+            to[u][c] = make_node(n - 1, inf);
+            to[u][t] = v;
+            f_pos[v] += pos - 1;
+            len [v] -= pos - 1;
+            v = u;
+            slink[last] = u;
+            last = u;
+        }
+        if(node == 0) pos--;
+        else node = slink[node];
+    }
+}
+void correct(int s_size){
+    len[0] = 0;
+    for (int i = 1; i < sz; i++){
+        if (f_pos[i] + len[i] - 1 >= s_size){
+            len[i] = (s_size - f_pos[i]);
+        }
+    }
+}
+void print_suffix_tree(int from){
+    cout << "Edge entering in " << from << " has size " << len[from];
+    cout << " and starts in " << f_pos[from] << endl;
+    cout << "Node " << from << " goes to: ";
+    for (auto u : to[from]){
+        cout << u.se << " with " << (char)u.fi << " ";
+    }
+    cout << endl;
+    for (auto u : to[from]){
+        print_suffix_tree(u.se);
+    }
+}
+void build(string &s){
+    for (int i = 0; i < sz; i++){
+        to[i].clear();
+    }
+    sz = 1;
+    node = pos = n = 0;
+    len[0] = inf;
+    for(int i = 0; i < sz(s); i++)
+        add_letter(s[i]);
+    correct(sz(s));
+}
+void cutGeneralized(vi &finishPoints){
+    for (int i = 0; i < sz; i++){
+        int init = f_pos[i];
+        int end = f_pos[i] + len[i] - 1;
+        int idx = lower_bound(all(finishPoints), init) - finishPoints.begin();
+        if ((idx != sz(finishPoints)) && (finishPoints[idx] <= end)){//Must be cut
+            len[i] = (finishPoints[idx] - f_pos[i] + 1);
+            to[i].clear();
+        }
+    }
+}
+void build_generalized(vector<string> &ss){
+    for (int i = 0; i < sz; i++){
+        to[i].clear();
+    }
+    sz = 1;
+    node = pos = n = 0;
+    len[0] = inf;
+    int sep = 256;
+    vi finishPoints;
+    int next = 0;
+    for (int i = 0; i < sz(ss); i++){
+        for (int j = 0; j < sz(ss[i]); j++){
+            add_letter(ss[i][j]);
+        }
+        next += sz(ss[i]);
+        finishPoints.pb(next);
+        add_letter(sep++);
+        next++;
+    }
+    correct(next);
+    cutGeneralized(finishPoints);
+}
+\end{minted}

@@ -1,0 +1,137 @@
+\usepackage[utf8]{inputenc}
+\PassOptionsToPackage{hyphens}{url}\usepackage{hyperref}
+\usepackage[landscape, left=0.5cm, right=0.5cm, top=1.2cm, bottom=0.5cm, includehead, headheight=14pt]{geometry}
+\usepackage[spanish, es-tabla]{babel}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage[italicdiff]{physics}
+\usepackage{textcomp}
+\usepackage{amsthm, amssymb, amsmath, amsfonts, bbm, mathtools}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{titling}
+\usepackage{lmodern} %optimiza algunas fuentes
+\usepackage{float}
+\usepackage{mathrsfs}
+\usepackage{wasysym}
+\usepackage{csquotes}
+\usepackage{dsfont}
+\usepackage{caption}
+\decimalpoint
+\usepackage{graphicx}
+\renewcommand{\baselinestretch}{1}
+
+\usepackage{multicol}
+\usepackage[skip=0pt]{parskip}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+
+%%%%%%%%%%%%%%%%%% tabla de contenidos %%%%%%%%%%%%%%%%%%
+\usepackage{tocloft}
+\setlength{\cftbeforesecskip}{1pt} % Espacio entre secciones en el índice
+\renewcommand{\cftsecdotsep}{\cftdotsep} % Poner puntitos a las secciones principales
+\renewcommand{\cftsecfont}{\normalfont\footnotesize} % Letra más chica
+\renewcommand{\cftsecpagefont}{\normalfont\footnotesize}
+\renewcommand{\cftsubsecfont}{\normalfont\scriptsize}
+\renewcommand{\cftsubsecpagefont}{\normalfont\scriptsize}
+
+\newcommand{\Pa}[1]{\left( #1 \right)}
+\newcommand{\PA}[1]{\big( #1 \big)}
+
+%Images path
+\graphicspath{{img/}}
+
+%%%%%%%%%%%%%%%%%% Minted %%%%%%%%%%%%%%%%%%
+\usepackage{minted}
+\setminted{
+    fontsize=\scriptsize,      % Usa \scriptsize o \tiny si tienes muy buena vista
+    baselinestretch=0.85,      % Comprime el espacio vertical entre líneas
+    linenos=true,              % Números de línea (esenciales para debuggear en papel)
+    numbersep=3pt,             % Pega los números de línea al código
+    xleftmargin=12pt,          % Reduce el margen izquierdo que minted agrega por defecto
+    breaklines=true,           % Ajuste de línea automático si te pasas del ancho
+    breakanywhere=true,        % Rompe la línea incluso si no hay espacios
+    tabsize=2,                 % Indentación corta (vital en 3 columnas)
+    style=vs,                  % Tema visual claro y de alto contraste al imprimir
+    stripall=true              % Elimina líneas en blanco al inicio y al final del archivo
+}
+
+%%%%%%%%%%%%%%%%%% Numeraciones %%%%%%%%%%%%%%%%%%
+% Figuras numeradas
+\usepackage{chngcntr}
+\counterwithin{figure}{section}
+
+% Ecuaciones numeradas
+\numberwithin{equation}{section}
+
+\allowdisplaybreaks
+
+%%%%%%%%%%%%%%%%%% Definiciones de mate %%%%%%%%%%%%%%%%%%
+\renewcommand{\theenumi}{\alph{enumi}}
+\renewcommand{\labelenumi}{{\theenumi})}
+\renewcommand\qedsymbol{$\blacksquare$}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\I}{\mathbb{I}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Zm}[1]{\mathbb{Z}/ #1 \mathbb{Z}}
+\newcommand\scalemath[2]{\scalebox{#1}{\mbox{\ensuremath{\displaystyle #2}}}}
+
+%%%%%%%%%%%%%%%%%% Comandos especiales de mate %%%%%%%%%%%%%%%%%%
+\newcommand{\pa}[1]{\left( #1 \right)}
+\newcommand{\br}[1]{\left[ #1 \right]}
+\DeclarePairedDelimiter{\set}{\{}{\}}
+\DeclarePairedDelimiter{\floor}\lfloor\rfloor
+\DeclarePairedDelimiter{\ceil}\lceil\rceil
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\ord}{ord}
+\newenvironment{solution}
+{\renewcommand\qedsymbol{$\square$}\begin{proof}[Solución]}
+    {\end{proof}}
+
+\title{Referencia - ICPC}
+\author{Mathgic}
+\date{Junio 2026}
+
+%%%%%%%%%%%%%%%%%% Espaciado %%%%%%%%%%%%%%%%%%
+\setlength{\columnsep}{0.25cm} % Espacio minimo entre columnas
+\setlength{\columnseprule}{0.5pt} % Linea divisoria opcional para guiar la vista
+\setlength{\parindent}{0pt}
+
+% \titlespacing*{comando}{izq}{arriba}{abajo}
+% Espaciado hiper-compacto
+\titlespacing*{\section}{0pt}{5pt}{3pt}
+\titlespacing*{\subsection}{0pt}{3pt}{1pt}
+\titlespacing*{\subsubsection}{0pt}{2pt}{1pt}
+
+% Jerarquía visual (Pensada para impresión monocromática de ICPC)
+
+% SECTION: MAYÚSCULAS y una línea negra sólida por debajo
+\titleformat{\section}{\normalfont\normalsize\bfseries}{}{0pt}{\MakeUppercase}[{\vspace{1pt}\titlerule[0.8pt]}]
+
+% SUBSECTION: Flecha indicadora, negrita (sin línea)
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{}{0pt}{$\blacktriangleright$\hspace{3pt}}
+
+% SUBSUBSECTION: Cursiva negrita y punto discreto (letra un poco más chica)
+\titleformat{\subsubsection}{\normalfont\small\bfseries\itshape}{}{0pt}{$\bullet$\hspace{3pt}}
+
+% Eliminar el salto de línea post-titulo (Run-in titles) si quieres compresión extrema:
+% \titlespacing*{\subsection}{0pt}{1pt}{1em} % El tercer valor en 'em' hace que el texto siga en la misma línea
+
+% Header
+\pagestyle{fancy}
+\headheight 14pt % Reducido de 25pt
+\fancyhead{}
+\fancyfoot{}
+\lhead{\textbf{Reference - ICPC} $\mid$ Mathgic (Junio 2026)} % Todo en una línea
+\rhead{\textbf{Pág. \thepage}}
+\renewcommand{\headrulewidth}{0.4pt}
+\setlength\headsep{4pt} % Pegar el texto principal al header
+
+% Comprimir espacio vertical alrededor de ecuaciones
+\AtBeginDocument{
+  \setlength{\abovedisplayskip}{2pt}
+  \setlength{\belowdisplayskip}{2pt}
+  \setlength{\abovedisplayshortskip}{0pt}
+  \setlength{\belowdisplayshortskip}{0pt}
+}

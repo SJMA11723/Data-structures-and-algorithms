@@ -1,0 +1,39 @@
+\section{DSU}
+ Complejidad: Tiempo $O(\log(n))$ - Memoria $O(n)$, donde $n$ es la cantidad total de elementos. La complejidad temporal es por cada función.
+ \par \mintinline{cpp}{P[MAXN]}: guarda el representante para cada nodo.
+ \par \mintinline{cpp}{RA[MAXN]}: guarda el rango (peso) del conjunto de cada representante para el \textit{small to large}.
+ \begin{minted}{cpp}
+ struct dsu{
+     struct action{
+         int x_p, y_p, rank_y;
+     };
+     vi RA, P;
+     vector<action> actions;
+     dsu(int n){
+         RA.resize(n, 1);
+         P.resize(n);
+         iota(P.begin(), P.end(), 0);
+     }
+     int root(int x){
+         return x == P[x] ? x : P[x] = root(P[x]);
+     }
+     bool join(int x, int y, bool recording){
+         x = root(x);
+         y = root(y);
+         if(x == y) return false;
+         if(RA[x] >= RA[y]) swap(x, y);
+         if(recording) actions.pb({x, y, RA[y]});
+         RA[y] += RA[x];
+         P[x] = y;
+         return true;
+     }
+     void rollback(int cnt){
+         while(cnt-- > 0 && actions.size()){
+             action act = actions.back();
+             actions.pop_back();
+             RA[act.y_p] = act.rank_y;
+             P[act.x_p] = act.x_p;
+         }
+     }
+ };
+\end{minted}

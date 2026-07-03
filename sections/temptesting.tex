@@ -1,0 +1,135 @@
+
+\section{Templates y Testing}
+\subsection{Template y archivos}
+template.cpp :
+\begin{minted}{cpp}
+#include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+using namespace std;
+using namespace __gnu_pbds;
+typedef int64_t ll;
+typedef pair<int, int> pii;
+typedef pair<ll, ll> pll;
+typedef vector<int> vi;
+typedef vector<ll> vll;
+typedef vector<vi> vvi;
+typedef vector<vll> vvll;
+typedef vector<pii> vpii;
+typedef vector<pll> vpll;
+typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> ordered_set;
+#define fi first
+#define se second
+#define pb push_back
+#define all(x) (x).begin(), (x).end()
+#define sz(x) (int)(x).size()
+mt19937_64 gen(chrono::steady_clock::now().time_since_epoch().count());
+uniform_int_distribution<ll> distr(1, LLONG_MAX);
+const int MOD = 1e9 + 7;
+\end{minted}
+
+Despues de crear template.cpp, ejecutar en la terminal de carpeta
+\begin{minted}{bash}
+for f in {a..o}; do cp template.cpp $f.cpp;
+\end{minted}
+
+
+\subsection{Logger}
+Para debuggear, llamamos al metodo $deb(x,y,z,...)$ con el numero de variables que ocupemos.
+\begin{minted}{cpp}
+template<typename A, typename B> ostream& operator<<(ostream &os, const pair<A, B> &p){return os << '(' << p.fi << ", " << p.se << ')';}
+template<typename C, typename T = typename enable_if<!is_same<C, string>::value, typename C::value_type>::type>
+ostream& operator<<(ostream &os, const C &v){string sep; for(const T &x : v) os << sep << x, sep = " "; return os;}
+#define print(...) logger(#__VA_ARGS__, __VA_ARGS__)
+template<typename ...Args>
+void logger(string vars, Args&&... values){
+    cout << "[Debug]\n\t" << vars << " = ";
+    string d = "[";
+    (..., (cout << d << values, d = "] ["));
+    cout << "]\n";
+}
+\end{minted}
+
+
+\subsection{Stress testing (diff)}
+Para stress testing en problemas donde existe solo una respuesta, usamos el siguiente script y lo guardamos en $stress.sh$. $code.cpp$ será mi código a testear, $brute.cpp$ el código bruto pero correcto y $gen.cpp$ el generador de casos. Este ultimo recibirá como semilla el valor $i$.
+\begin{minted}{bash}
+set -e
+g++ code.cpp -o code
+g++ gen.cpp -o gen
+g++ brute.cpp -o brute
+for((i = 1; ; ++i)); do
+    ./gen $i > input_file
+    ./code < input_file > myAnswer
+    ./brute < input_file > correctAnswer
+    diff -Z myAnswer correctAnswer > /dev/null || break
+    echo "Passed test: "  $i
+done
+echo "WA on the following test:"
+cat input_file
+echo "Your answer is:"
+cat myAnswer
+echo "Correct answer is:"
+cat correctAnswer
+\end{minted}
+
+Para extraer la semilla en gen.cpp leemos desde argv
+\begin{minted}{cpp}
+int rnd(int a, int b){
+    return a + rand() % (b - a + 1);
+}
+int main(int argc, char* argv[]){
+    int seed = atoi(argv[1]);
+    srand(seed);
+    int n = rnd(1, 5);
+}
+\end{minted}
+
+
+\subsection{Stress testing (checker)}
+Usaremos el script similar al anterior $stress.sh$. Aquí el $brute.cpp$ es opcional.
+
+\begin{minted}{cpp}
+set -e
+g++ code.cpp -o code
+g++ gen.cpp -o gen
+g++ brute.cpp -o brute
+g++ checker.cpp -o checker
+for((i = 1; ; ++i)); do
+    ./gen $i > input_file
+    ./code < input_file > myAnswer
+    ./brute < input_file > correctAnswer
+    ./checker > checker_log
+    echo "Passed test: "  $i
+done
+\end{minted}
+
+Se ejecutara mientras el return value de checker sea $0$. Ejemplo de la implementación de un checker
+
+\begin{minted}{cpp}
+bool validAns(ifstream &fin, int n, int* arr){
+    fin>>n;
+    //aquí validariamos nuestra respuesta, fin sera el input stream que le pase
+    if(algunacosa) return true
+    else return false
+
+}
+int main(int argc, char * argv[]){
+    //input stream del caso
+    ifstream fin("input_file", ifstream::in);
+    //input stream de mi respuesta
+    ifstream ans("myAnswer", ifstream::in);
+    //input stream de respuesta bruta
+    ifstream cor("correctAnswer", ifstream::in);
+    //aqui fin puede procesar lo que me interese del input original
+    fin>>n;
+    int arr[n];
+    for(int x = 0; x < n; x++) cin>>arr[x];
+    if(!validAns(ans, n, arr)) {
+        cout<<"WA x algun motivo, esto saldrá en cheker_log\n";
+        return -1;
+    }
+    //si todo salio bien, retorno 0
+    return 0;
+}
+\end{minted}

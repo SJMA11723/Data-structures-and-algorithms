@@ -1,0 +1,117 @@
+\section{Utilidades}
+\subsection{Subset sum optimization.}
+Complejidad: $O(N\sqrt{N})$. Si queremos obtener calcular el conjunto de sumas posibles en subconjuntos de un arreglo $A$, en el cual se cumple que $\sum a_i = N$ y todo $a_i\geq0$, podemos obtener exactamente el mismo conjunto con un arreglo comprimido de tamaño $\sqrt{N}$. El $3k-trick$ explota que las sumas generadas por el arreglo $[a,a,a]$ son exactamente las mismas que en $[2a,a]$. Podemos juntar elementos y repetirlo hasta que a solo haya dos copias de cada elemento distinto en el nuevo arreglo, acotando el numero de elementos a $O(\sqrt{N})$. El proceso de compresión toma $O(N\log_2(N))$.
+\begin{minted}{cpp}
+vi compress(vector<ll>& a){
+    sort(a.rbegin(), a.rend());
+    int n = sz(a);
+    a.pb(0);
+    vi weights;
+    int pi = 0;
+    for(int i = 1; i <= n; i++){
+      if(a[i] != a[i - 1]){
+        ll cnt = i - pi;
+        ll x = a[i - 1];
+        ll j = 1;
+        while(j < cnt){
+          weights.pb(x * j);
+          cnt -= j;
+          j *= 2;
+        }
+        weights.pb(x * cnt);
+        pi = i;
+      }
+    } return weights;
+}
+\end{minted}
+
+
+
+\subsection{Bitsets de tamaño (casi) dinámico}
+El código ejecutado dentro de func(sz) usará un bitset con tamaño de la potencia de 2 más cercano a sz.
+\begin{minted}{cpp}
+template<int len = 1> void func(int sz){
+    if(sz > len){
+      func<std::min(len * 2, MAXLEN)>(sz);
+      return;
+    }
+    bitset<len> bs;
+    //usa aquí tu bitset dinámico
+}
+\end{minted}
+
+
+
+\subsection{Bitwise ops}
+\begin{minted}{cpp}
+#define is_on(S, j) (S & (1ll << (j)))
+#define set_bit(S, j) (S |= (1ll << (j)))
+#define clear_bit(S, j) (S &= ˜(1ll << (j)))
+#define toggle_bit(S, j) (S ˆ= (1ll << (j)))
+#define lsb(S) ((S) & -(S))
+#define clear_lsb(S) (S &= (S - 1))
+#define set_all(S, n) (S = (1ll << (n)) - 1ll)
+#define clear_trailing_ones(S) (S &= (S + 1))
+#define set_last_bit_off(S) (S |= (S + 1))
+#define is_power_of_two(S) (!((S) & ((S) - 1)))
+#define nearest_power_of_two(S) ((int)pow(2, (int)((log((double)(S)) / log(2)) + 0.5)) )
+#define is_divisible_by_power_of_two(n, k) !((n) & ((1ll << (k)) - 1))
+#define modulo(S, N) ((S) & ((N) - 1)) // S%N, N=2^k
+\end{minted}
+
+\vspace{-0.7\baselineskip}
+
+\subsection{Bitwise - builtin}
+\begin{minted}{cpp}
+// one plus the index of the least significant 1-bit of x, or if x is zero, returns zero.
+int __builtin_ffs(int x)
+// number of leading 0-bits in x, starting at the most significant bit position. If x is 0 is undefined
+int __builtin_clz(unsigned int x)
+// number of trailing 0-bits in x, starting at the least significant bit position. If x is 0  undefined.
+int __builtin_ctz(unsigned int x)
+// he parity of x, i.e. the number of 1-bits in x modulo 2.
+int __builtin_parity(unsigned int x)
+\end{minted}
+
+
+
+\subsection{Iterar}
+Dada una máscara m, iterar sobre todos sus subconjuntos desde el más grande hasta el más pequeño (ojo el código no itera sobre $x=m$). La complejidad de iterar sobre todas las submáscaras de todos los números de 1 a $2^n $es $O(3^n)$.
+\begin{minted}{cpp}
+void submasks(int mask){
+    for( int x = mask; x;){
+        --x &= mask;
+    }
+}
+\end{minted}
+
+
+
+\subsection{Gospers’ Hack}
+Sirve para generar todos las máscaras de $n$ bits, que tengan exactamente $k$ bits a $1$ (y que sean menores o iguales que $2^n$). \\
+Complejidad $O\pa{\binom{n}{k}}$?
+\begin{minted}{cpp}
+void GospersHack(int n, int k) {
+    int mask = (1 << k) - 1;
+    int limit = (1 << n);
+    while(mask < limit){
+        int c = mask & - mask;
+        int r = mask + c;
+        mask = (((r ^ mask) >> 2) / c) | r;
+    }
+}
+\end{minted}
+
+
+
+\subsection{Subset Sum con bitset}
+Dado una una arreglo de tamaño \(n\) ver si es psoible encontrar es la suma objetivo  \(S\). Nota: \(w\) es el tamaño del bloque de bits procesados en paralelo (normalmente 32 o 64). Complejidad:  Temporal \(O\left(n \times \frac{S}{w}\right)\) -  Memoria \(O(S)\)
+
+\begin{minted}{cpp}
+bool subsetSumBitset( vi& arr, int S) {
+    bitset<10001> dp; // tam >= S+1
+    dp[0] = 1;
+    for(int x : arr) dp |= (dp << x);
+    return dp[S];
+}
+\end{minted}

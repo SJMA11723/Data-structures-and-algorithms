@@ -1,0 +1,45 @@
+\section{Geometría}
+\subsection{Convex hull}
+Complejidad: $O(n\log n)$.
+\begin{minted}{cpp}
+/// MEJORAR ESTA COSA, SOLO LO COPIE Y PEGUÉ porcuestionesdetiempo
+struct pt {
+    double x, y;
+};
+int orientation(pt a, pt b, pt c) {
+    double v = a.x*(b.y-c.y)+b.x*(c.y-a.y) + c.x*(a.y-b.y);
+    if(v < 0) return -1; // clockwise
+    if(v > 0) return +1; // counter-clockwise
+    return 0;
+}
+bool cw(pt a, pt b, pt c, bool include_collinear){
+    int o = orientation(a, b, c);
+    return o < 0 || (include_collinear && !o);
+}
+bool collinear(pt a, pt b, pt c){
+    return orientation(a, b, c) == 0; }
+void convex_hull(vector<pt>& a, bool include_collinear = 0){
+    pt p0 = *min_element(all(a), [](pt a, pt b){
+        return make_pair(a.y, a.x) < make_pair(b.y, b.x);
+    });
+    sort(all(a), [&p0](const pt& a, const pt& b){
+        int o = orientation(p0, a, b);
+        if(o == 0)
+        return (p0.x-a.x)*(p0.x-a.x) + (p0.y-a.y)*(p0.y-a.y)
+                < (p0.x-b.x)*(p0.x-b.x) + (p0.y-b.y)*(p0.y-b.y);
+        return o < 0;
+    });
+    if(include_collinear){
+        int i = sz(a)-1;
+        while(i >= 0 && collinear(p0, a[i], a.back())) i--;
+        reverse(a.begin()+i+1, a.end());
+    }
+    vector<pt> st;
+    for(int i = 0; i < sz(a); i++){
+        while(sz(st)>1 && !cw(st[sz(st)-2], st.back(), a[i], include_collinear))
+            st.pop_back();
+        st.pb(a[i]);
+    }
+    a = st;
+}
+\end{minted}

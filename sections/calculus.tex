@@ -1,0 +1,50 @@
+\section{Cálculo}
+\subsection{Transformada de Fourier}
+\textbf{FFT.} Complejidad: Tiempo $O(n\log n)$ - Memoria extra $O(n\log n)$, donde $n$ es el grado del polinomio $P$.
+\begin{minted}{cpp}
+using comp = complex<double>;
+const double PI = acos(-1);
+vector<comp> FFT(vector<comp> &P, bool inversa){
+    int n = sz(P);
+    if(n == 1) return P;
+    vector<comp> Pe, Po;
+    for(int i = 0; i < n; ++i)
+        if(i % 2) Po.pb(P[i]);
+        else Pe.pb(P[i]);
+    vector<comp> eval_Pe = FFT(Pe, inversa);
+    vector<comp> eval_Po = FFT(Po, inversa);
+    vector<comp> eval(n);
+    double angulo = 2*PI / n * (inversa? -1 : 1);
+    comp w(1), w_n(cos(angulo), sin(angulo));
+    for(int i = 0; i < n / 2; ++i){
+        eval[i] = eval_Pe[i] + w * eval_Po[i];
+        eval[i+n/2] = eval_Pe[i] - w*eval_Po[i];
+        if(inversa){eval[i]/=2; eval[i+n/2]/=2;}
+        w *= w_n;
+    } return eval;
+}
+\end{minted}
+
+
+
+\textbf{Multiplicar polinomios.} Complejidad: Tiempo $O(n\log n)$ - Memoria extra $O(n\log n)$, donde $n$ es el grado máximo del polinomio $A$ o $B$.
+\begin{minted}{cpp}
+vi multiplicar(vi A, vi B){
+    vector<comp> cA(all(A)), cB(all(B));
+    int n = 1;
+    while(n < sz(A) + sz(B)) n *= 2;
+    cA.resize(n);
+    cB.resize(n);
+    vector<comp> val_A = FFT(cA, false);
+    vector<comp> val_B = FFT(cB, false);
+    for(int i=0; i<n; ++i) val_A[i] *= val_B[i];
+    val_A = FFT(val_A, true);
+    vi res(n);
+    for(int i = 0; i < n; ++i)
+        res[i] = round(val_A[i].real());
+    int carry = 0;
+    for(int i = 0; i < n; i++){ res[i] += carry;
+        carry = res[i] / 10; res[i] %= 10;
+    } return res;
+}
+\end{minted}

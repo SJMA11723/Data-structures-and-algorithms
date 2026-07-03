@@ -1,0 +1,29 @@
+\section{Sqrt decomposition}
+\subsection{Algoritmo de MO}
+Complejidad: Tiempo en responder $O((n + q)\sqrt{n}F + q\log q)$, donde $O(F)$ es la complejidad de \mintinline{cpp}{add()} y \mintinline{cpp}{remove()}.
+\begin{minted}{cpp}
+const int block_size = 300;
+struct query {
+    int l, r;
+    int block, i;
+    bool operator<(const query &b) const {
+        if(block == b.block) return r < b.r;
+        return block < b.block;
+    }
+};
+void add(int idx){/// TO-DO}
+void remove(int idx){/// TO-DO}
+int get_answer(){return 0; /// TO-DO}
+vi solve(vector<query> &queries) {
+    vi answers(sz(queries));
+    sort(queries.begin(), queries.end());
+    int cur_l = 0, cur_r = -1;
+    for(query q : queries){
+        while(cur_l > q.l) add(--cur_l);
+        while(cur_r < q.r) add(++cur_r);
+        while(cur_l < q.l) remove(cur_l++);
+        while(cur_r > q.r) remove(cur_r--);
+        answers[q.i] = get_answer();
+    } return answers;
+}
+\end{minted}

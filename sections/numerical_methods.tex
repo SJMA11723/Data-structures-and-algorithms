@@ -1,0 +1,114 @@
+\section{Métodos numéricos}
+\subsection{Inversa de Matriz con Gauus-Jordan}
+Complejidad: Tiempo $O\left(n^3\right)$ - Memoria $O\left(n^2\right)$
+\begin{minted}{cpp}
+#define eps 0.0001
+vector<vector<double>> gauss(vector<vector<double>> m){
+    int tam = sz(m);
+    vector<vector<double>> id(tam, vector<double>(tam));
+    for(int i=0; i<tam; i++) id[i][i] = 1;
+    for(int i=0; i<tam; i++){
+        // buscar un no 0 para poner en (i,i)
+        if(abs(m[i][i]) < eps){
+            int j=i+1
+            while(abs(m[j][i]) > eps && j<tam){
+                swap(m[j], m[i]);
+                swap(id[j], id[i]); j++;
+            }
+            if(j == tam){/*...*/}//no invertible
+        }
+        /// ponner un uno en (i,i) /// modificar la fila i
+        double tmp = m[i][i];
+        for(int k=0; k<tam; k++)
+            id[i][k] /= tmp, m[i][k] /= tmp;
+        /// poner columna i en todo 0, excepto casilla (i,i)
+        for(int j=0; j<tam; j++){
+            if(j==i) continue;
+            //a la fila j le restamos la fila i
+            tmp = m[j][i];
+            for(int k=0; k<tam; k++){
+                m[j][k] = m[j][k]-tmp*m[i][k];
+                id[j][k] = id[j][k]-tmp*id[i][k];
+            }
+        }
+    } return id;
+}
+vector<double> matporvec(vector<vector<double>> &m, vector<double> &b){
+    vector<double> ans(sz(b));
+    for(int i=0; i<sz(b); i++)
+    for(int k=0; k<sz(b); k++)
+        ans[i] += m[i][k]*b[k];
+    return ans;
+}
+\end{minted}
+
+
+
+\subsection{Sistemas de ecuaciones lineales }
+Dado un sistema de $n$ ecuaciones  con $m$ incógnitas. Devuelve el numero de soluciones del sistema $0, \ 1 $ o $\infty$ y si existe al menos una solución la guarda en el vector \mintinline{cpp}{ans}. Complejidad: Tiempo $O(  (n+m)nm ) $ - Memoria $O(nm)$.
+\begin{minted}{cpp}
+const double EPS = 1e-9;
+const int INF = 2; // it doesn't actually have to be infinity or a big number
+int gauss(vector<vector<double>> a, vector<double> &ans){
+    int n = (int) sz(a);
+    int m = (int) sz(a[0]) - 1;
+    vi where (m, -1);
+    for(int col=0,row=0; col<m && row<n; ++col){
+        int sel = row;
+        for (int i=row; i<n; ++i)
+        if(abs(a[i][col])>abs(a[sel][col]))sel=i;
+        if(abs(a[sel][col]) < EPS) continue;
+        for(int i=col; i<=m; ++i)
+            swap(a[sel][i], a[row][i]);
+        where[col] = row;
+        for(int i=0; i<n; ++i)
+        if(i != row){
+            double c = a[i][col] / a[row][col];
+            for(int j=col; j<=m; ++j)
+                a[i][j] -= a[row][j] * c;
+        } ++row;
+    } ans.assign (m, 0);
+    for(int i=0; i<m; ++i) if(where[i] != -1)
+        ans[i] = a[where[i]][m] / a[where[i]][i];
+    for(int i=0; i<n; ++i){
+        double sum = 0;
+        for(int j=0; j<m; ++j)
+            sum += ans[j] * a[i][j];
+        if(abs(sum - a[i][m]) > EPS) return 0;
+    }
+    for(int i=0; i<m; ++i) if(where[i] == -1)
+        return INF;
+    return 1;
+}
+\end{minted}
+
+
+
+\subsection{Sistemas de ecuaciones modulo 2}
+Dado un sistema de $n$ ecuaciones  con $m$ incógnitas modulo 2. Devuelve el numero de soluciones del sistema $0, \ 1 $ o $\infty$ y si existe al menos una solución la guarda en el vector \mintinline{cpp}{ans}. Complejidad: Tiempo $O((n+m)nm) $  Memoria $O(nm)$.
+\begin{minted}{cpp}
+int gauss (vector<bitset<MAXN>> A, int n, int m, bitset<MAXN> &ans){
+    // where[i] guarda el indice de la ecaucion donde se puede despejar variable i, -1 si es independiente
+    vi where(m, -1);
+    //  Matriz "diagonal"
+    for(int col=0,row=0; col<m && row<n; ++col){
+        // busca pivote
+        for(int i = row; i<n; ++i) if(A[i][col]){
+            swap (A[i], A[row]);
+            break;
+        } if(!A[row][col]) continue;
+        where[col] = row;
+        // poner 0 todos lados
+        for(int i=0; i<n; ++i)
+        if(i != row && A[i][col]) A[i] ^= A[row];
+        ++row;
+    }
+    // sacar respuesta // variables independientes = 1, t
+    for(int i = 0; i < m; ++i)
+        ans[i] = where[i] == -1 ? 1 : ((A[where[i]].count() ^ 1) & 1);
+    // si hay alguna variable libre
+    for(int i = 0; i < m; ++i) if(where[i] == -1)
+        return INF;
+    return 1;
+}
+\end{minted}

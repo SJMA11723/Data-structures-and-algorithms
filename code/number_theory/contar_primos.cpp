@@ -32,7 +32,7 @@ void criba(int n, vector<int> &primos){
 /**
     La idea es primero calcular los primos hasta sqrt(n), entonces
     ya tenemos todos los primos que dividen a los no primos en [0, n].
-    Luego, vamos haciendo la criba en segmentos de tamaño S. De esta manera
+    Luego, vamos haciendo la criba en segmentos de tamanio S. De esta manera
     tenemos una complejidad en memoria de O(sqrt(n) + S). Si S = sqrt(n), entonces
     la complejidad en memoria queda O(sqrt(n))
 */

@@ -1,25 +1,4 @@
 \section{Fenwick Tree}
-Complejidad: Tiempo en responder $O(\log n)$ - Tiempo de actualización $O(\log n)$ - Memoria extra $O(n)$. Indexado en $1$.
-\begin{minted}{cpp}
-struct fenwick_tree{
-    int n;
-    vi BIT;
-    fenwick_tree(int _n){
-        n = _n;
-        BIT.resize(n + 1);
-    }
-    void add(int pos, int x){
-        while(pos <= n){
-            BIT[pos] += x;
-            pos += lsb(pos);
-        }
-    }
-    int sum(int pos){
-        int res = 0;
-        while(pos){
-            res += BIT[pos];
-            pos -= lsb(pos);
-        } return res;
-    }
-};
-\end{minted}
+\algoinfo{\log n}{n}{Indexado en 1}
+
+\inputcode{cpp}{latex_src/fenwick_tree/BIT.cpp}{BIT.cpp}

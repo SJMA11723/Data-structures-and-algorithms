@@ -1,0 +1,60 @@
+#include "../template.h"
+template<class TPriority, class TKey> class UpdatableHeap{
+public:
+    UpdatableHeap(){
+        TPriority a;
+        TKey b;
+        nodes.clear(); nodes.pb({a, b});
+    }
+    pair<TPriority, TKey> top(){return nodes[1];}
+    void pop(){
+        if(sz(nodes) == 1) return;
+        TKey k = nodes[1].second;
+        swap_nodes(1, sz(nodes) - 1);
+        nodes.pop_back();
+        position.erase(k);
+        heapify(1);
+    }
+    void insert_or_update(const TPriority &p, const TKey &k){
+        int pos;
+        if(is_inserted(k)){
+            pos = position[k];
+            nodes[pos].first += p;
+        } else {
+            position[k] = pos = sz(nodes);
+            nodes.pb({p, k});
+        } heapify(pos);
+    }
+    bool is_inserted(const TKey &k){return position.count(k);}
+    int size(){return sz(nodes) - 1;}
+    void erase(const TKey &k){
+        if(!is_inserted(k)) return;
+        int pos = position[k];
+        swap_nodes(pos, sz(nodes) - 1);
+        nodes.pop_back();
+        position.erase(k);
+        heapify(pos);
+    }
+private:
+    vector<pair<TPriority, TKey>> nodes;
+    map<TKey, int> position;
+    void heapify(int pos){
+        if(pos >= sz(nodes)) return;
+        while(1 < pos && nodes[pos / 2] <= nodes[pos]){
+            swap_nodes(pos / 2, pos);
+            pos /= 2;
+        }
+        int l = pos * 2, r = pos * 2 + 1, maxi = pos;
+        if(l < sz(nodes) && nodes[l] > nodes[maxi]) maxi = l;
+        if(r < sz(nodes) && nodes[r] > nodes[maxi]) maxi = r;
+        if(maxi != pos){
+            swap_nodes(pos, maxi);
+            heapify(maxi);
+        }
+    }
+    void swap_nodes(int a, int b){
+        position[nodes[a].se] = b;
+        position[nodes[b].se] = a;
+        swap(nodes[a], nodes[b]);
+    }
+};

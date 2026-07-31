@@ -1,0 +1,13 @@
+#include "../template.h"
+template<typename T> struct min_stack{
+    stack<pair<T, T>> st;
+    min_stack(){}
+    min_stack(const T &MAXVAL){init(MAXVAL);}
+    void init(const T &MAXVAL){st.push({MAXVAL, MAXVAL});}
+    void push(const T &v){st.push({v, min(v, st.top().se)});}
+    T top(){return st.top().fi;}
+    void pop(){if(sz(st) > 1)st.pop();}
+    T minV(){return st.top().se;}
+    int size(){return sz(st) - 1;}
+    bool empty(){return size() == 0;}
+};

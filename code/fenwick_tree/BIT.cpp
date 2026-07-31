@@ -8,10 +8,7 @@ struct fenwick_tree{
     int n;
     vi BIT;
 
-    fenwick_tree(int _n){
-        n = _n;
-        BIT.resize(n + 1);
-    }
+    fenwick_tree(int _n): n(_n){BIT.resize(n + 1);}
 
     void add(int pos, int x){
         while(pos <= n){
@@ -25,8 +22,7 @@ struct fenwick_tree{
         while(pos){
             res += BIT[pos];
             pos -= lsb(pos);
-        }
-        return res;
+        } return res;
     }
 };
 

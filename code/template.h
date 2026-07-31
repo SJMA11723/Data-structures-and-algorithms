@@ -2,7 +2,7 @@
 * Author: Mäthgic Crüe
 * Github: https://github.com/SJMA11723
 */
-
+; //dejamos una linea porque cleaner.py elimina la primera linea
 #include <bits/stdc++.h>
 #include <ext/pb_ds/assoc_container.hpp>
 #include <ext/pb_ds/tree_policy.hpp>
@@ -30,4 +30,16 @@ typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_
 mt19937_64 gen(chrono::steady_clock::now().time_since_epoch().count());
 uniform_int_distribution<ll> distr(1, LLONG_MAX);
 
-const ll MOD = 1e9 + 7;
+const int MOD = 1e9 + 7;
+
+template<typename A, typename B> ostream& operator<<(ostream &os, const pair<A, B> &p){return os << '(' << p.fi << ", " << p.se << ')';}
+template<typename C, typename T = typename enable_if<!is_same<C, string>::value, typename C::value_type>::type>
+ostream& operator<<(ostream &os, const C &v){string sep; for(const T &x : v) os << sep << x, sep = " "; return os;}
+#define print(...) logger(#__VA_ARGS__, __VA_ARGS__)
+template<typename ...Args>
+void logger(string vars, Args&&... values){
+    cout << "[Debug]\n\t" << vars << " = ";
+    string d = "[";
+    (..., (cout << d << values, d = "] ["));
+    cout << "]\n";
+}

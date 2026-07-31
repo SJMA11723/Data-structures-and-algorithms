@@ -1,47 +1,12 @@
 \section{Teoría de números}
 \subsection{Criba de Eratóstenes}
 \textbf{Criba} Complejidad: Tiempo $O(n\log \log n)$ - Memoria extra $O(n)$. Calcula los primos menores o iguales a $n$.
-\begin{minted}{cpp}
-void criba(int n, vi &primos){
-    primos.clear();
-    if(n < 2) return;
-    vector<bool> no_primo(n + 1);
-    no_primo[0] = no_primo[1] = true;
-    for(ll i = 3; i * i <= n; i += 2){
-        if(no_primo[i]) continue;
-        for(ll j = i * i; j <= n; j += 2 * i)
-            no_primo[j] = true;
-    }
-    primos.pb(2);
-    for(int i = 3; i <= n; i += 2)
-        if(!no_primo[i]) primos.pb(i);
-}
-\end{minted}
 
-
+\inputcode{cpp}{latex_src/number_theory/sieve.cpp}{sieve.cpp}
 
 \textbf{Criba sobre un rango.} Complejidad: Tiempo $O(\sqrt{b} \log \log \sqrt{b} + (b - a)\log \log(b - a))$ - Memoria extra $O(\sqrt{b} + b - a)$. Calcula los primos en el intervalo $[a, b]$.
-\begin{minted}{cpp}
-void criba_rango(ll a, ll b, vector<ll> &primos){
-    a = max(a, 0ll);
-    b = max(b, 0ll);
-    ll tam = b - a + 1;
-    vi primos_raiz;
-    criba(sqrt(b) + 1, primos_raiz);
-    bool no_primo[tam] = {};
-    primos.clear();
-    for(ll p : primos_raiz){
-        ll ini = p * max(p, (a + p - 1) / p);
-        for(ll m = ini; m <= b; m += p)
-            no_primo[m - a] = true;
-    }
-    for(ll i = 0; i < tam; ++i)
-    if(!(no_primo[i] || i + a < 2))
-        primos.pb(i + a);
-}
-\end{minted}
 
-
+\inputcode{cpp}{latex_src/number_theory/range_sieve.cpp}{range_sieve.cpp}
 
 \textbf{Criba segmentada.} Complejidad: Tiempo $O(\sqrt{n}\log \log \sqrt{n} + n\log \log n)$ - Memoria extra $O(\sqrt{n} + S)$. Cuenta la cantidad de primos menores o iguales a $n$.
 \begin{minted}{cpp}

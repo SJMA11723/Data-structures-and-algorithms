@@ -5,12 +5,9 @@ public:
     UpdatableHeap(){
         TPriority a;
         TKey b;
-        nodes.clear();
-        nodes.pb( make_pair(a, b) );
+        nodes.clear(); nodes.pb({a, b});
     }
-    pair<TPriority, TKey> top() {
-        return nodes[1];
-    }
+    pair<TPriority, TKey> top(){return nodes[1];}
     void pop(){
         if(sz(nodes) == 1) return;
         TKey k = nodes[1].second;
@@ -26,16 +23,11 @@ public:
             nodes[pos].first += p;
         } else {
             position[k] = pos = sz(nodes);
-            nodes.pb( make_pair(p, k) );
-        }
-        heapify(pos);
+            nodes.pb({p, k});
+        } heapify(pos);
     }
-    bool is_inserted(const TKey &k) {
-        return position.count(k);
-    }
-    int get_size() {
-        return sz(nodes) - 1;
-    }
+    bool is_inserted(const TKey &k){return position.count(k);}
+    int size(){return sz(nodes) - 1;}
     void erase(const TKey &k){
         if(!is_inserted(k)) return;
         int pos = position[k];
@@ -63,8 +55,8 @@ private:
         }
     }
     void swap_nodes(int a, int b){
-        position[ nodes[a].second ] = b;
-        position[ nodes[b].second ] = a;
+        position[nodes[a].se] = b;
+        position[nodes[b].se] = a;
         swap(nodes[a], nodes[b]);
     }
 };

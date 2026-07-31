@@ -6,6 +6,7 @@
 \usepackage[italicdiff]{physics}
 \usepackage{textcomp}
 \usepackage{amsthm, amssymb, amsmath, amsfonts, bbm, mathtools}
+\usepackage{minted}
 \usepackage{enumerate}
 \usepackage[shortlabels]{enumitem}
 \usepackage{titling}
@@ -20,13 +21,13 @@
 \usepackage{graphicx}
 \renewcommand{\baselinestretch}{1}
 
+\usepackage{tocloft}
 \usepackage{multicol}
 \usepackage[skip=0pt]{parskip}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
 
 %%%%%%%%%%%%%%%%%% tabla de contenidos %%%%%%%%%%%%%%%%%%
-\usepackage{tocloft}
 \setlength{\cftbeforesecskip}{1pt} % Espacio entre secciones en el índice
 \renewcommand{\cftsecdotsep}{\cftdotsep} % Poner puntitos a las secciones principales
 \renewcommand{\cftsecfont}{\normalfont\footnotesize} % Letra más chica
@@ -41,9 +42,10 @@
 \graphicspath{{img/}}
 
 %%%%%%%%%%%%%%%%%% Minted %%%%%%%%%%%%%%%%%%
-\usepackage{minted}
+% \fontsize{tamaño de letra}{espacio entre líneas}\selectfont
+\newcommand{\codesize}{\fontsize{7pt}{8pt}\selectfont} % tamfuente e interlineado para 9pt en el doc con extarticle
 \setminted{
-    fontsize=\scriptsize,      % Usa \scriptsize o \tiny si tienes muy buena vista
+    fontsize=\codesize,      % Usa \scriptsize o \tiny si tienes muy buena vista
     baselinestretch=0.85,      % Comprime el espacio vertical entre líneas
     linenos=true,              % Números de línea (esenciales para debuggear en papel)
     numbersep=3pt,             % Pega los números de línea al código
@@ -53,6 +55,22 @@
     tabsize=2,                 % Indentación corta (vital en 3 columnas)
     style=vs,                  % Tema visual claro y de alto contraste al imprimir
     stripall=true              % Elimina líneas en blanco al inicio y al final del archivo
+}
+
+% \inputcode{lenguaje}{ruta}{nombre_a_mostrar}
+\newcommand{\inputcode}[3]{
+    {\raggedleft \scriptsize \ttfamily \detokenize{#3} \par} 
+    \vspace{-4pt}
+    \inputminted[firstline=2, firstnumber=1]{#1}{#2}
+}
+
+%%%%%%%%%%%%%%%%%% Explicacion de codigo %%%%%%%%%%%%%%%%%%
+
+% \algoinfo{Tiempo}{Memoria}{Explicación rápida}
+\newcommand{\algoinfo}[3]{
+    \vspace{-2pt}
+    {\fontsize{8pt}{9pt}\selectfont \textbf{T:} $O(#1)$ $\mid$ \textbf{M:} $O(#2)$ $\mid$ \textit{#3} \par}
+    \vspace{2pt}
 }
 
 %%%%%%%%%%%%%%%%%% Numeraciones %%%%%%%%%%%%%%%%%%
@@ -89,10 +107,6 @@
 {\renewcommand\qedsymbol{$\square$}\begin{proof}[Solución]}
     {\end{proof}}
 
-\title{Referencia - ICPC}
-\author{Mathgic}
-\date{Junio 2026}
-
 %%%%%%%%%%%%%%%%%% Espaciado %%%%%%%%%%%%%%%%%%
 \setlength{\columnsep}{0.25cm} % Espacio minimo entre columnas
 \setlength{\columnseprule}{0.5pt} % Linea divisoria opcional para guiar la vista
@@ -123,7 +137,7 @@
 \headheight 14pt % Reducido de 25pt
 \fancyhead{}
 \fancyfoot{}
-\lhead{\textbf{Reference - ICPC} $\mid$ Mathgic (Junio 2026)} % Todo en una línea
+\lhead{\textbf{Reference - ICPC} $\mid$ Mäthgic Crüe $\mid$ UG-CIMAT $\mid$ Junio 2026} % Todo en una línea
 \rhead{\textbf{Pág. \thepage}}
 \renewcommand{\headrulewidth}{0.4pt}
 \setlength\headsep{4pt} % Pegar el texto principal al header

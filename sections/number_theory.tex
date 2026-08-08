@@ -1,52 +1,17 @@
 \section{Teoría de números}
-\subsection{Criba de Eratóstenes}
-\textbf{Criba} Complejidad: Tiempo $O(n\log \log n)$ - Memoria extra $O(n)$. Calcula los primos menores o iguales a $n$.
+\subsection{Cribas}
 
+\algoinfo{n \log \log n}{n}{}
 \inputcode{cpp}{latex_src/number_theory/sieve.cpp}{sieve.cpp}
 
-\textbf{Criba sobre un rango.} Complejidad: Tiempo $O(\sqrt{b} \log \log \sqrt{b} + (b - a)\log \log(b - a))$ - Memoria extra $O(\sqrt{b} + b - a)$. Calcula los primos en el intervalo $[a, b]$.
-
+\algoinfo{(\sqrt{b} + b - a)\log \log \sqrt{b}}{\sqrt{b} + b - a}{Encuentra los primos en $[a, b]$ con $b - a \leq K \cdot 10^6$}
 \inputcode{cpp}{latex_src/number_theory/range_sieve.cpp}{range_sieve.cpp}
 
-\textbf{Criba segmentada.} Complejidad: Tiempo $O(\sqrt{n}\log \log \sqrt{n} + n\log \log n)$ - Memoria extra $O(\sqrt{n} + S)$. Cuenta la cantidad de primos menores o iguales a $n$.
-\begin{minted}{cpp}
-int cuenta_primos(int n){
-    if(n < 2) return 0;
-    const int S = sqrt(n);
-    vi primos_raiz;
-    criba(sqrt(n) + 1, primos_raiz);
-    int ans = 0;
-    bool no_primo[S + 1] = {};
-    for(int ini = 0; ini <= n; ini += S){
-        memset(no_primo, 0, S + 1);
-        for(int p : primos_raiz){
-            int m = p*max(p, (ini+p-1)/p)-ini;
-            for(; m <= S; m += p) no_primo[m]=1;
-        }
-        for(int i=0; i<S && i + ini <= n; ++i)
-        if(!no_primo[i] && 1 < i + ini) ans++;
-    } return ans;
-}
-\end{minted}
+\algoinfo{(n + \sqrt{n})\log \log \sqrt{n}}{\sqrt{n} + S}{Cuenta primos menores o iguales a $n$.}
+\inputcode{cpp}{latex_src/number_theory/segmented_sieve.cpp}{segmented_sieve.cpp}
 
-
-
-\textbf{Criba lineal.} Complejidad: Tiempo $O(n)$ - Memoria extra $O(n)$. Calcula los primos menores o iguales a $n$ y el menor primo que divide a cada entero en $[2, n]$. ADVERTENCIA: es $O(n)$ pero tiene una constante grande.
-\begin{minted}{cpp}
-void criba_lineal(int n, vi &primos){
-    if(n < 2) return;
-    vi lp(n + 1);
-    for(ll i = 2; i <= n; ++i){
-        if(!lp[i]) primos.pb(lp[i] = i);
-        for(int j = 0; i * primos[j] <= n; ++j){
-            lp[i * primos[j]] = primos[j];
-            if(primos[j] == lp[i]) break;
-        }
-    }
-}
-\end{minted}
-
-
+\algoinfo{n}{n}{Para calcular funciones multiplicativas difíciles de adaptar en la criba de Eratóstenes es mejor la criba lineal.}
+\inputcode{cpp}{latex_src/number_theory/linear_sieve.cpp}{linear_sieve.cpp}
 
 \subsection{Algoritmo extendido de Euclides}
 Complejidad: Tiempo $O(\log (\max(a, b)))$ - Memoria extra $O(1)$. Encuentra una solución a la ecuación $ax + by = \gcd(a, b)$.

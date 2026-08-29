@@ -13,7 +13,7 @@ void add(int idx){
 void remove(int idx){
 }
 int get_answer(){
-    return 0; /// TO-DO
+    return 0;
 }
 vector<int> solve(vector<query> &queries) {
     vector<int> answers(queries.size());

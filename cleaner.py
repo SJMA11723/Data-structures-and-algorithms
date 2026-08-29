@@ -71,6 +71,30 @@ def remove_main_block(text: str) -> str:
         
     return text
 
+def remove_inline_c_comment(line: str) -> str:
+    """Elimina comentarios // al final de una línea, respetando cadenas de texto y caracteres."""
+    in_string = False
+    in_char = False
+    comment_idx = -1
+    i = 0
+    while i < len(line):
+        c = line[i]
+        if c == '\\':
+            i += 2
+            continue
+        if c == '"' and not in_char:
+            in_string = not in_string
+        elif c == "'" and not in_string:
+            in_char = not in_char
+        elif c == '/' and i + 1 < len(line) and line[i+1] == '/' and not in_string and not in_char:
+            comment_idx = i
+            break
+        i += 1
+    
+    if comment_idx != -1:
+        return line[:comment_idx].rstrip()
+    return line.rstrip()
+
 def clean_template_file(filepath: str, outpath: str) -> None:
     """Reglas exclusivas para template.h"""
     raw_text: str = read_file_safely(filepath)
@@ -81,9 +105,9 @@ def clean_template_file(filepath: str, outpath: str) -> None:
     dense_lines: list[str] = []
 
     for line in lines:
-        line_no_inline: str = line.split('//')[0]
-        if line_no_inline.strip():
-            dense_lines.append(line_no_inline.rstrip())
+        line_no_comment = remove_inline_c_comment(line)
+        if line_no_comment.strip():
+            dense_lines.append(line_no_comment)
 
     text: str = "\n".join(dense_lines)
 
@@ -136,14 +160,31 @@ def clean_cpp_file(filepath: str, outpath: str) -> None:
     lines: list[str] = no_main.split('\n')
     cleaned_lines: list[str] = []
 
+    # Regex para ignorar importaciones locales, ej: #include "archivo.h"
+    include_local_regex = re.compile(r'^[ \t]*#include[ \t]+"[^"]+"')
+
     for line in lines:
         stripped: str = line.strip()
+        
+        # 1. Ignorar boilerplate y marcas `// hide` (antes de quitar comentarios)
         is_boilerplate: bool = any(re.match(pattern, stripped) for pattern in BOILERPLATE_REGEX)
-        if not is_boilerplate:
-            cleaned_lines.append(line)
+        if is_boilerplate:
+            continue
+            
+        # 2. Ignorar importaciones de archivos locales (#include "archivo.h")
+        if include_local_regex.match(stripped):
+            continue
+            
+        # 3. Quitar comentarios al final de la línea respetando strings
+        line_no_comment = remove_inline_c_comment(line)
+        stripped_no_comment = line_no_comment.strip()
+        
+        if not stripped_no_comment:
+            continue
+            
+        cleaned_lines.append(line_no_comment)
 
-    dense_lines: list[str] = [line.rstrip() for line in cleaned_lines if line.strip()]
-    text: str = "\n".join(dense_lines)
+    text: str = "\n".join(cleaned_lines)
 
     os.makedirs(os.path.dirname(outpath), exist_ok=True)
     with open(outpath, 'w', encoding='utf-8') as f:

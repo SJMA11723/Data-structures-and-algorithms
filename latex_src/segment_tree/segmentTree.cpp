@@ -3,7 +3,7 @@
 struct segment_tree{
     struct node{
         int val;
-        node():val(0){}/// inicializa con el neutro
+        node():val(0){}
         node(int x):val(x){}
         const node operator+(const node &b)const{
             return node(val + b.val);
@@ -36,7 +36,7 @@ struct segment_tree{
         nodes[pos] = nodes[pos * 2] + nodes[pos * 2 + 1];
     }
     node query(int l, int r, int left, int right, int pos = 1){
-        if(r < left || right < l) return node(); /// Devuelve el neutro
+        if(r < left || right < l) return node();
         if(l <= left && right <= r) return nodes[pos];
         int mid = (left + right) / 2;
         return query(l, r, left, mid, pos * 2) + query(l, r, mid + 1, right, pos * 2 + 1);

@@ -4,7 +4,7 @@
 * Github: https://github.com/SJMA11723
 */
 
-void sieve(int n, vi &primes);
+void sieve(int n, vi &primes); // hide
 
 
 /**

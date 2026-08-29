@@ -1,21 +1,20 @@
-#include "../../../template.h"
-const int MAXV = 32767; /// 2^15 - 1
+const int MAXV = 32767;
 template<class T = int64_t> struct dinic{
     dinic(short V){this->V = V; if(V > MAXV){cout << "ERROR"; exit(0);}}
     const static bool SCALING = true;
     bool sorted = false;
     short s, t, V;
-    int lim = 1; /// Para escalado
+    int lim = 1;
     const T INF = numeric_limits<T>::max();
-    short level[MAXV]; /// distancia desde s
-    short ptr[MAXV]; /// arista por la que va explorando
+    short level[MAXV];
+    short ptr[MAXV];
     struct edge{
         short to, rev;
         T cap, flow, mcap;
         bool operator<(const edge &b)const{return mcap > b.mcap;}
     };
     vector<edge> adj[MAXV];
-    vi adj_cur[MAXV]; /// aristas del grafo de nivel
+    vi adj_cur[MAXV];
     void add_edge(short u, short v, T cap, bool is_directed = true){
         if(u == v) return;
         T add = (is_directed ? 0 : cap);
@@ -32,7 +31,7 @@ template<class T = int64_t> struct dinic{
             }
         }
     }
-    bool bfs(){ /// Crea grafo de nivel
+    bool bfs(){
         for(int i = 0; i < V; ++i){
             adj_cur[i].clear();
             adj_cur[i].reserve(sz(adj[i]));
@@ -58,7 +57,7 @@ template<class T = int64_t> struct dinic{
         }
         return false;
     }
-    T dfs(short u, T flow, vector<short> &S, bool save = false){ /// Encuentra camino, bloquea aristas
+    T dfs(short u, T flow, vector<short> &S, bool save = false){
         if(save) S.pb(u);
         if(u == t) return flow;
         for(; ptr[u] < sz(adj_cur[u]); ++ptr[u]){

@@ -1,4 +1,3 @@
-#include "../../template.h"
 struct edge{
     int from, to;
     int w;
@@ -6,7 +5,7 @@ struct edge{
 vi bellman_ford(int s, int n, vector<edge> &edges, bool cycles = false){
     vi d(n, (cycles ? 0 : INT_MAX));
     d[s] = 0;
-    vi P(n, -1); /// Predecesor
+    vi P(n, -1);
     for(int i = 0; i < n - 1; ++i){
         for(edge &e : edges){
             if(d[e.from] == INT_MAX) continue;
@@ -26,5 +25,5 @@ vi bellman_ford(int s, int n, vector<edge> &edges, bool cycles = false){
         }
     }
     if(last_relax == -1) return d;
-    return {}; /// VACIO
+    return {};
 }

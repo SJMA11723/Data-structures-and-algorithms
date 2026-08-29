@@ -1,4 +1,3 @@
-#include "template.h"
 void sieve(int n, vi &primes){
     primes.clear(); if(n < 2) return;
     vector<bool> nprime(n + 1);

@@ -1,9 +1,8 @@
-#include "../../../template.h"
 struct edge {
     int from, to;
-    ll w; /// weight
-    ll c; /// capacity
-    ll f; /// flow
+    ll w;
+    ll c;
+    ll f;
 };
 class ford_fulkerson {
 public:
@@ -34,9 +33,9 @@ public:
         return S;
     }
 private:
-    vector<vector<edge>> graph; /// graph (to, capacity)
-    vector<edge> edges; /// List of edges (including the inverse ones)
-    vvi edge_indexes; /// indexes of edges going out from each vertex
+    vector<vector<edge>> graph;
+    vector<edge> edges;
+    vvi edge_indexes;
     void init(){
         edges.clear();
         edge_indexes.clear(); edge_indexes.resize(sz(graph));
@@ -75,7 +74,7 @@ private:
         current = t;
         while(current != s){
             edges[from[current].se].f += u_flow;
-            edges[from[current].se^1].f -= u_flow; // Arista inversa
+            edges[from[current].se^1].f -= u_flow;
             current = from[current].fi;
         }
         flow += u_flow ;

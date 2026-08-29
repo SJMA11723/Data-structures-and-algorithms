@@ -1,4 +1,3 @@
-#include "template.h"
 void linear_sieve(int n, vi &primes){
     primes.clear();
     if(n < 2) return;

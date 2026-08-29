@@ -1,4 +1,5 @@
 \section{Teoría de números}
+
 \subsection{Cribas}
 
 \algoinfo{n \log \log n}{n}{}
@@ -14,147 +15,54 @@
 \inputcode{cpp}{latex_src/number_theory/linear_sieve.cpp}{linear_sieve.cpp}
 
 \subsection{Algoritmo extendido de Euclides}
-Complejidad: Tiempo $O(\log (\max(a, b)))$ - Memoria extra $O(1)$. Encuentra una solución a la ecuación $ax + by = \gcd(a, b)$.
-\begin{minted}{cpp}
-int gcd_ext(int a, int b, int &x, int &y){
-    if(!b){ x = 1; y = 0; return a; }
-    int x1, y1, g = gcd_ext(b, a % b, x1, y1);
-    x = y1;
-    y = x1 - y1 * (a / b);
-    return g;
-}
-\end{minted}
-
-
+\algoinfo{\log \min(a, b)}{1}{Encuentra una solución de la ecuación $ax + by = \gcd(a, b)$.}
+\inputcode{cpp}{latex_src/number_theory/extended_gcd.cpp}{extended_gcd.cpp}
 
 \subsection{Solución de ecuaciones diofánticas lineales}
-Complejidad: Tiempo $O(\log (\max(a, b)))$ - Memoria extra $O(1)$. Encuentra una solución a la ecuación $ax + by = c$ o determina si no existe solución.
-\begin{minted}{cpp}
-bool encuentra_solucion(int a, int b, int c, int &x, int &y, int &g){
-    g = gcd_ext(abs(a), abs(b), x, y);
-    if(c % g) return false;
-    x *= c / g;
-    y *= c / g;
-    if(a < 0) x = -x;
-    if(b < 0) y = -y;
-    return true;
-}
-\end{minted}
-
-Cambia a la siguiente (anterior) solución $\abs{cnt}$ veces. $g := gcd(a ,b)$.
-\begin{minted}{cpp}
-void cambia_solucion(int &x, int &y, int a, int b, int cnt, int g = 1) {
-    x += cnt * b / g;
-    y -= cnt * a / g;
-}
-\end{minted}
-
-Cuenta la cantidad de soluciones $x, y$ con $x \in [minx, maxx]$ y $y \in [miny, maxy]$.
-\begin{minted}{cpp}
-int cuenta_soluciones(int a, int b, int c, int minx, int maxx, int miny, int maxy) {
-    int x, y, g;
-    if(!encuentra_solucion(a, b, c, x, y, g)) return 0;
-    /// ax + by = c ssi (a/g)x + (b/g)y = c/g
-    /// Dividimos entre g para simplificar y no dividir a cada rato
-    a /= g;
-    b /= g;
-    /// Signos de a, b nos sirven para pasar a la
-    /// siguiente (anterior) solucion
-    int sign_a = a > 0 ? +1 : -1;
-    int sign_b = b > 0 ? +1 : -1;
-    /// pasa a la minima solucion tal que minx <= x
-    cambia_solucion(x, y, a, b, (minx - x) / b);
-    /// si x < minx, pasa a la siguiente para que minx <= x
-    if(x < minx) cambia_solucion(x, y, a, b, sign_b);
-    if(x > maxx) return 0; /// si x > maxx, entonces no hay x solucion tal que x in [minx, maxx]
-    int lx1 = x;
-    /// pasa a la maxima solucion tal que x <= maxx
-    cambia_solucion(x, y, a, b, (maxx - x) / b);
-    if(x > maxx) cambia_solucion(x, y, a, b, -sign_b); /// si x > maxx, pasa a la solucion anterior
-    int rx1 = x;
-    /// hace todo lo anterior pero con y
-    cambia_solucion(x, y, a, b, -(miny - y) / a);
-    if(y < miny) cambia_solucion(x, y, a, b, -sign_a);
-    if(y > maxy) return 0;
-    int lx2 = x;
-    cambia_solucion(x, y, a, b, -(maxy - y) / a);
-    if(y > maxy) cambia_solucion(x, y, a, b, sign_a);
-    int rx2 = x;
-    /// como al encontrar las x tomando y como criterio no nos asegura
-    /// que esten ordenadas, entonces las ordenamos
-    if(lx2 > rx2) swap(lx2, rx2);
-    /// obtenemos la interseccion de los intervalos
-    int lx = max(lx1, lx2);
-    int rx = min(rx1, rx2);
-    if(lx > rx) return 0; /// no existen soluciones, interseccion vacia
-    /// las soluciones (por x) van de b en b (b/g en b/g pero dividimos al principio)
-    return (rx - lx) / abs(b) + 1;
-}
-\end{minted}
-
-
+\algoinfo{\log \min(a, b)}{1}{Encuentra o cuenta soluciones de la ecuación $ax + by = c$.}
+\inputcode{cpp}{latex_src/number_theory/diophantine_equations.cpp}{diophantine_equations.cpp}
 
 \subsection{Funciones multiplicativas}
-\textbf{Función Phi de Euler.} Complejidad: Tiempo $O(d)$ - Memoria extra $O(n)$. $d$ es la cantidad de factores primos de $n$. Cuenta la cantidad de coprimos con $n$ menores a $n$.
-\begin{minted}{cpp}
-int phi(int n){
-    if(n <= 1) return 1;
-    if(!dp[n]){
-        int pot = 1, p = lp[n], n0 = n;
-        while(n0 % p == 0){ pot *= p; n0 /= p; }
-        dp[n] = (pot / p) * (p - 1) * phi(n0);
-    } return dp[n];
-}
-\end{minted}
+\algoinfo{n \log \log n}{n}{Calcula $\phi(i)$ para todo $i \in [1, n]$.}
+\inputcode{cpp}{latex_src/number_theory/phi_euler.cpp}{phi_euler.cpp}
+
+Para $p$ primo y $a, b, n, k \in \Z^+$ se cumple
+\begin{align*}
+    \phi(p^k) &= p^{k - 1}(p - 1),\\
+    \phi(ab) &= \phi(a)\phi(b)\frac{\gcd(a, b)}{\phi(\gcd(a, b))},\\
+    \phi(n) &= n \prod_{p | n} (1 - \frac{1}{p}),\\
+    n &= \sum_{d | n} \phi(d).
+\end{align*}
+Si $G_d = \{x : 1 \leq x \leq n, \gcd(x, n) = d\}$ entonces $|G_d| = \phi(\frac{n}{d})$. Si $\gcd(x, m) = 1$ entonces $x^{\phi(m)} \equiv 1 \pmod m$. Si $\gcd(x, m) \neq 1$ entonces $x^n \equiv x^{\phi(m) + [n \bmod \phi(m)]} \pmod m$.
+
+\textbf{Función $\sigma_x$}. Si $p$ es primo y $a > 0$ entonces
+$$\sigma_x(p^{a}) = \sum_{i = 0}^a p^{ix} = \frac{p^{x(a + 1)} - 1}{p^x - 1}.$$
+Si $\gcd(n, m) = 1$ entonces $\sigma_x(nm) = \sigma_x(n)\sigma_x(m)$. En particular, $\sigma_0(n)$ es la cantidad de divisores de $n$ y $\sigma_1(n)$ es la suma de los divisores de $n$. \textbf{NOTA:} varios problemas que involucran suma de dividores, suma de suma de divisores, suma de la cantidad de divisores de los divisores, etc, pueden resolverse con argumentos combinatorios para cada primo y luego multiplicando los resultados. Por ejemplo, si $n = p_1^{a_1}p_2^{a_2}\cdots p_k^{a_k}$ entonces
+\begin{align*}
+    \sum_{d | n} d &= \prod_{i = 1}^k \sigma_1(p_i^{a_i}) = \prod_{i = 1}^k \frac{p_i^{a_i + 1} - 1}{p_i - 1},\\
+    \sum_{d | n} \sigma_0(d) &= \prod_{i = 1}^k \sum_{j = 0}^{a_i} (j + 1) = \prod_{i = 1}^k \frac{(a_i + 1)(a_i + 2)}{2}.
+\end{align*}
+
+\algoinfo{n}{n}{Criba lineal para calcular $\sigma_0$ o $\sigma_1$.}
+\inputcode{cpp}{latex_src/number_theory/sigma_fnc.cpp}{sigma_fnc.cpp}
 
 
+\textbf{Función de Möbius.} Para un entero $n \geq 1$, $\mu(n)$ se define como:
+$$\mu(n) = \begin{cases}
+1, & \text{si } n = 1, \\
+0, & \text{si } n \text{ tiene un factor primo al cuadrado}, \\
+(-1)^k, & \text{si } n \text{ es el producto de } k \text{ primos distintos}.
+\end{cases}$$
 
-\textbf{Función $\sigma_0$}. Complejidad: Tiempo $O(d)$ - Memoria extra $O(n)$. $d$ es la cantidad de factores primos de $n$. Cuenta la cantidad de divisores de $n$.
-\begin{minted}{cpp}
-ll sigma0(int n){
-    if(n <= 1) return 1;
-    if(!dp[n]){
-        ll exp = 0, p = lp[n], n0 = n;
-        while(n0 % p == 0){ exp++; n0 /= p; }
-        dp[n] = (exp + 1) * sigma0(n0);
-    } return dp[n];
-}
-\end{minted}
-
-
-
-\textbf{Función $\sigma_1$}. Complejidad: Tiempo $O(d)$ - Memoria extra $O(n)$. $d$ es la cantidad de factores primos de $n$. Calcula la suma de los divisores de $n$.
-\begin{minted}{cpp}
-ll sigma1(int n){
-    if(n <= 1) return 1;
-    if(!dp[n]){
-        ll pot = 1, p = lp[n], n0 = n;
-        while(n0 % p == 0){ pot *= p; n0 /= p; }
-        dp[n] = (pot*p - 1) / (p-1) * sigma1(n0);
-    } return dp[n];
-}
-\end{minted}
-
-
-
-\textbf{Función de Moebius.} Complejidad: Tiempo $O(d)$ - Memoria extra $O(n)$. $d$ es la cantidad de factores primos de $n$. Devuelve $0$ si $n$ no es divisible por algún cuadrado. Devuelve $1$ o $-1$ si $n$ es divisible por al menos un cuadrado. Devuelve $1$ si $n$ tiene una cantidad par de factores primos. Devuelve $-1$ si $n$ tiene una cantidad impar de factores primos.
-\begin{minted}{cpp}
-int moebius(int n){
-    if(n <= 1) return 1;
-    if(dp[n] == -7){
-        int exp = 0, p = lp[n], n0 = n;
-        while(n0 % p == 0){ exp++; n0 /= p; }
-        dp[n] = (exp > 1 ? 0 : -1 * moebius(n0));
-    } return dp[n];
-}
-\end{minted}
+\algoinfo{n}{n}{Criba lineal para calcular la función de Möbius.}
+\inputcode{cpp}{latex_src/number_theory/mobius.cpp}{mobius.cpp}
 
 
 
 \subsection{Factorización Pollard Rho}
 Complejidad: $O(\sqrt[4]{n})$. Inicializar con PollardRho::init() y para factorizar un número PollardRho::factorize(n).
 \begin{minted}{cpp}
-//COMPIADO Y PEGADOPORCUESTIONES DE TIEMPO
+//COPIADO Y PEGADOPORCUESTIONES DE TIEMPO
 namespace PollardRho {
     mt19937 rnd(chrono::steady_clock::now()
     .time_since_epoch().count());

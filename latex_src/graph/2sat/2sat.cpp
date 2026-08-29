@@ -1,4 +1,3 @@
-#include "../../template.h"
 struct two_sat{
     int n;
     vvi graph, inv_graph;

@@ -1,4 +1,3 @@
-#include "../template.h"
 template<typename T> struct min_stack{
     stack<pair<T, T>> st;
     min_stack(){}

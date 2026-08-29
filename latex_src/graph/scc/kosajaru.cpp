@@ -1,4 +1,3 @@
-#include "../../template.h"
 void dfs(int u, vi graph[], bool vis[], vi &topo_ord){
     if(vis[u]) return;
     vis[u] = true;

@@ -1,5 +1,3 @@
-#include "template.h"
-void sieve(int n, vi &primes);
 int count_primes(int n){
     if(n < 2) return 0;
     const int S = sqrt(n);

@@ -1,4 +1,3 @@
-#include "../../template.h"
 vvi floyd_warshall(int n){
     const int INF = INT_MAX;
     vvi d(n, vector<int>(n, INF));

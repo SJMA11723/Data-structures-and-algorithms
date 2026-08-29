@@ -1,4 +1,3 @@
-#include "../template.h"
 #define lsb(S) ((S) & (-S))
 struct fenwick_tree{
     int n;

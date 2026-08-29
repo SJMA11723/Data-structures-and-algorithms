@@ -1,4 +1,3 @@
-#include "../../template.h"
 struct dsu{
     struct action{
         int x_p, y_p;

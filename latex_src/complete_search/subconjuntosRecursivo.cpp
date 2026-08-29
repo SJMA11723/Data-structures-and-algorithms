@@ -13,8 +13,8 @@ void generaSubconjuntos(int arr[], bool used[], int n, int actual = 0){
         check(arr, used, n);
         return;
     }
-    used[actual] = true; /// elige el elemento actual
+    used[actual] = true;
     generaSubconjuntos(arr, used, n, actual + 1);
-    used[actual] = false; /// no elige el elemento actual
+    used[actual] = false;
     generaSubconjuntos(arr, used, n, actual + 1);
 }

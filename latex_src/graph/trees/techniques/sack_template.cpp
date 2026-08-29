@@ -19,14 +19,14 @@ void add(int node, int x, int p = 0){
 }
 void dfs(int node, bool keep, int p = 0){
     int maxi = -1, big_child = -1;
-    for(int v : tree[node]) /// Search for big_child
+    for(int v : tree[node])
        if(v != p && subtree_size[v] > maxi)
           maxi = subtree_size[v], big_child = v;
     for(int v : tree[node])
         if(v != p && v != big_child)
-            dfs(v, false, node);  /// run a dfs on small childs and clear them
+            dfs(v, false, node);
     if(big_child != -1)
-        dfs(big_child, true, node), big[big_child] = 1;  /// big_child marked as big and not cleared
+        dfs(big_child, true, node), big[big_child] = 1;
     add(node, 1, p);
     if(big_child != -1) big[big_child] = 0;
     if(!keep) add(node, -1, p);

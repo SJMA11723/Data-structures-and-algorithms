@@ -3,7 +3,7 @@
 struct segment_tree{
     struct node{
         int val, lazy;
-        node():val(0), lazy(0){}/// inicializa con el neutro y sin lazy pendiente
+        node():val(0), lazy(0){}
         node(int x, int lz = 0):val(x), lazy(lz){}
         const node operator+(const node &b)const{
             return node(val + b.val);
@@ -54,7 +54,7 @@ struct segment_tree{
     }
     node query(int l, int r, int left, int right, int pos = 1){
         push_lazy(pos, left, right);
-        if(r < left || right < l) return node(); /// Devuelve el neutro
+        if(r < left || right < l) return node();
         if(l <= left && right <= r) return nodes[pos];
         int mid = (left + right) / 2;
         return query(l, r, left, mid, pos * 2) + query(l, r, mid + 1, right, pos * 2 + 1);

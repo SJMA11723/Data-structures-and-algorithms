@@ -2,7 +2,6 @@
 * Author: Mäthgic Crüe
 * Github: https://github.com/SJMA11723
 */
-; //dejamos una linea porque cleaner.py elimina la primera linea
 #include <bits/stdc++.h>
 #include <ext/pb_ds/assoc_container.hpp>
 #include <ext/pb_ds/tree_policy.hpp>

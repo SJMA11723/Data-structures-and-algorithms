@@ -15,8 +15,8 @@ void generaCombinacionesEnM(int arr[], bool used[], int n, int m, int actual = 0
         check(arr, used, n);
         return;
     }
-    used[actual] = true; /// elige el elemento actual
+    used[actual] = true;
     generaCombinacionesEnM(arr, used, n, m - 1, actual + 1);
-    used[actual] = false; /// no elige el elemento actual
+    used[actual] = false;
     generaCombinacionesEnM(arr, used, n, m, actual + 1);
 }

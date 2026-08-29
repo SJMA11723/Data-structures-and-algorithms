@@ -1,4 +1,3 @@
-#include "../template.h"
 struct Function {
 	ll m;
 	ll b;
@@ -42,12 +41,12 @@ struct LiChaoTree {
 		ll lv = values[l];
 		bool lef = f.eval(lv) > functions[v].eval(lv);
 		bool mid = f.eval(mv) > functions[v].eval(mv);
-		if (mid){//Si el actual pierde en el medio
+		if (mid){
 			swap(functions[v], f);
 		}
 		if (r - l == 1){
 			return;
-		} else if (lef != mid){//El cruce esta en el lado izq.
+		} else if (lef != mid){
 			addFunction(f, 2 * v, l, m);
 		} else {
 			addFunction(f, 2 * v + 1, m, r);

@@ -11,7 +11,7 @@ void mergeSort(int arr[], int ini, int fin){
     for(int i = mitad + 1, idx = 0; i <= fin; ++i, idx++)
         mitad2[idx] = arr[i];
     for(int i = ini, idx1 = 0, idx2 = 0; i <= fin; ++i){
-        if(idx1 < tam1 && idx2 < tam2){ /// si quedan elementos en ambas mitades
+        if(idx1 < tam1 && idx2 < tam2){
             arr[i] = mitad1[idx1] < mitad2[idx2] ? mitad1[idx1++] : mitad2[idx2++];
         } else {
             arr[i] = idx1 < tam1 ? mitad1[idx1++] : mitad2[idx2++];

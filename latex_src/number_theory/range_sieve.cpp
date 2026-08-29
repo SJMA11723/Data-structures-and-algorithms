@@ -1,5 +1,3 @@
-#include "template.h"
-void sieve(int n, vi &primes);
 void range_sieve(ll a, ll b, vll &primes){
     a = max(a, 0ll);
     b = max(b, 0ll);

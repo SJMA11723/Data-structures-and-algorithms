@@ -1,4 +1,3 @@
-#include "../template.h"
 template<class TPriority, class TKey> class UpdatableHeap{
 public:
     UpdatableHeap(){

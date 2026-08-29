@@ -1,4 +1,3 @@
-: # dejamos una linea porque cleaner.py elimina la primera linea
 set -e
 g++ code.cpp -o code
 g++ gen.cpp -o gen

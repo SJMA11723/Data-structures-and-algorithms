@@ -5,7 +5,7 @@
 */
 
 /// calcula primos hasta n
-void sieve(int n, vi &primes);
+void sieve(int n, vi &primes); // hide
 
 /*
     La idea es primero calcular los primos hasta sqrt(n), entonces

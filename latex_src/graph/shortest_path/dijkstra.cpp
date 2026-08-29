@@ -1,4 +1,3 @@
-#include "../../template.h"
 #define MAXN 100000
 struct edge{
     int to;

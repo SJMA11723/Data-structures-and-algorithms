@@ -1,4 +1,3 @@
-#include "../../../template.h"
 const ll MOD = 1e9 + 7;
 const int MAXV = (1 << 15) - 1;
 template<class T = ll> struct mcmf{

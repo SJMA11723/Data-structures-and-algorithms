@@ -30,7 +30,7 @@ Para $p$ primo y $a, b, n, k \in \Z^+$ se cumple
 \begin{align*}
     \phi(p^k) &= p^{k - 1}(p - 1),\\
     \phi(ab) &= \phi(a)\phi(b)\frac{\gcd(a, b)}{\phi(\gcd(a, b))},\\
-    \phi(n) &= n \prod_{p | n} (1 - \frac{1}{p}),\\
+    \phi(n) &= n \prod_{p | n} \left(1 - \frac{1}{p}\right),\\
     n &= \sum_{d | n} \phi(d).
 \end{align*}
 Si $G_d = \{x : 1 \leq x \leq n, \gcd(x, n) = d\}$ entonces $|G_d| = \phi(\frac{n}{d})$. Si $\gcd(x, m) = 1$ entonces $x^{\phi(m)} \equiv 1 \pmod m$. Si $\gcd(x, m) \neq 1$ entonces $x^n \equiv x^{\phi(m) + [n \bmod \phi(m)]} \pmod m$.
@@ -39,7 +39,7 @@ Si $G_d = \{x : 1 \leq x \leq n, \gcd(x, n) = d\}$ entonces $|G_d| = \phi(\frac{
 $$\sigma_x(p^{a}) = \sum_{i = 0}^a p^{ix} = \frac{p^{x(a + 1)} - 1}{p^x - 1}.$$
 Si $\gcd(n, m) = 1$ entonces $\sigma_x(nm) = \sigma_x(n)\sigma_x(m)$. En particular, $\sigma_0(n)$ es la cantidad de divisores de $n$ y $\sigma_1(n)$ es la suma de los divisores de $n$. \textbf{NOTA:} varios problemas que involucran suma de dividores, suma de suma de divisores, suma de la cantidad de divisores de los divisores, etc, pueden resolverse con argumentos combinatorios para cada primo y luego multiplicando los resultados. Por ejemplo, si $n = p_1^{a_1}p_2^{a_2}\cdots p_k^{a_k}$ entonces
 \begin{align*}
-    \sum_{d | n} d &= \prod_{i = 1}^k \sigma_1(p_i^{a_i}) = \prod_{i = 1}^k \frac{p_i^{a_i + 1} - 1}{p_i - 1},\\
+    \sum_{d | n} d &= \prod_{i = 1}^k \sigma_1 \left(p_i^{a_i}\right) = \prod_{i = 1}^k \frac{p_i^{a_i + 1} - 1}{p_i - 1},\\
     \sum_{d | n} \sigma_0(d) &= \prod_{i = 1}^k \sum_{j = 0}^{a_i} (j + 1) = \prod_{i = 1}^k \frac{(a_i + 1)(a_i + 2)}{2}.
 \end{align*}
 

@@ -1,0 +1,152 @@
+\section{PIE}
+\subsection{Principio de inclusión--exclusión}
+Sean $A_1,\dots,A_m\subseteq U$ los objetos que cumplen cada propiedad. Para contar los que cumplen \textbf{alguna}:
+
+\[
+\left|\bigcup_{i=1}^m A_i\right|=
+\sum_{\emptyset\ne S\subseteq[m]}(-1)^{|S|+1}
+\left|\bigcap_{i\in S}A_i\right|.
+\]
+\textbf{Impar suma, par resta.} Para contar los que no cumplen ninguna, restar la unión a $|U|$.  
+
+
+Si la intersección depende sólo de $|S|$, agrupar con $\binom m{|S|}$. 
+
+\algoinfo{2^m T}{1}{$T$: costo de una intersección}
+\begin{minted}{cpp}
+// inter(s): cardinalidad; 0 <= m < 63.
+template<class F>
+__int128 PIE(int m, F inter){
+  __int128 ans = 0;
+  for(ll s=1; s<(1LL<<m); ++s){
+    __int128 x = inter(s);
+    ans += (__builtin_popcountll(s)&1) ? x : -x;
+  } return ans;
+}
+\end{minted}
+
+\subsection{Divisibilidad y MCM}
+Para $A_i=\{x\in[L,R]:a_i\mid x\}$, $a_i>0$, la intersección exige ser múltiplo de $q=\operatorname{mcm}(a_i:i\in S)$:
+\[
+|A_S|=\lfloor R/q\rfloor-\lfloor(L-1)/q\rfloor.
+\]
+\begin{minted}{cpp}
+auto inter = [&](ll s)->ll{
+  ll q=1;
+  for(int i=0; i<(int)a.size(); ++i)
+    if(s & (1LL<<i)){
+      ll t=q/gcd(q,a[i]);
+      if(t>R/a[i]) return 0; // ANTES de multiplicar
+      q=t*a[i];
+    }
+  return R/q-(L-1)/q;
+};
+\end{minted}
+Si tenemos comprimos dos a dos MCM = es solo el producto. Quitar duplicados, $a_i>R$ y $a_j$ si otro $a_i\mid a_j$. Costo $O(m2^m\log R)$; con primos distintos, $O(m2^m)$.
+
+\textbf{Usos:} no múltiplos: $R-L+1-\mathrm{PIE}$. Coprimos con $q$: excluir sus primos distinto. Universo pequeño: marcar múltiplos en $O(R+\sum_i R/a_i)$.
+
+
+\textbf{Estrellas y barras con cotas.} Para $d\ge1$, $s,b\ge0$, soluciones de $\sum_{i=1}^d x_i=s$, $0\le x_i\le b$:
+\[
+\sum_{j=0}^d(-1)^j\binom dj
+\binom{s-j(b+1)+d-1}{d-1}.
+\]
+Con cotas $b_i$ distintas, sumar por $S\subseteq[d]$ el término $(-1)^{|S|}\binom{s-\sum_{i\in S}(b_i+1)+d-1}{d-1}$. 
+
+
+\subsection{PIE sobre múltiplos (DP)}
+Queremos contar cuantos elementos (parejas, ternas, conjuntos, ...) $x\inS$ cumplen que $gcd(x)=1$.
+Definimos $g(d)$ = cantidad de elementos con $d\mid\gcd$, y $f(d)$ = cantidad con $\gcd=d$.
+\[
+g(d)=\sum_{k=1}^{\lfloor V/d\rfloor}f(kd),\qquad
+f(d)=g(d)-\sum_{k=2}^{\lfloor V/d\rfloor}f(kd).
+\]
+
+
+\algoinfo{V\log V}{V}{ }
+\begin{minted}{cpp}
+vector<ll> f(V+1);
+for(int d=V; d>=1; --d){
+  f[d]=g[d]; // g(d): CAMBIAR segun caso
+  for(int k=2*d; k<=V; k+=d)
+    f[d]-=f[k]; // modulo: (f[d]-f[k]+MOD)%MOD
+}
+\end{minted}
+
+Para $c=\texttt{multiplos\_de[d]}$, cambiar sólo $g(d)$:
+\[
+\begin{array}{c|c}
+\text{Pares de índices }i<j&\binom c2\\
+\text{Subconjuntos de tamaño }k&\binom ck\\
+\text{Subconjuntos no vacíos}&2^c-1\\
+\text{Tuplas ordenadas, repetición, tamaño }k&c^k
+\end{array}
+\]
+
+Recordatorio de como calcular cuantos multiplos de $d$ hay en el conjunto 
+
+\algoinfo{V\log V}{V}{ }
+\begin{minted}{cpp}
+for(int x:a) ++frec[x]; // a ya contiene la entrada
+for(int d=1; d<=V; ++d)
+  for(int k=d; k<=V; k+=d)
+    mult[d]+=frec[k];
+\end{minted}
+
+
+\subsection{Inversión de Möbius}
+Usar $\mu$ y su criba de Teoría de números. Identidad: $\sum_{d\mid n}\mu(d)=[n=1]$; codifica PIE sobre primos distintos.
+
+
+\textbf{Divisores:}
+Se usa cuando una funcion conocida $g(n)$ acumula valores de una funcion oculta $f(n)$ sobre todos los divisores de $n$.
+\[
+g(n)=\sum_{d\mid n}f(d)
+\ \Longrightarrow\ f(n)=\sum_{d\mid n}\mu(d)g(n/d).
+\]
+\textbf{Múltiplos (dominio $1,\dots,V$):}
+En este caso $g(d)$ acumula los valores de $f(k)$ sobre todos los multiplos de $d$ hasta cierto limite superior $V$
+\[
+g(d)=\sum_{k=1}^{\lfloor V/d\rfloor}f(kd)
+\ \Longrightarrow\ f(d)=\sum_{k=1}^{\lfloor V/d\rfloor}\mu(k)g(kd).
+\]
+En particular $f(1)=\sum_{d=1}^V\mu(d)g(d)$. DP para todas las clases; Möbius para $f(1)$ en $O(V)$ si $\mu$ está precalculado y $g(d)$ cuesta $O(1)$.
+Sí: faltaba precisar **qué cuenta cada función y por qué la transformación sirve**. Sustituye ese bloque por este:
+
+
+\textbf{Contar enteros libres de cuadrados.}
+Queremos contar los $x\in[1,N]$ que no son divisibles por
+ningún cuadrado mayor que 1. Basta excluir los eventos
+$p^2\mid x$ para cada primo $p$. Una intersección exige
+$d^2\mid x$, donde $d$ es producto de los primos elegidos;
+$\mu(d)$ incorpora los signos de PIE:
+\[
+Q(N)=\sum_{d=1}^{\lfloor\sqrt N\rfloor}
+\mu(d)\left\lfloor\frac{N}{d^2}\right\rfloor.
+\]
+Incluye el 1. Precalcular $\mu$ hasta
+$\lfloor\sqrt{N_{\max}}\rfloor$; cada consulta cuesta
+$O(\sqrt N)$. En $[L,R]$: $Q(R)-Q(L-1)$, con $Q(0)=0$.
+
+\textbf{Contar números que no son potencias perfectas.}
+Queremos contar los $x\in[2,N]$ que no pueden escribirse
+como $a^b$ con enteros $a,b\ge2$. Si
+$x=\prod_i p_i^{e_i}$, definir $h(x)=\gcd(e_1,e_2,\dots)$.
+Entonces $x$ es potencia $d$-ésima si y sólo si
+$d\mid h(x)$. Por tanto,
+\[
+g(d)=\#\{x\in[2,N]:d\mid h(x)\}
+=\lfloor N^{1/d}\rfloor-1.
+\]
+El $-1$ excluye la base 1. Invertir sobre múltiplos para
+obtener $f(d)=\#\{x:h(x)=d\}$; responder $f(1)$.
+Basta $1\le d\le\lfloor\log_2N\rfloor$, pues la menor
+base es 2. Calcular raíces enteras exactas: búsqueda
+binaria comparando $a^d$ con $N$ sin overflow; ajustar
+también las aproximaciones de \texttt{sqrt}.
+
+
+\textbf{Cuidados de implementación.}
+$n$ es la cantidad de entradas, $m$ la cantidad de
+eventos y $V,L$ valores máximos.

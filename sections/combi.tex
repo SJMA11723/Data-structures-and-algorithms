@@ -4,7 +4,7 @@
 Se puede calcular con $C_0 = C_1 = 1$,
 $$C_n = \sum_{k = 0}^{n - 1} C_kC_{n - 1 - k} = \frac{1}{n + 1}\binom{2n}{n} = \frac{4n + 2}{n + 2}C_{n - 1},\; n \geq 2.$$
 El $n$-ésimo número de Catalán $C_n$ cuenta
-\begin{itemize}
+\begin{itemize}[noitemsep] % elimina espacio entre items
     \item La cantidad de secuencias de paréntesis balanceadas de longitud $2n$.
     \item La cantidad de maneras distintas de agrupar $n + 1$ factores con paréntesis.
     \item La cantidad de triangulaciones de un polígono convexo de $n + 2$ lados.
@@ -46,7 +46,7 @@ $$\sum_{k = 1}^n N(n, k) = C_n,$$
 
 donde $C_n$ es el $n$-ésimo número de Catalán. El número $N(n, k)$ cuenta
 
-\begin{itemize}
+\begin{itemize}[noitemsep] % elimina espacio entre items
     \item La cantidad de secuencias de paréntesis balanceadas con $2n$ paréntesis y $k$ distintos anidamientos, es decir, $k$ ocurrencias de la subcadena $()$.
     \item La cantidad de caminos distintos desde $(0, 0)$ a $(2n, 0)$ dando pasos hacia arriba o abajo y siempre avanzando una unidad en cada paso (diagonales), de manera que haya exactamente $k$ picos. Equivalentemente a la cantidad de maneras de ordenar $n$ $1$'s y $n$ $(-1)$'s en una secuencia $a_i$ tales que si $S_i$ es la suma parcial de $a_i$, entonces $\set{S_i}$ tiene exactamente $k$ máximos locales.
     \begin{figure}[H]
@@ -59,8 +59,35 @@ donde $C_n$ es el $n$-ésimo número de Catalán. El número $N(n, k)$ cuenta
 \end{itemize}
 
 
+\subsection{Desarreglos (Derangements)}
+
+$!n =D_n = D_{n,0}$: Cantidad de permutaciones de $n$ elementos sin ningún punto fijo ($\pi(i) \neq i, \forall i$).
+
+\textbf{Fórmulas y Recurrencias:}
+\begin{itemize}[noitemsep]
+    \item $D_n = (n-1)(D_{n-1} + D_{n-2})$ con $D_0 = 1, D_1 = 0$.
+    \item D_n = n D_{n-1} + (-1)^n$ para $n \geq 1$.
+    \item (PIE): $D_n = n! \sum_{i=0}^{n} \frac{(-1)^i}{i!} = n! \left( 1 - \frac{1}{1!} + \frac{1}{2!} - \dots + \frac{(-1)^n}{n!} \right)$.
+    \item  $D_n = \left\lfloor \frac{n! + 1}{e} \right\rfloor = \text{round}\left(\frac{n!}{e}\right)$ para $n \geq 1$.
+    \item $\lim_{n \to \infty} \frac{D_n}{n!} = \frac{1}{e} \approx 0.367879$.
+    \item \textbf{Exactamente $k$ puntos fijos:} $D_{n,k} = \binom{n}{k} D_{n-k}$.
+    \item $\sum_{k=0}^{n} \binom{n}{k} D_k = n!$.
+\end{itemize}
+
+\textbf{Valores iniciales ($n = 0 \dots 6$):} $1, 0, 1, 2, 9, 44, 265$.
+
+\textbf{Objetos que cuenta $D_n$:}
+\begin{itemize}[noitemsep]
+    \item Repartos de $n$ objetos a $n$ destinatarios donde nadie recibe el correcto (ej. cartas en sobres).
+    \item Matrices de permutación de $n \times n$ con ceros en la diagonal principal.
+    \item Grafos dirigidos 1-regulares de $n$ vértices sin autobucles (self-loops).
+\end{itemize}
+
+
+
 \subsection{Particiones Enteras}
-Genera todas las particiones de un número \(n\) como suma de enteros positivos en orden no creciente. Complejidad: Tiempo \(O\Pa{ \frac{13^{\sqrt{n}}}{n} }\) – Memoria extra \(O(n)\).
+
+\algoinfo{ \frac{13^{\sqrt{n}}}{n} }{ n }{Genera todas las particiones de un número \(n\) como suma de enteros positivos en orden no creciente. }
 
 \begin{minted}{cpp}
 void generar(int n, int maximo, vi &actual){
@@ -93,8 +120,55 @@ La función de partición \( p(n) \), que cuenta el número de formas distintas 
 	\caption{Particiones enteras}
 \end{table}
 
-Tiene la siguiente aproximación asintótica para valores grandes de $n$, conocida como la fórmula de Hardy-Ramanujan:
+Se tiene la siguiente aproximación asintótica para valores grandes de $n$, conocida como la \textbf{fórmula de Hardy-Ramanujan}:
 
 \[
 p(n) \sim \frac{1}{4n\sqrt{3}} \exp\left( \pi \sqrt{\frac{2n}{3}} \right)
 \]
+
+\subsection{Permutaciones: Inversiones y Swaps}
+
+Sea $P$ una permutación de tamaño $n$ sobre $\{0, \dots, n-1\}$:
+\begin{itemize}[noitemsep]
+    \item \textbf{Inversión:} Par de índices $(i, j)$ tal que $i < j$ y $P[i] > P[j]$.
+    \item \textbf{Swaps Adyacentes mín.:} Iguales a la cantidad de \textbf{inversiones}.
+    \item \textbf{Swaps Generales mín.:} $n - c(P)$, donde $c(P)$ es el número de ciclos en $i \to P[i]$.
+    \item \textbf{Paridad:} $\#\text{Inversiones} \equiv n - c(P) \pmod 2$.
+\end{itemize}
+
+\textbf{Distancia entre permutaciones $A \to B$:}
+Para hallar el costo de transformar $A$ en $B$, se mapean los elementos de $A$ a las posiciones que deben ocupar en $B$:
+\begin{enumerate}[noitemsep]
+    \item Construir $\texttt{pos}$ tal que $\texttt{pos}[B[i]] = i$.
+    \item Generar $P[i] = \texttt{pos}[A[i]]$.
+    \item La distancia en swaps adyacentes/generales es el número de inversiones/$n - c(P)$ de $P$.
+\end{enumerate}
+
+\textbf{Peores casos y distancias máximas ($A \to B$):}
+\begin{itemize}[noitemsep]
+    \item \textbf{Inversiones (Swaps ady.):} $B = \text{reverse}(A)$,  $\text{Costo} = n(n-1)/2$.
+    \item \textbf{Swaps Generales:} $B = \text{shift\_circular}(A)$ (1 solo ciclo)$, $\text{Costo} = n - 1$.
+\end{itemize}
+
+
+\algoinfo{ n \log n }{ n }{}
+\begin{minted}[tabsize=2]{cpp}
+long long merge_inv(vector<int>& a, int l, int r, vector<int>& tmp) {
+    if (r - l <= 1) return 0;
+    int m = l + (r - l) / 2;
+    long long inv = merge_inv(a, l, m, tmp) + merge_inv(a, m, r, tmp);
+    int i = l, j = m, k = l;
+    while (i < m && j < r) {
+        if (a[i] <= a[j]) tmp[k++] = a[i++];
+        else { tmp[k++] = a[j++]; inv += (m - i); }
+    }
+    while (i < m) tmp[k++] = a[i++];
+    while (j < r) tmp[k++] = a[j++];
+    for (int t = l; t < r; t++) a[t] = tmp[t];
+    return inv;
+}
+long long contar_inversiones(vector<int> a) {
+    vector<int> tmp(a.size());
+    return merge_inv(a, 0, a.size(), tmp);
+}
+\end{minted}

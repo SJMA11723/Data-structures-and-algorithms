@@ -115,3 +115,65 @@ bool subsetSumBitset( vi& arr, int S) {
     return dp[S];
 }
 \end{minted}
+
+
+
+\subsection{SOS DP}
+
+Dado un conjunto de $n$ elementos y una función $A(S)$ definida para cada subconjunto $S$, queremos calcular
+\[
+F(S) = \sum_{T \subseteq S} A(S), \quad \forall S \subseteq \{0,1,\dots,n-1\}.
+\]
+
+Definimos 
+$
+S(x, i) = \{ y \subseteq x \mid y \oplus x < 2^i \},
+$ 
+notar que contiene todos los subconjuntos de $x$ cuyos bits a la izquierda del bit $i$ coinciden con los de $x$.
+
+\textbf{Ejemplo:}  
+$$
+S(11010110_2, 3) = \{ 
+  11010000, 
+  11010010, 
+  11010100, 
+  11010110 \}
+$
+
+Podemos descomponer $S(x, i)$ recursivamente:
+
+\[
+S(x, i) =
+\begin{cases}
+S(x, i-1) & \text{si el bit $i$ de $x$ es 0} \\
+S(x, i-1) \cup S(x \oplus 2^i, i-1) & \text{si el bit $i$ de $x$ es 1}
+\end{cases}
+\]
+Con esta partición, definimos la tabla de DP:
+\[
+dp[x][i] = \sum_{y \in S(x, i)} f[y]
+\]
+Y asi tenemos
+\[
+dp[x][i] =
+\begin{cases}
+dp[x][i-1] & \text{si el bit $i$ de $x$ es 0} \\
+dp[x][i-1] + dp[x \oplus 2^i][ i-1] & \text{si el bit $i$ de $x$ es 1}
+\end{cases}
+\]
+
+
+\textbf{T:} $O(n \cdot 2^n)$ | \textbf{M:} $O(2^n)$.
+\begin{minted}{cpp}
+int n;
+vector<int> f(1<<n); // inicializar f[S]
+vector<int> g = f;
+
+for(int i = 0; i < n; i++) {
+    for(int mask = 0; mask < (1<<n); mask++) {
+        if(mask & (1<<i)) {
+            g[mask] += g[mask^(1<<i)];
+        }
+    }
+}
+\end{minted}

@@ -66,9 +66,9 @@ $!n =D_n = D_{n,0}$: Cantidad de permutaciones de $n$ elementos sin ningún punt
 \textbf{Fórmulas y Recurrencias:}
 \begin{itemize}[noitemsep]
     \item $D_n = (n-1)(D_{n-1} + D_{n-2})$ con $D_0 = 1, D_1 = 0$.
-    \item D_n = n D_{n-1} + (-1)^n$ para $n \geq 1$.
+    \item $D_n = n D_{n-1} + (-1)^n$ para $n \geq 1$.
     \item (PIE): $D_n = n! \sum_{i=0}^{n} \frac{(-1)^i}{i!} = n! \left( 1 - \frac{1}{1!} + \frac{1}{2!} - \dots + \frac{(-1)^n}{n!} \right)$.
-    \item  $D_n = \left\lfloor \frac{n! + 1}{e} \right\rfloor = \text{round}\left(\frac{n!}{e}\right)$ para $n \geq 1$.
+    \item $D_n = \left\lfloor \frac{n! + 1}{e} \right\rfloor = \text{round}\left(\frac{n!}{e}\right)$ para $n \geq 1$.
     \item $\lim_{n \to \infty} \frac{D_n}{n!} = \frac{1}{e} \approx 0.367879$.
     \item \textbf{Exactamente $k$ puntos fijos:} $D_{n,k} = \binom{n}{k} D_{n-k}$.
     \item $\sum_{k=0}^{n} \binom{n}{k} D_k = n!$.

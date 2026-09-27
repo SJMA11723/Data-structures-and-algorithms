@@ -8,3 +8,6 @@
 *.fdb_latexmk
 *.fls
 _minted
+
+# macOS
+.DS_Store

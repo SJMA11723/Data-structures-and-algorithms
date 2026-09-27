@@ -105,14 +105,16 @@ Se usa cuando una funcion conocida $g(n)$ acumula valores de una funcion oculta 
 g(n)=\sum_{d\mid n}f(d)
 \ \Longrightarrow\ f(n)=\sum_{d\mid n}\mu(d)g(n/d).
 \]
-\textbf{Múltiplos (dominio $1,\dots,V$):}
+\textbf{Múltiplos (dominio $[v]$):}
 En este caso $g(d)$ acumula los valores de $f(k)$ sobre todos los multiplos de $d$ hasta cierto limite superior $V$
 \[
 g(d)=\sum_{k=1}^{\lfloor V/d\rfloor}f(kd)
 \ \Longrightarrow\ f(d)=\sum_{k=1}^{\lfloor V/d\rfloor}\mu(k)g(kd).
 \]
-En particular $f(1)=\sum_{d=1}^V\mu(d)g(d)$. DP para todas las clases; Möbius para $f(1)$ en $O(V)$ si $\mu$ está precalculado y $g(d)$ cuesta $O(1)$.
-Sí: faltaba precisar **qué cuenta cada función y por qué la transformación sirve**. Sustituye ese bloque por este:
+En particular $f(1)=\sum_{d=1}^V\mu(d)g(d)$. 
+
+Nota: DP para todas las clases, Möbius para $f(1)$ en $O(V)$ si $\mu$ está precalculado y $g(d)$ cuesta $O(1)$.
+
 
 
 \textbf{Contar enteros libres de cuadrados.}

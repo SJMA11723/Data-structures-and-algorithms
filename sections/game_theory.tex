@@ -1,0 +1,43 @@
+\section{Teoría de juegos}
+
+\subsection{Juegos imparciales}
+Dos jugadores alternan turnos, con información completa, sin azar ni empates. Es \textit{imparcial} si ambos tienen los mismos movimientos desde todo estado; de otro modo es \textit{partidario}. En convención \textit{normal} el último en mover gana; en \textit{misère}, pierde. En adelante: imparcial, finito y normal.
+
+\textbf{Grafo de estados.} $u\to v$ representa un movimiento. Los terminales son perdedores ($P$); $u$ es ganador ($N$) sii tiene una salida a $P$, y es $P$ sii todas sus salidas van a $N$. Calcular en orden topológico inverso. Para caracterizar los $P$, buscar una propiedad $\mathcal P$: los terminales la cumplen; todo movimiento desde $\mathcal P$ la rompe; desde $\neg\mathcal P$ existe un movimiento a $\mathcal P$.
+
+\subsection{Nim y Grundy}
+En Nim, un movimiento reduce una de las pilas $a_1,\dots,a_k$. Sea $X=\bigoplus_i a_i$: la posición es $P$ sii $X=0$. Si $X\ne0$, sea $b$ su bit encendido más significativo; elegir $a_i$ con $b$ encendido y reemplazarla por $a_i\oplus X<a_i$ deja XOR $0$.
+
+Para una posición $s$,
+\[
+G(s)=\operatorname{mex}\{G(t):s\to t\},\qquad \operatorname{mex}(S)=\min(\Z_{\geq0}\setminus S).
+\]
+Entonces $s$ es $P$ sii $G(s)=0$. \textbf{Sprague--Grundy:} todo juego imparcial finito normal equivale a una pila de Nim de tamaño $G(s)$; para juegos independientes,
+\[
+G_{\rm total}=G(s_1)\oplus\cdots\oplus G(s_k),
+\]
+y el estado global es $P$ sii $G_{\rm total}=0$. 
+
+\textbf{Finales especiales:}  
+Si el problema no define los estados perdedores en términos de 'no tener movimientos' (por ejemplo, el objetivo es mover una ficha a una casilla determinada), debemos transformar el juego identificando los nodos que obligan al oponente dejarnos en una posición ganadora. Dichos nodos actuarán como nuestros estados terminales. 
+
+Si quien no puede mover gana, es \textbf{misère} y el XOR de Grundy \textbf{no aplica}.
+
+
+\textbf{Maximización/minimización.} No necesariamente usa Grundy. Si $A$ maximiza $F$ y $B$ la minimiza eligiendo objetos alternadamente: analizar los dos objetos finales para ambos turnos, deducir la condición de intercambio, ordenar con ella y generalizar a $n$ objetos.
+
+\subsection{Green Hackenbush}
+Grafo unido al \textit{suelo}; se elimina una arista y desaparece todo lo que pierda conexión con él. Es imparcial normal y las componentes se combinan con XOR.
+
+\textbf{Principio del colon.} Si $G(H_1)=G(H_2)$ con $H_1,H_2$ arboles y  $H_1$ se une al resto del grafo sólo por una articulación, sustituir $H_1$ por $H_2$ no cambia el valor del numero de Grundy de todo el grafo.
+
+Consecuencia: Toda figura colgante de valor $g$ equivale a un tallo de $g$ aristas. En un árbol enraizado,
+\[
+G(u)=\bigoplus_{v\text{ hijo de }u}(G(v)+1).
+\]
+
+\textbf{Principio de fusión.} Fusionar todos los vértices de un ciclo preserva Grundy; sus aristas se vuelven lazos. Unificar el suelo, fusionar ciclos, reemplazar cada lazo por una hoja y aplicar colon. Lazos en un mismo vértice se cancelan por pares.\\
+
+\algoinfo{ (N+M) \alpha(N) }{ N+M }{Nodos en $[0,N)$}
+
+\inputcode{cpp}{latex_src/game_theory/GreenHackenbush.cpp}{GreenHackenbush.cpp}

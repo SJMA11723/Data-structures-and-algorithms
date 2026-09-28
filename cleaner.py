@@ -2,8 +2,8 @@ import os
 import re
 
 # Carpetas de configuración
-INPUT_DIR: str = 'code'       
-OUTPUT_DIR: str = 'latex_src' 
+INPUT_DIR: str = 'code/game_theory'       
+OUTPUT_DIR: str = 'latex_src/game_theory' 
 
 # Expresiones regulares para C++
 BOILERPLATE_REGEX: list[str] = [
@@ -214,5 +214,10 @@ def main() -> None:
                 
     print(f"¡Listo! Se procesaron {count} archivos. Revisa la carpeta '{OUTPUT_DIR}'.")
 
+
+
 if __name__ == '__main__':
     main()
+
+
+

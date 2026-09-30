@@ -4,7 +4,7 @@
 %=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=
 \subsection{Lógica - Conjuntos - Bitwise}
 $\oplus$ es el xor (o diferencia simétrica de conjuntos).
-\begin{enumerate}[1.]
+\begin{enumerate}[1., nosep]
     \item $a|b = a\oplus b + a \& b$
     \item $a\oplus (a\&b) = (a|b)\oplus b$
     \item $b\oplus (a\&b) = (a|b)\oplus a$
@@ -15,88 +15,167 @@ $\oplus$ es el xor (o diferencia simétrica de conjuntos).
 \end{enumerate}
 
 Si $p, q$ son predicados, entonces:
-\begin{enumerate}[1.]
+\begin{enumerate}[1., nosep]
     \item $(p \vee q) \iff -(-p \wedge -q)$.
     \item $(p \implies q) \iff (-p \vee q)$.
     \item $(p \oplus q) \iff -(p \iff q)$.
 \end{enumerate}
 
-\subsection{Combinatoria}
-
-\textbf{Inclusión-Exclusión.} Sean $A_1, \dots, A_n$ conjuntos, entonces
-$$\abs{\bigcup_{i = 1}^n A_i} = \sum_{\varnothing \neq J \subseteq [n]} (-1)^{|J| - 1}\abs{\bigcap_{j \in J} A_j}$$
-
-\textbf{Cantidad de elementos en exactamente $r$ conjuntos.} Sean $A_1, \dots, A_n$ conjuntos y $0 \leq r \leq n$, la cantidad de elementos en exactamente $r$ conjuntos $A_i$ es
-$$\sum_{m = r}^n (-1)^{m - r}\binom{m}{r}\sum_{\substack{J \subseteq [n]\\|J| = m}} \abs{\bigcap_{j \in J} A_j}$$
-
-\textbf{Teorema del binomio generalizado.} Para $x \in \R$ y $a, b \in \mathbb{C}$ se cumple
-$$(a + b)^x = \sum_{k = 0}^\infty \binom{x}{k}a^{x}b^{x - k},$$
-$$\binom{x}{k} = \frac{1}{k!}\prod_{j = 0}^{k - 1}(x - j) = \frac{x(x - 1)(x - 2)\cdots(x - k + 1)}{k!}.$$
-
-\textbf{ES FIBONACCI} \textit{(En un icpc, el de la Cangurera lo usó)}. En el \textit{Triángulo de Pascal}, los elementos en una ``diagonal'' satisfacen
-\[
-F_{n+1} = \sum_{k=0}^{\lfloor n/2 \rfloor} \binom{n-k}{k},
-\]
-donde \( F_{n+1} \) es el \((n+1)\)-ésimo número de Fibonacci.
-
-\begin{figure}[H]
-    \centering
-	\includegraphics[width=0.5\columnwidth]{img/FiboPascal.png}
-\end{figure}
-
-\textbf{Palo de Hockey.}
-Para \( n \) y \( r \) \((n \geq r)\), se cumple
-\[
-\sum_{k=r}^{n} \binom{k}{r} = \binom{n+1}{r+1}.
-\]
-
-\textbf{Derangements.} ¿Cuántos trastornos mentales distintos de tamaño $n$ hay? (Según Google Translator). Considera los conjuntos $\set{A_k}_{k = 1}^{k = n}$ donde $A_k$ es la cantidad de permutaciones con el punto fijo $p_k = k$. La cantidad de permutaciones con al menos un punto fijo es
-\begin{align*}
-	P &:= \abs{\bigcup_{i = 1}^n A_i} = \sum_{\varnothing \neq J \subseteq [n]} (-1)^{|J| - 1}\abs{\bigcap_{j \in J} A_j}\\
-	&= \sum_{\varnothing \neq J \subseteq [n]} (-1)^{|J| - 1}(n - |J|)!
-	= \sum_{i = 1}^n (-1)^{i - 1}\binom{n}{i}(n - i)!,
-\end{align*}
-
-entonces la cantidad de desarreglos es $n! - P$. Si $d_n$ es la cantidad de desarreglos de tamaño $n$ se cumple $d_n = (n - 1)(d_{n  -1} + d_{n - 2})$ con $d_1 = 0$ y $d_0 = d_2 = 1$. También se cumple $d_n = n!d_{n - 1} + (-1)^n$. Sea $0 \leq k \leq n$ y $d_{n, k}$ la cantidad de desarreglos de tamaño $n$ con exactamente $k$ puntos fijos, entonces $d_{n, k} = \binom{n}{k}d_{n - k}$.
-
+%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=
 %=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=
+\subsection{Teoria de numeros}
+Legendre's formula gives an expression for the exponent of the largest power of a prime p that divides the factorial n!.
+\newcommand{\piso}[1]{\left\lfloor#1\right\rfloor}
+\begin{equation*}
+    \nu_p ( n! ) = \sum_{i=1}^{\piso{ \log_p n } } \piso{\frac{n}{p_i}}
+     = \frac{n - S_p(n)}{p^i},
+\end{equation*}
+Donde $S_p(n)$ es la suma de dígitos de $n$ en base $p$.
+
+
+\subsection{Aritmética}
+
+
+\textbf{Sumas de Gauss}
+\[
+\sum_{i=1}^n i=\frac{n(n+1)}{2},\qquad
+\sum_{i=1}^n i^2=\frac{n(n+1)(2n+1)}{6},
+\]
+\[
+\sum_{i=1}^n i^3=\left(\frac{n(n+1)}{2}\right)^2.
+\]
+Para cualquier potencia entera $k\ge1$, sea
+$S_k(n)=\sum_{i=1}^n i^k$, con $S_0(n)=n$:
+\[
+S_k(n)=\frac{(n+1)^{k+1}-1-
+\sum_{j=0}^{k-1}\binom{k+1}{j}S_j(n)}{k+1}.
+\]
+
+\textbf{Potencias de base fija (geométrica)}
+Para $p\ne1$:
+\[
+\sum_{i=0}^n p^i=\frac{1-p^{n+1}}{1-p},\qquad
+\sum_{i=1}^n p^i=\frac{p(1-p^n)}{1-p},
+\]
+\[
+\sum_{i=1}^n i\,p^i
+=\frac{p-(n+1)p^{n+1}+np^{n+2}}{(1-p)^2}.
+\]
+Si $p=1$, las tres sumas son, respectivamente,
+$n+1$, $n$ y $n(n+1)/2$.
+
+\textbf{Series infinitas}
+Las siguientes fórmulas requieren $|p|<1$:
+\[
+\sum_{i=0}^{\infty}p^i=\frac{1}{1-p},\qquad
+\sum_{i=1}^{\infty}p^i=\frac{p}{1-p},
+\]
+\[
+\sum_{i=1}^{\infty}i\,p^i=\frac{p}{(1-p)^2},\qquad
+\sum_{i=1}^{\infty}i^2p^i=\frac{p(1+p)}{(1-p)^3}.
+\]
+
+\textbf{Diferencias finitas}
+Si $a_t$ es polinómica de grado $\le k$, entonces
+$\Delta^{k+1}a_t=0$. Definimos
+\[
+\Delta^0a_t=a_t,\qquad
+\Delta^{j+1}a_t=\Delta^ja_{t+1}-\Delta^ja_t.
+\]
+Con los primeros $k+1$ términos obtenemos:
+\[
+a_n=\sum_{j=0}^{k}\binom{n-1}{j}\Delta^ja_1,
+\qquad
+\sum_{t=1}^{n}a_t
+=\sum_{j=0}^{k}\binom{n}{j+1}\Delta^ja_1.
+\]
+
+
+\algoinfo{k^2}{k}{Construir las diferencias desde $k+1$ términos; evaluar en $O(k)$.}
+
+%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=
 %=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=
 \subsection{Geometría}
 
-\textbf{Teorema de los círculos de Descartes}. Si cuatro círculos son mutuamente tangentes de curvatura $k_i= 1/r_i$ el teorema dice:
+
+\textbf{Polígonos: área y puntos enteros}
+Vértices $P_i=(x_i,y_i)$ en orden; índices módulo $n$.
+\algoinfo{n}{1}{}
+\[
+A=\frac12\left|\sum_{i=0}^{n-1}P_i\times P_{i+1}\right|.
+\]
+Para un polígono simple sin agujeros y con vértices enteros:
+\[
+B=\sum_{i=0}^{n-1}
+\gcd(|x_{i+1}-x_i|,|y_{i+1}-y_i|),
+\]
+\[
+A=I+\frac B2-1,\qquad I=\frac{2A-B+2}{2}.
+\]
+$B$: puntos enteros del borde; $I$: puntos enteros interiores.
+Un segmento entero no degenerado contiene
+$\gcd(|\Delta x|,|\Delta y|)+1$ puntos enteros.
+
+
+\textbf{Triángulos: Herón, radios y trigonometría}
+Lados $a,b,c$ opuestos a $\alpha,\beta,\gamma$;
+$s=(a+b+c)/2$, área $A>0$, inradio $r$, circunradio $R$.
+\[
+A=\sqrt{s(s-a)(s-b)(s-c)},\qquad
+r=\frac As,\qquad R=\frac{abc}{4A}.
+\]
+\[
+a^2=b^2+c^2-2bc\cos\alpha,\qquad
+A=\frac{bc\sin\alpha}{2},
+\]
+\[
+\frac a{\sin\alpha}=\frac b{\sin\beta}
+=\frac c{\sin\gamma}=2R.
+\]
+
+\textbf{Cuadriláteros: Brahmagupta y Bretschneider}
+Cuadrilátero convexo; lados $a,b,c,d$ en orden,
+diagonales $p,q$, $s=(a+b+c+d)/2$.
+Sean $\alpha,\gamma$ ángulos opuestos y
+$T=(s-a)(s-b)(s-c)(s-d)$.
+\[
+A^2=T-abcd\cos^2\!\left(\frac{\alpha+\gamma}{2}\right)
+=T-\frac{(ac+bd)^2-p^2q^2}{4}.
+\]
+Si es cíclico:
+\[
+A=\sqrt T,\qquad pq=ac+bd\quad\text{(Ptolomeo)}.
+\]
+
+\textbf{Círculos: intersecciones}
+Centros $O_1,O_2$, radios $r_1,r_2>0$;
+$d=\|O_2-O_1\|>0$. Hay intersección de circunferencias
+si $|r_1-r_2|\le d\le r_1+r_2$.
+\[
+e=\frac{O_2-O_1}{d},\qquad
+t=\frac{d^2+r_1^2-r_2^2}{2d},\qquad
+h=\sqrt{r_1^2-t^2},
+\]
+\[
+X_\pm=O_1+te\pm he^\perp.
+\]
+$h=0$: tangencia. Si $d=0$, coinciden si $r_1=r_2$;
+en otro caso no se intersectan.
+
+
+\textbf{Círculos tangentes: Descartes}
+Cuatro círculos mutuamente tangentes; curvaturas
+$k_i=1/r_i$, negativas para el círculo que encierra a los otros:
 \begin{equation*}
     (k_1+k_2+k_3+k_4)^2 = 2\left( k_1^2 +k_2^2 +k_3^2 +k_4^2   \right)
 \end{equation*}
-\begin{equation*}
-    k_4 = k_1+k_2+k_3 \pm 2\sqrt{k_1k_2+k_2k_3+k_3k_1}
-\end{equation*}
+\[
 
-\textbf{Formula de Heron}. Dado un trinangulo de lados $a, b, c$, escribimos su semiperimetro $s = \frac{a+b+c}{2}$, inradio r, y cuirunradio R.
 
-\begin{equation*}
-    Area = \sqrt{s(s-a)(s-b)(s-c)}
-\end{equation*}
-\begin{equation*}
-    2R = \frac{abc}{2  \sqrt{s(s-a)(s-b)(s-c)}}
-\end{equation*}
-\begin{equation*}
-    r =  \sqrt{\frac{(s-a)(s-b)(s-c)}{s} }
-\end{equation*}
-
-\textbf{Fórmula de Brahmagupta}. Para el Area se vale algo similar en cuadrilateros ciclicos
-\begin{equation*}
-    Area = \sqrt{(s-a)(s-b)(s-c)(s-d)}
-\end{equation*}
-
-Para no cíclicos, $\theta=$ promedio de dos ángulos opuestos, $p$ y $q$ diagonales
-\begin{align*}
-    Area &= \sqrt{(s-a)(s-b)(s-c)(s-d)-abcd \cos^2\theta}\\
-    &=\sqrt{K},
-\end{align*}
-
-donde $K = (s-a)(s-b)(s-c)(s-d) - \frac{1}{4}(ac+bd+pq)(ac+bd-pq)$.
-
-\textbf{Multidimensional} \textit{(Como Chang).} Para más dimensiones, si $A$ es la matriz con filas estos vectores
-\begin{equation*}
-    Volumen_n = \frac{1}{n!} \sqrt{det\Pa{AA^T}}
-\end{equation*}
+\textbf{Volumen de un simplex}
+Vértices $P_0,\ldots,P_n\in\mathbb R^d$, $d\ge n$.
+Sea $E$ la matriz con filas $P_i-P_0$, $i=1,\ldots,n$:
+\[
+V_n=\frac{1}{n!}\sqrt{\det(AA^\top)}.
+\]
+Si $d=n$, se simplifica a $V_n=|\det A|/n!$.

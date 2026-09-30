@@ -1,4 +1,31 @@
 \section{Combinatoria}
+
+\subsection{Binomio}
+
+\textbf{Teorema del binomio generalizado.} Para $x \in \R$ y $a, b \in \mathbb{C}$ se cumple
+$$(a + b)^x = \sum_{k = 0}^\infty \binom{x}{k}a^{x}b^{x - k},$$
+
+\textbf{Palo de Hockey.}
+Para \( n \) y \( r \) \((n \geq r)\), se cumple
+\[
+\sum_{k=r}^{n} \binom{k}{r} = \binom{n+1}{r+1}.
+\]
+
+\textbf{Es fibonacci.} 
+\[
+F_{n+1} = \sum_{k=0}^{\lfloor n/2 \rfloor} \binom{n-k}{k},
+\]
+donde \( F_{n+1} \) es el \((n+1)\)-ésimo número de Fibonacci.
+
+\begin{figure}[H]
+    \centering
+	\includegraphics[width=0.5\columnwidth]{img/FiboPascal.png}
+\end{figure}
+
+
+
+% - % - % - % - % - % - % - % - % - % - % - % - % - % - % - % -
+% - % - % - % - % - % - % - % - % - % - % - % - % - % - % - % -
 \subsection{Números de Catalán}
 
 Se puede calcular con $C_0 = C_1 = 1$,
@@ -35,6 +62,8 @@ Entonces $C_{n, n} = C_n = \sum_{k = 1}^{n - 1} C_{n - 1, k}$. El número $C_{n,
     \caption{Triángulo de Catalán hasta $n = 6$.}
 \end{figure}
 
+% - % - % - % - % - % - % - % - % - % - % - % - % - % - % - % -
+% - % - % - % - % - % - % - % - % - % - % - % - % - % - % - % -
 \subsection{Números de Narayana}
 
 Sean $n, k \in \Z^+$ con $k \leq n$, los números de Narayana se definen como
@@ -58,10 +87,20 @@ donde $C_n$ es el $n$-ésimo número de Catalán. El número $N(n, k)$ cuenta
     \item La cantidad de particiones no cruzadas de un conjunto de tamaño $n$ en exactamente $k$ subconjuntos.
 \end{itemize}
 
-
+% - % - % - % - % - % - % - % - % - % - % - % - % - % - % - % -
+% - % - % - % - % - % - % - % - % - % - % - % - % - % - % - % -
 \subsection{Desarreglos (Derangements)}
 
-$!n =D_n = D_{n,0}$: Cantidad de permutaciones de $n$ elementos sin ningún punto fijo ($\pi(i) \neq i, \forall i$).
+Considera los conjuntos $\set{A_k}_{k = 1}^{k = n}$ donde $A_k$ es la cantidad de permutaciones con el punto fijo $p_k = k$. La cantidad de permutaciones con al menos un punto fijo es
+\begin{align*}
+	P &:= \abs{\bigcup_{i = 1}^n A_i} = \sum_{\varnothing \neq J \subseteq [n]} (-1)^{|J| - 1}\abs{\bigcap_{j \in J} A_j}\\
+	&= \sum_{\varnothing \neq J \subseteq [n]} (-1)^{|J| - 1}(n - |J|)!
+	= \sum_{i = 1}^n (-1)^{i - 1}\binom{n}{i}(n - i)!,
+\end{align*}
+
+entonces la cantidad de desarreglos es $n! - P$. 
+
+Denotamos por $!n =D_n = D_{n,0}$: Cantidad de permutaciones de $n$ elementos sin ningún punto fijo ($\pi(i) \neq i, \forall i$).
 
 \textbf{Fórmulas y Recurrencias:}
 \begin{itemize}[noitemsep]
@@ -84,7 +123,8 @@ $!n =D_n = D_{n,0}$: Cantidad de permutaciones de $n$ elementos sin ningún punt
 \end{itemize}
 
 
-
+% - % - % - % - % - % - % - % - % - % - % - % - % - % - % - % -
+% - % - % - % - % - % - % - % - % - % - % - % - % - % - % - % -
 \subsection{Particiones Enteras}
 
 \algoinfo{ \frac{13^{\sqrt{n}}}{n} }{ n }{Genera todas las particiones de un número \(n\) como suma de enteros positivos en orden no creciente. }
@@ -126,6 +166,9 @@ Se tiene la siguiente aproximación asintótica para valores grandes de $n$, con
 p(n) \sim \frac{1}{4n\sqrt{3}} \exp\left( \pi \sqrt{\frac{2n}{3}} \right)
 \]
 
+
+% - % - % - % - % - % - % - % - % - % - % - % - % - % - % - % -
+% - % - % - % - % - % - % - % - % - % - % - % - % - % - % - % -
 \subsection{Permutaciones: Inversiones y Swaps}
 
 Sea $P$ una permutación de tamaño $n$ sobre $\{0, \dots, n-1\}$:

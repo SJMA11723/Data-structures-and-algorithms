@@ -25,6 +25,19 @@ __int128 PIE(int m, F inter){
 }
 \end{minted}
 
+\subsection{Similares}
+
+\textbf{Cantidad de elementos en exactamente $r$ conjuntos.} Sean $A_1, \dots, A_n$ conjuntos y $0 \leq r \leq n$, la cantidad de elementos en exactamente $r$ conjuntos $A_i$ es
+$$\sum_{m = r}^n (-1)^{m - r}\binom{m}{r}\sum_{\substack{J \subseteq [n]\\|J| = m}} \abs{\bigcap_{j \in J} A_j}$$
+
+\textbf{Estrellas y barras con cotas.} Para $d\ge1$, $s,b\ge0$, soluciones de $\sum_{i=1}^d x_i=s$, $0\le x_i\le b$:
+\[
+\sum_{j=0}^d(-1)^j\binom dj
+\binom{s-j(b+1)+d-1}{d-1}.
+\]
+Con cotas $b_i$ distintas, sumar por $S\subseteq[d]$ el término $(-1)^{|S|}\binom{s-\sum_{i\in S}(b_i+1)+d-1}{d-1}$. 
+
+
 \subsection{Divisibilidad y MCM}
 Para $A_i=\{x\in[L,R]:a_i\mid x\}$, $a_i>0$, la intersección exige ser múltiplo de $q=\operatorname{mcm}(a_i:i\in S)$:
 \[
@@ -47,12 +60,6 @@ Si tenemos comprimos dos a dos MCM = es solo el producto. Quitar duplicados, $a_
 \textbf{Usos:} no múltiplos: $R-L+1-\mathrm{PIE}$. Coprimos con $q$: excluir sus primos distinto. Universo pequeño: marcar múltiplos en $O(R+\sum_i R/a_i)$.
 
 
-\textbf{Estrellas y barras con cotas.} Para $d\ge1$, $s,b\ge0$, soluciones de $\sum_{i=1}^d x_i=s$, $0\le x_i\le b$:
-\[
-\sum_{j=0}^d(-1)^j\binom dj
-\binom{s-j(b+1)+d-1}{d-1}.
-\]
-Con cotas $b_i$ distintas, sumar por $S\subseteq[d]$ el término $(-1)^{|S|}\binom{s-\sum_{i\in S}(b_i+1)+d-1}{d-1}$. 
 
 
 \subsection{PIE sobre múltiplos (DP)}
@@ -84,7 +91,7 @@ Para $c=\texttt{multiplos\_de[d]}$, cambiar sólo $g(d)$:
 \end{array}
 \]
 
-Recordatorio de como calcular cuantos multiplos de $d$ hay en el conjunto 
+Como calcular cuantos multiplos de $d$ hay en el conjunto :
 
 \algoinfo{V\log V}{V}{ }
 \begin{minted}{cpp}
@@ -116,37 +123,37 @@ En particular $f(1)=\sum_{d=1}^V\mu(d)g(d)$.
 Nota: DP para todas las clases, Möbius para $f(1)$ en $O(V)$ si $\mu$ está precalculado y $g(d)$ cuesta $O(1)$.
 
 
+% es utul pero es mejor quitarlos
+% \textbf{Contar enteros libres de cuadrados.}
+% Queremos contar los $x\in[1,N]$ que no son divisibles por
+% ningún cuadrado mayor que 1. Basta excluir los eventos
+% $p^2\mid x$ para cada primo $p$. Una intersección exige
+% $d^2\mid x$, donde $d$ es producto de los primos elegidos;
+% $\mu(d)$ incorpora los signos de PIE:
+% \[
+% Q(N)=\sum_{d=1}^{\lfloor\sqrt N\rfloor}
+% \mu(d)\left\lfloor\frac{N}{d^2}\right\rfloor.
+% \]
+% Incluye el 1. Precalcular $\mu$ hasta
+% $\lfloor\sqrt{N_{\max}}\rfloor$; cada consulta cuesta
+% $O(\sqrt N)$. En $[L,R]$: $Q(R)-Q(L-1)$, con $Q(0)=0$.
 
-\textbf{Contar enteros libres de cuadrados.}
-Queremos contar los $x\in[1,N]$ que no son divisibles por
-ningún cuadrado mayor que 1. Basta excluir los eventos
-$p^2\mid x$ para cada primo $p$. Una intersección exige
-$d^2\mid x$, donde $d$ es producto de los primos elegidos;
-$\mu(d)$ incorpora los signos de PIE:
-\[
-Q(N)=\sum_{d=1}^{\lfloor\sqrt N\rfloor}
-\mu(d)\left\lfloor\frac{N}{d^2}\right\rfloor.
-\]
-Incluye el 1. Precalcular $\mu$ hasta
-$\lfloor\sqrt{N_{\max}}\rfloor$; cada consulta cuesta
-$O(\sqrt N)$. En $[L,R]$: $Q(R)-Q(L-1)$, con $Q(0)=0$.
-
-\textbf{Contar números que no son potencias perfectas.}
-Queremos contar los $x\in[2,N]$ que no pueden escribirse
-como $a^b$ con enteros $a,b\ge2$. Si
-$x=\prod_i p_i^{e_i}$, definir $h(x)=\gcd(e_1,e_2,\dots)$.
-Entonces $x$ es potencia $d$-ésima si y sólo si
-$d\mid h(x)$. Por tanto,
-\[
-g(d)=\#\{x\in[2,N]:d\mid h(x)\}
-=\lfloor N^{1/d}\rfloor-1.
-\]
-El $-1$ excluye la base 1. Invertir sobre múltiplos para
-obtener $f(d)=\#\{x:h(x)=d\}$; responder $f(1)$.
-Basta $1\le d\le\lfloor\log_2N\rfloor$, pues la menor
-base es 2. Calcular raíces enteras exactas: búsqueda
-binaria comparando $a^d$ con $N$ sin overflow; ajustar
-también las aproximaciones de \texttt{sqrt}.
+% \textbf{Contar números que no son potencias perfectas.}
+% Queremos contar los $x\in[2,N]$ que no pueden escribirse
+% como $a^b$ con enteros $a,b\ge2$. Si
+% $x=\prod_i p_i^{e_i}$, definir $h(x)=\gcd(e_1,e_2,\dots)$.
+% Entonces $x$ es potencia $d$-ésima si y sólo si
+% $d\mid h(x)$. Por tanto,
+% \[
+% g(d)=\#\{x\in[2,N]:d\mid h(x)\}
+% =\lfloor N^{1/d}\rfloor-1.
+% \]
+% El $-1$ excluye la base 1. Invertir sobre múltiplos para
+% obtener $f(d)=\#\{x:h(x)=d\}$; responder $f(1)$.
+% Basta $1\le d\le\lfloor\log_2N\rfloor$, pues la menor
+% base es 2. Calcular raíces enteras exactas: búsqueda
+% binaria comparando $a^d$ con $N$ sin overflow; ajustar
+% también las aproximaciones de \texttt{sqrt}.
 
 
 \textbf{Cuidados de implementación.}

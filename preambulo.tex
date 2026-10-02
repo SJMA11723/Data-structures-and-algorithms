@@ -41,6 +41,7 @@
 %Images path
 \graphicspath{{img/}}
 
+
 %%%%%%%%%%%%%%%%%% Minted %%%%%%%%%%%%%%%%%%
 % \fontsize{tamaño de letra}{espacio entre líneas}\selectfont
 \newcommand{\codesize}{\fontsize{7pt}{8pt}\selectfont} % tamfuente e interlineado para 9pt en el doc con extarticle
@@ -111,6 +112,10 @@
 \setlength{\columnsep}{0.25cm} % Espacio minimo entre columnas
 \setlength{\columnseprule}{0.5pt} % Linea divisoria opcional para guiar la vista
 \setlength{\parindent}{0pt}
+\setlist[enumerate,1]{label=\arabic*., nosep}
+\setlist[itemize]{noitemsep}
+% \newcommand{\noenter}[1]{\vspace{-2mm}}
+
 
 % \titlespacing*{comando}{izq}{arriba}{abajo}
 % Espaciado hiper-compacto

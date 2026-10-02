@@ -27,8 +27,8 @@ Si $p, q$ son predicados, entonces:
 Legendre's formula gives an expression for the exponent of the largest power of a prime p that divides the factorial n!.
 \newcommand{\piso}[1]{\left\lfloor#1\right\rfloor}
 \begin{equation*}
-    \nu_p ( n! ) = \sum_{i=1}^{\piso{ \log_p n } } \piso{\frac{n}{p_i}}
-     = \frac{n - S_p(n)}{p^i},
+    \nu_p ( n! ) = \sum_{i=1}^{\piso{ \log_p n } } \piso{\frac{n}{ p^i }}
+     = \frac{n - S_p(n)}{p - 1},
 \end{equation*}
 Donde $S_p(n)$ es la suma de dígitos de $n$ en base $p$.
 

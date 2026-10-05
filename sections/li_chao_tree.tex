@@ -1,72 +1,28 @@
 \section{Máximo de funciones}
 
 \subsection{Li-Chao Tree}
-La construcción inicial toma $\mathcal{O}(N \log N)$. Dado un conjunto $A \subset \mathbb{R}$ con $|A|=N$ y $M$ funciones que cumplen la \textit{transcending property}, la estructura permite agregar una nueva función en $\mathcal{O}(\log N)$ por operación. Además, para cualquier $a \in A$, permite responder $Q$ consultas de la forma $\max_i f_i(a)$ en $\mathcal{O}(\log N)$ cada una. Complejidad total: $\mathcal{O}((N + M + Q) \log N)$.
+La construcción inicial toma $\mathcal{O}(N \log N)$. Dado un conjunto $A \subset \mathbb{R}$ con $|A|=N$ y $M$ funciones que cumplen la \textit{transcending property}, la estructura permite agregar una nueva función en $\mathcal{O}(\log N)$ por operación. Además, para cualquier $a \in A$, permite responder $Q$ consultas de la forma $\max_i f_i(a)$ en $\mathcal{O}(\log N)$ cada una. Complejidad total: $\mathcal{O}((N + M + Q) \log N)$. Notar que si hacemos insersiones por segmentos la complejidad es $O(\log^2 N)$.
 
 
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 \begin{extended}
-    \subsubsection*{La Propiedad Transcendente (\textit{Transcending Property})}
-    El Li Chao Tree no requiere estrictamente que las funciones sean rectas $f(x) = m \cdot x + b$. Funciona para cualquier familia de funciones continuas $\{f_i\}$ que cumplan la \textbf{propiedad de intersección única} o \textit{transcending property}:
+    \subsubsection*{Propiedad Transcendente (\textit{Transcending Property})}
+    El Li Chao Tree funciona para cualquier familia de funciones continuas $\{f_i\}$ definidas sobre el dominio de interés que cumplan la \textbf{propiedad de intersección única} o \textit{transcending property}:
     \begin{quote}
-    \textit{Para cualquier par de funciones distintas $f_i$ y $f_j$ en el conjunto, existe a lo más un punto $x^* \in \mathbb{R}$ tal que $f_i(x^*) = f_j(x^*)$. Es decir, una función puede cruzar a otra a lo sumo una sola vez en todo el dominio.}
+    \textit{Para cualquier par de funciones distintas $f_i$ y $f_j$, la función diferencia $d(x) = f_i(x) - f_j(x)$ cambia de signo a lo sumo una vez en el intervalo de evaluación $[x_{\min}, x_{\max}]$.}
     \end{quote}
-    Si dos funciones se cruzan como máximo una vez, la decisión sobre qué mitad del intervalo contiene la intersección (al comparar el extremo izquierdo \texttt{lef} y el punto medio \texttt{mid}) se mantiene binaria, garantizando que el algoritmo pueda descartar una subrama en cada paso.
-\end{extended} % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
+    Esto garantiza que, al comparar dos funciones en el extremo izquierdo \texttt{lv} y en el punto medio \texttt{mv}, la decisión sobre en qué mitad del intervalo se encuentra la intersección permanece binaria, permitiendo descartar una subrama en $\mathcal{O}(1)$ por nivel.
+
+    \subsubsection*{Mecánica de Inserción en \texttt{addFunction}}
+    Para un nodo $v$ que cubre el rango de índices $[l, r)$ con punto medio $m = \lfloor(l+r)/2\rfloor$:
+    \begin{enumerate}
+        \item Se evalúan la nueva función $f$ y la función almacenada $g = \texttt{treefunc}[v]$ en el punto medio $x_m = A[m]$.
+        \item La función con mayor valor en $x_m$ se conserva en el nodo $v$, mientras que la función perdedora se reasigna a $f$.
+        \item Se evalúa cuál función es superior en el extremo izquierdo $x_l = A[l]$: si el ganador en $x_l$ es distinto del ganador en $x_m$, la intersección se ubica en $[l, m)$ y $f$ desciende al hijo izquierdo; de lo contrario, desciende al hijo derecho $[m, r)$.
+    \end{enumerate}
+    \textit{Nota:} Para consultas de mínimo ($\min_i f_i(a)$), invierta los operadores relacionales (\texttt{>}) por (\texttt{<}) y reemplace el valor neutro nulo por $+\infty$.
+\end{extended}
+
+
 
 \algoinfo{ \log N }{ N }{  }
-\begin{minted}{cpp}
-struct Function {
-    ll m;
-    ll b;
-    ll eval(ll x){
-        if (m == LLONG_MIN) return LLONG_MIN;
-        return m*x+b;
-    }
-    Function(){ m = LLONG_MIN;}
-    Function(ll m_, ll b_): m(m_), b(b_){ }
-};
-struct LiChaoTree{
-    vll values;
-    ll maxV;
-    Function *functions;
-    LiChaoTree(vll &values_){
-        values = values_;
-        sort(all(values));
-        functions =new Function[sz(values)*4];
-        maxV = sz(values);
-    }
-    //Range from l to r - 1
-    ll get(ll x){
-        return get(x, 1, 0, maxV);
-    }
-    ll get(ll x, int v, int l, int r){
-        int m = l + (r - l) / 2;
-        ll mv = values[m];
-        if(r - l == 1){
-            return functions[v].eval(x);
-        } else if(x < mv){
-            return max(functions[v].eval(x), get(x, 2 * v, l, m));
-        } else {
-            return max(functions[v].eval(x), get(x, 2 * v + 1, m, r));
-        }
-    }
-    void addFunction(Function f){
-        addFunction(f, 1, 0, maxV);
-    }
-    void addFunction(Function f, int v, int l, int r){
-        int m = l + (r - l) / 2;
-        ll mv = values[m];
-        ll lv = values[l];
-        bool lef = f.eval(lv) > functions[v].eval(lv);
-        bool mid = f.eval(mv) > functions[v].eval(mv);
-        if(mid)//Si el actual pierde en el medio
-            swap(functions[v], f);
-        if(r - l == 1) return;
-        else if(lef != mid)//El cruce esta en izq
-            addFunction(f, 2 * v, l, m);
-        else addFunction(f, 2 * v + 1, m, r);
-    }
-    ~LiChaoTree(){ delete[] functions; }
-};
-\end{minted}
+\inputcode{cpp}{latex_src/dp/li_chao_tree.cpp}{li_chao_tree.cpp}

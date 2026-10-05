@@ -2,4 +2,7 @@
     "[cpp]": {
         "editor.rulers": [62, 124]
     },
+    "[tex]": {
+        "editor.rulers": [62, 124]
+    },
 }

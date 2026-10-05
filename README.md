@@ -231,8 +231,7 @@ python3 cleaner.py
 ```
 luego
 ```bash
-latexmk -pdf -shell-escape -interaction=nonstopmode \ 
-  -halt-on-error Referencia_ICPC.tex
+latexmk -pdf -shell-escape -interaction=nonstopmode -halt-on-error Referencia_ICPC.tex
 ```
 
 `latexmk` repite `pdflatex` hasta estabilizar el índice. En una instalación moderna y completa, este comando produce `Referencia_ICPC.pdf`; el estado actual del documento compila a 15 páginas.

@@ -1,56 +1,62 @@
-struct Function {
-	ll m;
-	ll b;
+struct Func {
+	ll m,b;
 	ll eval(ll x){
-		if (m == LLONG_MIN) return LLONG_MIN;
-		return m*x+b;
+		if( m == LLONG_MAX) return LLONG_MAX;
+		return (ll)((__int128_t)m * x + b);
 	}
-	Function(){ m = LLONG_MIN;}
-	Function(ll m_, ll b_): m(m_), b(b_){ }
+	Func(){ m = LLONG_MAX;}
+	Func(ll m_, ll b_): m(m_), b(b_){ }
 };
+ostream& operator<<(ostream &os, const Func &f){
+    return  os << f.m << "x+" << f.b ; 
+}
 struct LiChaoTree {
-	vll values;
+	vll vals;
 	ll maxV;
-	Function *functions;
-	LiChaoTree(vll &values_){
-		values = values_;
-		sort(all(values));
-		functions = new Function[sz(values) * 4];
-		maxV = sz(values);
+	Func *treefunc;
+	LiChaoTree(vll &vals_){
+		vals = vals_;
+		sort(all(vals));
+        vals.erase( std::unique( all(vals) ), vals.end() );
+		treefunc = new Func[sz(vals) * 4 + 5];
+		maxV = sz(vals);
 	}
-	ll get(ll x){
-		return get(x, 1, 0, maxV);
-	}
+	void addFunction(Func f){ addFunction(f, 1, 0, maxV); }
+	void addFunction(Func f, ll v, int l, int r){
+		int m = l + (r - l) / 2;
+        ll mv = vals[m];
+        ll lv = vals[l];
+        bool lef = f.eval(lv) < treefunc[v].eval(lv); // min
+        bool mid = f.eval(mv) < treefunc[v].eval(mv); // min
+        if(mid) swap(treefunc[v], f);
+        if(r - l == 1) return;
+        else if(lef != mid) addFunction(f, 2 * v, l, m); 
+        else addFunction(f, 2 * v + 1, m, r);
+	}  
+    void addSegFunction( Func fi, int l, int r){//[l,r)->[i,j)
+        l = lower_bound(all(vals), (ll)l) - vals.begin();
+        r = lower_bound(all(vals), (ll)r) - vals.begin();
+        if( l < r ) addSeg(fi,l,r, 1,0,maxV );
+    }
+    void addSeg(Func fi,int l,int r,int v,int left,int right){
+        if( r <= left  || right <= l) return;
+        if( l <= left  && right <=  r  ){
+            addFunction( fi, v, left, right);
+            return; 
+        }
+        if( left +1 == right)  return;
+        int m =  left + (right-left)/2;
+        addSeg(fi, l, r, v * 2     , left, m);
+        addSeg(fi, l, r, v * 2 + 1 , m, right);
+    }
+    ll get(ll x){ return get(x, 1, 0, maxV); }
 	ll get(ll x, int v, int l, int r){
-		int m = l + (r - l) / 2;
-		ll mv = values[m];
-		if (r - l == 1){
-			return functions[v].eval(x);
-		} else if (x < mv){
-			return max(functions[v].eval(x), get(x, 2 * v, l, m));
-		} else {
-			return max(functions[v].eval(x), get(x, 2 * v + 1, m, r));
-		}
+        ll cur = treefunc[v].eval(x);
+        if(r - l == 1) return cur;
+        int m = l + (r - l) / 2;
+        ll mv = vals[m];
+        if(x < mv) return min(cur, get(x, 2 * v, l, m)); //min
+        else return min(cur, get(x, 2 * v + 1, m, r)); //min
 	}
-	void addFunction(Function f){
-		addFunction(f, 1, 0, maxV);
-	}
-	void addFunction(Function f, int v, int l, int r){
-		int m = l + (r - l) / 2;
-		ll mv = values[m];
-		ll lv = values[l];
-		bool lef = f.eval(lv) > functions[v].eval(lv);
-		bool mid = f.eval(mv) > functions[v].eval(mv);
-		if (mid){
-			swap(functions[v], f);
-		}
-		if (r - l == 1){
-			return;
-		} else if (lef != mid){
-			addFunction(f, 2 * v, l, m);
-		} else {
-			addFunction(f, 2 * v + 1, m, r);
-		}
-	}
-	~LiChaoTree(){ delete[] functions; }
+	~LiChaoTree(){ delete[] treefunc; }
 };

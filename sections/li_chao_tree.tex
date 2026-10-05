@@ -1,8 +1,20 @@
 \section{Máximo de funciones}
 
 \subsection{Li-Chao Tree}
-Dado un conjunto $A$ con $M$ valores a evaluar, y $N$ funciones (tales que cada una de ellas se intersecta con el resto a lo más una vez), te devuelve $\max\limits_{i\in [N]} \big(f_i(a)\big)$ para cualquier  $a\in A$. Complejidad: Responder y agregar $O(log M)$ .
+La construcción inicial toma $\mathcal{O}(N \log N)$. Dado un conjunto $A \subset \mathbb{R}$ con $|A|=N$ y $M$ funciones que cumplen la \textit{transcending property}, la estructura permite agregar una nueva función en $\mathcal{O}(\log N)$ por operación. Además, para cualquier $a \in A$, permite responder $Q$ consultas de la forma $\max_i f_i(a)$ en $\mathcal{O}(\log N)$ cada una. Complejidad total: $\mathcal{O}((N + M + Q) \log N)$.
 
+
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
+\begin{extended}
+    \subsubsection*{La Propiedad Transcendente (\textit{Transcending Property})}
+    El Li Chao Tree no requiere estrictamente que las funciones sean rectas $f(x) = m \cdot x + b$. Funciona para cualquier familia de funciones continuas $\{f_i\}$ que cumplan la \textbf{propiedad de intersección única} o \textit{transcending property}:
+    \begin{quote}
+    \textit{Para cualquier par de funciones distintas $f_i$ y $f_j$ en el conjunto, existe a lo más un punto $x^* \in \mathbb{R}$ tal que $f_i(x^*) = f_j(x^*)$. Es decir, una función puede cruzar a otra a lo sumo una sola vez en todo el dominio.}
+    \end{quote}
+    Si dos funciones se cruzan como máximo una vez, la decisión sobre qué mitad del intervalo contiene la intersección (al comparar el extremo izquierdo \texttt{lef} y el punto medio \texttt{mid}) se mantiene binaria, garantizando que el algoritmo pueda descartar una subrama en cada paso.
+\end{extended} % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
+
+\algoinfo{ \log N }{ N }{  }
 \begin{minted}{cpp}
 struct Function {
     ll m;

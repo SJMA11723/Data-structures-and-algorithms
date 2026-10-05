@@ -20,6 +20,7 @@
 \decimalpoint
 \usepackage{graphicx}
 \renewcommand{\baselinestretch}{1}
+\usepackage{environ}
 
 \usepackage{tocloft}
 \usepackage{multicol}
@@ -40,6 +41,29 @@
 
 %Images path
 \graphicspath{{img/}}
+
+%%%%%%%%%%%%%%%%%% d EXTENDED VERSION %%%%%%%%%%%%%%%%%%
+\usepackage{etoolbox}
+\newif\ifextendedversion
+\extendedversiontrue   % Descomenta para la versión EXTENDIDA (Final Nacional)
+% \extendedversionfalse  % Descomenta para la versión COMPACTA (Hiperregional)
+
+\newcommand{\ext}[1]{\ifextendedversion#1\fi}
+
+% 3. Bloque largo / Entorno (múltiples párrafos, listas, problemas tipo)
+\NewEnviron{extended}{
+    \ifextendedversion
+        \vspace{0.3em}
+        \begingroup
+        \small\color{black!80}
+        \vspace{0.2em}
+        \noindent\textit{\footnotesize Versión Extendida:} \vspace{-1mm}\par
+        \BODY
+        \vspace{0.2em}
+        \endgroup
+        \vspace{0.3em}
+    \fi
+}
 
 
 %%%%%%%%%%%%%%%%%% Minted %%%%%%%%%%%%%%%%%%
@@ -69,9 +93,10 @@
 
 % \algoinfo{Tiempo}{Memoria}{Explicación rápida}
 \newcommand{\algoinfo}[3]{
-    \vspace{-2pt}
+    % \vspace{-2pt}
+    \vspace{-1pt}
     {\fontsize{8pt}{9pt}\selectfont \textbf{T:} $O(#1)$ $\mid$ \textbf{M:} $O(#2)$ $\mid$ \textit{#3} \par}
-    \vspace{2pt}
+    % \vspace{2pt}
 }
 
 %%%%%%%%%%%%%%%%%% Numeraciones %%%%%%%%%%%%%%%%%%
@@ -143,7 +168,7 @@
 \fancyhead{}
 \fancyfoot{}
 \lhead{\textbf{Reference - ICPC} $\mid$ Mäthgic Crüe $\mid$ UG-CIMAT $\mid$ Junio 2026} % Todo en una línea
-\rhead{\textbf{Pág. \thepage}}
+\rhead{\ifextendedversion { \large \textbf{-- Versión Extendida} } \fi \textbf{Pág. \thepage}}
 \renewcommand{\headrulewidth}{0.4pt}
 \setlength\headsep{4pt} % Pegar el texto principal al header
 

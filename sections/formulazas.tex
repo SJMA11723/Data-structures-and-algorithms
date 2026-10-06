@@ -91,7 +91,7 @@ a_n=\sum_{j=0}^{k}\binom{n-1}{j}\Delta^ja_1,
 \]
 
 
-\algoinfo{k^2}{k}{Construir las diferencias desde $k+1$ términos; evaluar en $O(k)$.}
+\algoinfo{k^2}{k}{Construir las diferencias desde $k+1$ términos; evaluar en $O(k)$}
 
 %=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=
 %=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=
@@ -179,3 +179,50 @@ Sea $E$ la matriz con filas $P_i-P_0$, $i=1,\ldots,n$:
 V_n=\frac{1}{n!}\sqrt{\det(AA^\top)}.
 \]
 Si $d=n$, se simplifica a $V_n=|\det A|/n!$.
+
+
+\subsection{Desigualdades}
+
+\begin{description}
+    \item[AM-GM-HM:]  Igualdad ssi $x_1 = \dots = x_n$
+    $$\frac{n}{\sum_{i=1}^n \frac{1}{x_i}} \le \sqrt[n]{\prod_{i=1}^n x_i} \le \frac{1}{n} \sum_{i=1}^n x_i \quad (x_i > 0)$$
+    
+    \item[Media Pot:]  $M_r(x) = \left( \frac{1}{n} \sum x_i^r \right)^{1/r}$: Si
+    $r < s$, ent, $M_r(x) \le M_s(x)$
+    $$M_{-1} = \text{HM} \quad \le \quad  M_0 = \text{GM} \quad \le  \quad M_1 = \text{AM} \quad \le  \quad M_2 = \text{RMS}$$
+    
+    
+    \item[Valor Absoluto / RMS:] Válida para cualquier $x_i \in \mathbb{R}$:
+    $$\left\vert{} \frac{1}{n} \sum_{i=1}^n x_i \right\vert{} \le \frac{1}{n} \sum_{i=1}^n \vert{}x_i\vert{} \le \sqrt{\frac{1}{n} \sum_{i=1}^n x_i^2} = \text{RMS}$$
+    
+    \item[Cauchy-Schwarz:] Igualdad ssi $\exists k \in \mathbb{R} : a_i = k b_i$
+    $$\left( \sum_{i=1}^n a_i b_i \right)^2 \le \left( \sum_{i=1}^n a_i^2 \right) \left( \sum_{i=1}^n b_i^2 \right)$$ 
+    
+    \item[Forma de Engel (Sedrakyan):]  $b_i > 0$
+    $$\sum_{i=1}^n \frac{a_i^2}{b_i} \ge \frac{\left( \sum_{i=1}^n a_i \right)^2}{\sum_{i=1}^n b_i} $$
+    
+    \item[Hölder:] Con $\frac{1}{p} + \frac{1}{q} = 1$ ($p, q > 1$).
+    $$\sum |a_i b_i| \le \left( \sum |a_i|^p \right)^{1/p} \left( \sum |b_i|^q \right)^{1/q}$$ 
+    
+    \item[Minkowski:] $p \ge 1 $
+    $$\left( \sum |a_i + b_i|^p \right)^{1/p} \le \left( \sum |a_i|^p \right)^{1/p} + \left( \sum |b_i|^p \right)^{1/p} $$
+    
+    \item[Reagrupamiento:] Para $a_1 \le \dots \le a_n$ y $b_1 \le \dots \le b_n$: 
+    $$\sum_{i=1}^n a_i b_{n-i+1} \le \sum_{i=1}^n a_i b_{\sigma(i)} \le \sum_{i=1}^n a_i b_i$$
+    
+    \item[Chebyshev:] Si $a_1 \le \dots \le a_n$ y $b_1 \le \dots \le b_n  $ (Orden opuesto, desigualdad se invierte.)
+    $$\frac{1}{n} \sum a_i b_i \ge \left( \frac{1}{n} \sum a_i \right) \left( \frac{1}{n} \sum b_i \right)$$ 
+   
+
+    \item[Jensen:] Para $f$ convexa, $w_i \ge 0$ y $\sum w_i = 1$
+    $$f\left( \sum w_i x_i \right) \le \sum w_i f(x_i)$$
+    
+    \item[Bernoulli:] Para $x \ge -1$, con $r \ge 1$ o $r \le 0$. Si $0 \le r \le 1$,  desigualdad se invierte
+    $$(1 + x)^r \ge 1 + rx$$ 
+    
+    \item[Karamata:] Si $A \succ B$ ($A$ mayoriza a $B$) y $f$ es convexa 
+    $$ \sum_{i=1}^n f(a_i) \ge \sum_{i=1}^n f(b_i)$$
+    
+    \item[Schur:] Para $x,y,z \ge 0,\  r > 0$:
+    $$x^r(x - y)(x - z) + y^r(y - z)(y - x) + z^r(z - x)(z - y) \ge 0$$
+\end{description}

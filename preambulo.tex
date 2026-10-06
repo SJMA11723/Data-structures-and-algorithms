@@ -130,7 +130,7 @@
 \DeclareMathOperator{\sgn}{sgn}
 \DeclareMathOperator{\ord}{ord}
 \newenvironment{solution}
-{\renewcommand\qedsymbol{$\square$}\begin{proof}[Solución]}
+{\renewcommand\xqedsymbol{$\square$}\begin{proof}[Solución]}
     {\end{proof}}
 
 %%%%%%%%%%%%%%%%%% Espaciado %%%%%%%%%%%%%%%%%%
@@ -139,7 +139,8 @@
 \setlength{\parindent}{0pt}
 \setlist[enumerate,1]{label=\arabic*., nosep}
 \setlist[itemize]{noitemsep}
-% \newcommand{\noenter}[1]{\vspace{-2mm}}
+\setlist[description]{noitemsep, topsep=0pt, parsep=2pt, itemsep=3pt, leftmargin=0pt}
+% \ newcommand{\noenter}[1]{\vspace{-2mm}}
 
 
 % \titlespacing*{comando}{izq}{arriba}{abajo}

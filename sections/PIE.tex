@@ -124,37 +124,38 @@ Nota: DP para todas las clases, Möbius para $f(1)$ en $O(V)$ si $\mu$ está pre
 
 
 % es utul pero es mejor quitarlos
-% \textbf{Contar enteros libres de cuadrados.}
-% Queremos contar los $x\in[1,N]$ que no son divisibles por
-% ningún cuadrado mayor que 1. Basta excluir los eventos
-% $p^2\mid x$ para cada primo $p$. Una intersección exige
-% $d^2\mid x$, donde $d$ es producto de los primos elegidos;
-% $\mu(d)$ incorpora los signos de PIE:
-% \[
-% Q(N)=\sum_{d=1}^{\lfloor\sqrt N\rfloor}
-% \mu(d)\left\lfloor\frac{N}{d^2}\right\rfloor.
-% \]
-% Incluye el 1. Precalcular $\mu$ hasta
-% $\lfloor\sqrt{N_{\max}}\rfloor$; cada consulta cuesta
-% $O(\sqrt N)$. En $[L,R]$: $Q(R)-Q(L-1)$, con $Q(0)=0$.
+\begin{extended}
+\textbf{Contar enteros libres de cuadrados.}
+Queremos contar los $x\in[1,N]$ que no son divisibles por
+ningún cuadrado mayor que 1. Basta excluir los eventos
+$p^2\mid x$ para cada primo $p$. Una intersección exige
+$d^2\mid x$, donde $d$ es producto de los primos elegidos;
+$\mu(d)$ incorpora los signos de PIE:
+\[
+Q(N)=\sum_{d=1}^{\lfloor\sqrt N\rfloor}
+\mu(d)\left\lfloor\frac{N}{d^2}\right\rfloor.
+\]
+Incluye el 1. Precalcular $\mu$ hasta
+$\lfloor\sqrt{N_{\max}}\rfloor$; cada consulta cuesta
+$O(\sqrt N)$. En $[L,R]$: $Q(R)-Q(L-1)$, con $Q(0)=0$.
 
-% \textbf{Contar números que no son potencias perfectas.}
-% Queremos contar los $x\in[2,N]$ que no pueden escribirse
-% como $a^b$ con enteros $a,b\ge2$. Si
-% $x=\prod_i p_i^{e_i}$, definir $h(x)=\gcd(e_1,e_2,\dots)$.
-% Entonces $x$ es potencia $d$-ésima si y sólo si
-% $d\mid h(x)$. Por tanto,
-% \[
-% g(d)=\#\{x\in[2,N]:d\mid h(x)\}
-% =\lfloor N^{1/d}\rfloor-1.
-% \]
-% El $-1$ excluye la base 1. Invertir sobre múltiplos para
-% obtener $f(d)=\#\{x:h(x)=d\}$; responder $f(1)$.
-% Basta $1\le d\le\lfloor\log_2N\rfloor$, pues la menor
-% base es 2. Calcular raíces enteras exactas: búsqueda
-% binaria comparando $a^d$ con $N$ sin overflow; ajustar
-% también las aproximaciones de \texttt{sqrt}.
-
+\textbf{Contar números que no son potencias perfectas.}
+Queremos contar los $x\in[2,N]$ que no pueden escribirse
+como $a^b$ con enteros $a,b\ge2$. Si
+$x=\prod_i p_i^{e_i}$, definir $h(x)=\gcd(e_1,e_2,\dots)$.
+Entonces $x$ es potencia $d$-ésima si y sólo si
+$d\mid h(x)$. Por tanto,
+\[
+g(d)=\#\{x\in[2,N]:d\mid h(x)\}
+=\lfloor N^{1/d}\rfloor-1.
+\]
+El $-1$ excluye la base 1. Invertir sobre múltiplos para
+obtener $f(d)=\#\{x:h(x)=d\}$; responder $f(1)$.
+Basta $1\le d\le\lfloor\log_2N\rfloor$, pues la menor
+base es 2. Calcular raíces enteras exactas: búsqueda
+binaria comparando $a^d$ con $N$ sin overflow; ajustar
+también las aproximaciones de \texttt{sqrt}.
+\end{extended}
 
 \textbf{Cuidados de implementación.}
 $n$ es la cantidad de entradas, $m$ la cantidad de

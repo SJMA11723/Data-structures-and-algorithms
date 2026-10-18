@@ -41,6 +41,32 @@
 %Images path
 \graphicspath{{img/}}
 
+%%%%%%%%%%%%%%%%%% d EXTENDED VERSION %%%%%%%%%%%%%%%%%%
+\usepackage{etoolbox}
+\newif\ifextendedversion
+\extendedversiontrue   % Descomenta para la versión EXTENDIDA (Final Nacional)
+% \extendedversionfalse  % Descomenta para la versión COMPACTA (Hiperregional)
+
+
+
+\newcommand{\ext}[1]{\ifextendedversion#1\fi}
+
+% 3. Bloque largo / Entorno (múltiples párrafos, listas, problemas tipo)
+\NewEnviron{extended}{
+    \ifextendedversion
+        \vspace{0.3em}
+        \begingroup
+        \small\color{black!80}
+        \vspace{0.2em}
+        \noindent\textit{\footnotesize Versión Extendida:} \vspace{-1mm}\par
+        \BODY
+        \vspace{0.2em}
+        \endgroup
+        \vspace{0.3em}
+    \fi
+}
+
+
 %%%%%%%%%%%%%%%%%% Minted %%%%%%%%%%%%%%%%%%
 % \fontsize{tamaño de letra}{espacio entre líneas}\selectfont
 \newcommand{\codesize}{\fontsize{7pt}{8pt}\selectfont} % tamfuente e interlineado para 9pt en el doc con extarticle

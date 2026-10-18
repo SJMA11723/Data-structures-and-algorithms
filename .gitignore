@@ -7,4 +7,5 @@
 *.toc
 *.fdb_latexmk
 *.fls
+*.DS_Store
 _minted

@@ -20,6 +20,7 @@
 \decimalpoint
 \usepackage{graphicx}
 \renewcommand{\baselinestretch}{1}
+\usepackage{environ}
 
 \usepackage{tocloft}
 \usepackage{multicol}
@@ -48,7 +49,6 @@
 % \extendedversionfalse  % Descomenta para la versión COMPACTA (Hiperregional)
 
 
-
 \newcommand{\ext}[1]{\ifextendedversion#1\fi}
 
 % 3. Bloque largo / Entorno (múltiples párrafos, listas, problemas tipo)
@@ -65,7 +65,6 @@
         \vspace{0.3em}
     \fi
 }
-
 
 %%%%%%%%%%%%%%%%%% Minted %%%%%%%%%%%%%%%%%%
 % \fontsize{tamaño de letra}{espacio entre líneas}\selectfont
@@ -94,9 +93,10 @@
 
 % \algoinfo{Tiempo}{Memoria}{Explicación rápida}
 \newcommand{\algoinfo}[3]{
-    \vspace{-2pt}
+    % \vspace{-2pt}
+    \vspace{-1pt}
     {\fontsize{8pt}{9pt}\selectfont \textbf{T:} $O(#1)$ $\mid$ \textbf{M:} $O(#2)$ $\mid$ \textit{#3} \par}
-    \vspace{2pt}
+    % \vspace{2pt}
 }
 
 %%%%%%%%%%%%%%%%%% Numeraciones %%%%%%%%%%%%%%%%%%
@@ -130,13 +130,18 @@
 \DeclareMathOperator{\sgn}{sgn}
 \DeclareMathOperator{\ord}{ord}
 \newenvironment{solution}
-{\renewcommand\qedsymbol{$\square$}\begin{proof}[Solución]}
+{\renewcommand\xqedsymbol{$\square$}\begin{proof}[Solución]}
     {\end{proof}}
 
 %%%%%%%%%%%%%%%%%% Espaciado %%%%%%%%%%%%%%%%%%
 \setlength{\columnsep}{0.25cm} % Espacio minimo entre columnas
 \setlength{\columnseprule}{0.5pt} % Linea divisoria opcional para guiar la vista
 \setlength{\parindent}{0pt}
+\setlist[enumerate,1]{label=\arabic*., nosep}
+\setlist[itemize]{noitemsep}
+\setlist[description]{noitemsep, topsep=0pt, parsep=2pt, itemsep=3pt, leftmargin=0pt}
+% \ newcommand{\noenter}[1]{\vspace{-2mm}}
+
 
 % \titlespacing*{comando}{izq}{arriba}{abajo}
 % Espaciado hiper-compacto
@@ -164,7 +169,7 @@
 \fancyhead{}
 \fancyfoot{}
 \lhead{\textbf{Reference - ICPC} $\mid$ Mäthgic Crüe $\mid$ UG-CIMAT $\mid$ \today} % Todo en una línea
-\rhead{\textbf{Pág. \thepage}}
+\rhead{\ifextendedversion { \large \textbf{-- Versión Extendida} } \fi \textbf{Pág. \thepage}}
 \renewcommand{\headrulewidth}{0.4pt}
 \setlength\headsep{4pt} % Pegar el texto principal al header
 

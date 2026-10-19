@@ -1,0 +1,56 @@
+% Notas base: Dr. Carlos Segura, Numero de Grundy (3 de septiembre)
+% y Green Hackenbush (25 de septiembre).
+\section{Teoría de juegos}
+
+\subsection{Juegos imparciales}
+Dos jugadores alternan turnos, con información completa, sin azar ni empates. Es \textit{imparcial} si ambos tienen los mismos movimientos desde todo estado; de otro modo es \textit{partidario}. En convención \textit{normal} el último en mover gana; en \textit{misère}, pierde. En adelante: imparcial, finito y normal.
+
+\textbf{Grafo de estados.} $u\to v$ representa un movimiento. Los terminales son perdedores ($P$); $u$ es ganador ($N$) sii tiene una salida a $P$, y es $P$ sii todas sus salidas van a $N$. Calcular en orden topológico inverso. Para caracterizar los $P$, buscar una propiedad $\mathcal P$: los terminales la cumplen; todo movimiento desde $\mathcal P$ la rompe; desde $\neg\mathcal P$ existe un movimiento a $\mathcal P$.
+
+\subsection{Nim y Grundy}
+En Nim, un movimiento reduce una de las pilas $a_1,\dots,a_k$. Sea $X=\bigoplus_i a_i$: la posición es $P$ sii $X=0$. Si $X\ne0$, sea $b$ su bit encendido más significativo; elegir $a_i$ con $b$ encendido y reemplazarla por $a_i\oplus X<a_i$ deja XOR $0$.
+
+Para una posición $s$,
+\[
+G(s)=\operatorname{mex}\{G(t):s\to t\},\qquad \operatorname{mex}(S)=\min(\Z_{\geq0}\setminus S).
+\]
+Entonces $s$ es $P$ sii $G(s)=0$. \textbf{Sprague--Grundy:} todo juego imparcial finito normal equivale a una pila de Nim de tamaño $G(s)$; para juegos independientes,
+\[
+G_{\rm total}=G(s_1)\oplus\cdots\oplus G(s_k),
+\]
+y la suma es $P$ sii $G_{\rm total}=0$. \textbf{Finales especiales:} si alcanzar un objetivo gana inmediatamente, modelar la jugada hacia un terminal entregado al rival. Si quien no puede mover gana, es misère y el XOR de Grundy no aplica directamente.
+
+\algoinfo{|V|+|E|}{|V|+|E|}{Grundy en un DAG de estados.}
+\begin{minted}{cpp}
+struct Grundy{
+    vector<vi> g; vi G, mark;
+    Grundy(vector<vi>& g):g(g),G(sz(g),-1),mark(sz(g)+1,-1){}
+    int get(int u){
+        if(G[u]!=-1) return G[u];
+        for(int v:g[u]) get(v);
+        for(int v:g[u]) mark[G[v]]=u;
+        int x=0; while(mark[x]==u) ++x;
+        return G[u]=x;
+    }
+};
+\end{minted}
+
+\textbf{Maximización/minimización.} No necesariamente usa Grundy. Si $A$ maximiza $F$ y $B$ la minimiza eligiendo objetos alternadamente: analizar los dos objetos finales para ambos turnos, deducir la condición de intercambio, ordenar con ella y generalizar a $n$ objetos.
+
+\subsection{Green Hackenbush}
+Grafo unido al \textit{suelo}; se elimina una arista y desaparece todo lo que pierda conexión con él. Es imparcial normal y las componentes se combinan con XOR.
+
+\textbf{Principio del colon.} Si $G(H_1)=G(H_2)$ y cada $H_i$ se une al resto sólo por una articulación, sustituir $H_1$ por $H_2$ no cambia el valor. Toda figura colgante de valor $g$ equivale a un tallo de $g$ aristas. En un árbol enraizado,
+\[
+G(u)=\bigoplus_{v\text{ hijo de }u}(G(v)+1).
+\]
+
+\textbf{Principio de fusión.} Fusionar todos los vértices de un ciclo preserva Grundy; sus aristas se vuelven lazos. Unificar el suelo, fusionar ciclos, reemplazar cada lazo por una hoja y aplicar colon. Un lazo vale $1$: en un mismo vértice se cancelan por pares.
+
+% Práctica obligatoria: MEX Game 1, Kaosar and Game, Everything Nim,
+% Stair Game, Final Tower Breakers, Powers Game, UVA 1482, Marbles y MATGAME.
+% Otros: Tower Breakers; Tower Breakers, Again!; Summation Game; Poetry
+% Challenge; Digits Square Board; Arbitrary Nim; A Chessboard Game; Nimble;
+% 1-2-K Game; Tower Breakers, Revisited!; Temporal Paradox.
+% Green Hackenbush: Bob vs. ATM, Game of CS, Got root?, Área de Rectángulos.
+% Referencia: Berlekamp, Conway y Guy, Winning Ways, vol. 1, págs. 193--196.

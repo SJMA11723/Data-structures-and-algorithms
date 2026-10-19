@@ -16,7 +16,42 @@ El repo tiene dos objetivos:
 2. producir `Referencia_ICPC.pdf`
 
 
-NOTA IMPORTANTE: El proyecto **no es una biblioteca enlazable ni una sola aplicación**. No existe un ejecutable global: cada archivo C++ es una implementación o programa de ejemplo independiente. Lo que podriamos considerar como producto final es el documento LaTeX `Referencia_ICPC.pdf`.
+NOTA: El proyecto **no es una biblioteca enlazable ni una sola aplicación**. No existe un ejecutable global: cada archivo C++ es una implementación o programa de ejemplo independiente. Lo que podriamos considerar como producto final es el documento LaTeX `Referencia_ICPC.pdf`.
+
+
+
+# 0. Compilar el manual completo
+
+Pipeline recomendado:
+
+### Modo Extendido o Compacto
+Elije entre la version extendida y compacta facilmente cambiando estas lineas en ``preambulo.tex```
+```tex
+\newif\ifextendedversion
+\extendedversiontrue   % para la versión EXTENDIDA (Final Nacional)
+% \extendedversionfalse  % para la versión COMPACTA (Hiperregional)
+```
+
+### Limpieza (solo para nuevos codigos)
+```bash
+python3 cleaner.py
+```
+pero solo para los nuevos codigos, porque puede sobreescribir cambios ya adaptaciones anteriores.
+
+### Compilacion
+
+```bash
+latexmk -pdf -shell-escape -halt-on-error Referencia_ICPC.tex
+latexmk -pdf -shell-escape -interaction=nonstopmode Referencia_ICPC.tex
+```
+
+Para borrar únicamente los auxiliares reconocidos por `latexmk`:
+```bash
+latexmk -c Referencia_ICPC.tex
+```
+
+`latexmk -c` conserva el PDF. `latexmk -C` también elimina la salida final, por lo que no debe usarse si se quiere conservar el PDF versionado.
+
 
 
 
@@ -264,37 +299,6 @@ python3 cleaner.py
 ```
 
 La ruta de entrada (`code`) y la de salida (`latex_src`) son relativas al directorio actual y están fijadas al principio del script. Ejecutarlo desde otra carpeta hará que no encuentre la entrada o escriba en una ubicación diferente.
-
-### Compilar el manual completo
-
-Pipeline recomendado:
-
-```bash
-python3 cleaner.py
-```
-luego
-```bash
-latexmk -pdf -shell-escape -interaction=nonstopmode \ 
-  -halt-on-error Referencia_ICPC.tex
-```
-
-`latexmk` repite `pdflatex` hasta estabilizar el índice. En una instalación moderna y completa, este comando produce `Referencia_ICPC.pdf`; el estado actual del documento compila a 15 páginas.
-
-Alternativa manual, ejecutada suficientes veces para actualizar el índice:
-
-```bash
-pdflatex -shell-escape -interaction=nonstopmode -halt-on-error Referencia_ICPC.tex
-pdflatex -shell-escape -interaction=nonstopmode -halt-on-error Referencia_ICPC.tex
-pdflatex -shell-escape -interaction=nonstopmode -halt-on-error Referencia_ICPC.tex
-```
-
-Para borrar únicamente los auxiliares reconocidos por `latexmk`:
-
-```bash
-latexmk -c Referencia_ICPC.tex
-```
-
-`latexmk -c` conserva el PDF. `latexmk -C` también elimina la salida final, por lo que no debe usarse si se quiere conservar el PDF versionado.
 
 ## 4. Detalles de implementación
 

@@ -1,0 +1,89 @@
+\section{Tecniques}
+
+\begin{itemize}[noitemsep]
+    \item Cambiar numeros por sumas $\min(A,x)= \sum_{i=1}^A mathbf{1}_{\{i \leq x\}}$, $a= \sum_{i=1}^a 1$.
+    \item Fubinni para sumas.
+    \item Contribuction tecnique.
+\end{itemize}
+
+
+
+Sean $0\le a_i\le M$, $M\ge1$ y $K\ge0$ enteros.
+Definimos
+\[
+\text{pf}[y]=\#\{i:a_i\le y\},\qquad
+\text{sf}[y]=\#\{i:a_i\ge y\},
+\]
+$$ \text{pf}[y] = \sum_{i=1}^{N} \mathbf{1}_{\{a_i \leq y\}} \quad \text{ y } \quad \text{sf}[y] = \sum_{i=1}^{N} \mathbf{1}_{\{a_i \ge y\}}$$
+con $\text{pf}[-1]=0$ y $\text{sf}[y]=0$ si $y>M$.
+Precalcular ambas tablas: $O(N+M)$ tiempo, $O(M)$ memoria.
+
+\subsection{Conteo por niveles}
+Cada valor aporta uno por cada umbral $j \cdot x\le a_i$:
+\[
+\sum_i^N\min\!\left(\left\lfloor\frac{a_i}{x}\right\rfloor,K\right)
+=\sum_{j=1}^{\min(K,\lfloor M/x\rfloor)}\text{sf}[j \cdot x].
+\]
+\algoinfo{M\log M}{M}{Todos los $x=1,\ldots,M$.}
+\begin{minted}{cpp}
+for (int x = 1; x <= M; ++x) {
+    long long sum = 0;
+    for (int j = 1; j <= min(K, M / x); ++j)
+        sum += sf[j * x];
+    ans[x] = sum;
+}
+\end{minted}
+
+Generalización: cada nivel aporta $f(j)-f(j-1)$.
+\[
+\sum_i f\!\left(\left\lfloor\frac{a_i}{x}\right\rfloor\right)
+=Nf(0)+\sum_{j=1}^{\lfloor M/x\rfloor}
+\bigl(f(j)-f(j-1)\bigr)\text{sf}[j \cdot x].
+\]
+También:
+\[
+\sum_i\left\lceil\frac{a_i}{x}\right\rceil
+=\sum_{j=0}^{\lfloor(M-1)/x\rfloor}\text{sf}[j \cdot x+1],
+\]
+% \[
+% \sum_i(a_i\bmod x)
+% =\sum_i a_i-x\sum_i\left\lfloor\frac{a_i}{x}\right\rfloor.
+% \]
+
+\subsection{Agrupación por cociente}
+$\lfloor a_i/x\rfloor=c$ exactamente cuando
+$a_i\in[cx,(c+1)x-1]$. Así,
+\[
+\sum_i f\!\left(\left\lfloor\frac{a_i}{x}\right\rfloor\right)
+=\sum_{c=0}^{\lfloor M/x\rfloor} f(c)
+\bigl(\text{pf}[\min(M,(c+1)x-1)]-\text{pf}[cx-1]\bigr).
+\]
+\algoinfo{M\log M}{M}{Todos los $x$; evaluar $f$ cuesta $O(1)$.}
+\begin{minted}{cpp}
+for (int x = 1; x <= M; ++x) {
+    long long sum = 0;
+    for (int c = 0; c <= M / x; ++c) {
+        int L = c * x;
+        int R = min(1LL * M, (c + 1LL) * x - 1);
+        int cnt = pf[R] - (L ? pf[L - 1] : 0);
+        sum += 1LL * f(c) * cnt;
+    }
+    ans[x] = sum;
+}
+\end{minted}
+
+\subsection{Intervalos de cociente constante}
+Para un numerador fijo $A\ge1$, si $q=\lfloor A/l\rfloor$,
+entonces $\lfloor A/x\rfloor=q$ para todo
+$x\in[l,r]$, donde $r=\lfloor A/q\rfloor$.
+Hay $O(\sqrt A)$ intervalos.
+
+\algoinfo{\sqrt A}{1}{$\sum_{x=1}^{A}f(\lfloor A/x\rfloor)$; $f$ en $O(1)$.}
+\begin{minted}{cpp}
+long long sum = 0;
+for (long long l = 1, r; l <= A; l = r + 1) {
+    long long q = A / l;
+    r = A / q;
+    sum += (r - l + 1) * f(q);
+}
+\end{minted}

@@ -31,10 +31,15 @@
 %%%%%%%%%%%%%%%%%% tabla de contenidos %%%%%%%%%%%%%%%%%%
 \setlength{\cftbeforesecskip}{1pt} % Espacio entre secciones en el índice
 \renewcommand{\cftsecdotsep}{\cftdotsep} % Poner puntitos a las secciones principales
+% SECCIOON
 \renewcommand{\cftsecfont}{\normalfont\footnotesize} % Letra más chica
 \renewcommand{\cftsecpagefont}{\normalfont\footnotesize}
+% SUBSECCION
 \renewcommand{\cftsubsecfont}{\normalfont\scriptsize}
 \renewcommand{\cftsubsecpagefont}{\normalfont\scriptsize}
+% SUBSECCION
+\renewcommand{\cftsubsubsecfont}{\normalfont\tiny} 
+\renewcommand{\cftsubsubsecpagefont}{\normalfont\tiny}
 
 \newcommand{\Pa}[1]{\left( #1 \right)}
 \newcommand{\PA}[1]{\big( #1 \big)}
@@ -52,17 +57,17 @@
 \newcommand{\ext}[1]{\ifextendedversion#1\fi}
 
 % 3. Bloque largo / Entorno (múltiples párrafos, listas, problemas tipo)
-\NewEnviron{extended}{
+\NewEnviron{extended}[1][Versión Extendida:]{
     \ifextendedversion
-        \vspace{0.3em}
+        % \vspace{0.3em}
         \begingroup
-        \small\color{black!80}
+        \small\color{black!70}
         \vspace{0.2em}
-        \noindent\textit{\footnotesize Versión Extendida:} \vspace{-1mm}\par
+        \noindent\textit{\footnotesize #1} \vspace{-1mm}\par
         \BODY
         \vspace{0.2em}
         \endgroup
-        \vspace{0.3em}
+        % \vspace{0.3em}
     \fi
 }
 
@@ -158,18 +163,20 @@
 \titleformat{\subsection}{\normalfont\normalsize\bfseries}{}{0pt}{$\blacktriangleright$\hspace{3pt}}
 
 % SUBSUBSECTION: Cursiva negrita y punto discreto (letra un poco más chica)
-\titleformat{\subsubsection}{\normalfont\small\bfseries\itshape}{}{0pt}{$\bullet$\hspace{3pt}}
+% \titleformat{\subsubsection}{\normalfont\small\bfseries\itshape}{}{0pt}{$\bullet$\hspace{3pt}}
+\titleformat{\subsubsection}{\normalfont\normalsize\bfseries\itshape}{}{0pt}{$\bullet$\hspace{3pt}}
 
 % Eliminar el salto de línea post-titulo (Run-in titles) si quieres compresión extrema:
 % \titlespacing*{\subsection}{0pt}{1pt}{1em} % El tercer valor en 'em' hace que el texto siga en la misma línea
+
 
 % Header
 \pagestyle{fancy}
 \headheight 14pt % Reducido de 25pt
 \fancyhead{}
 \fancyfoot{}
-\lhead{\textbf{Reference - ICPC} $\mid$ Mäthgic Crüe $\mid$ UG-CIMAT $\mid$ \today} % Todo en una línea
-\rhead{\ifextendedversion { \large \textbf{-- Versión Extendida} } \fi \textbf{Pág. \thepage}}
+\lhead{\textbf{Reference - ICPC} $\mid$ UG-CIMAT  $\mid$  Mäthgic Crüe $\mid$ \leftmark\ -- \rightmark } % Todo en una línea
+\rhead{\ext{\large\textbf{-- Versión Extendida--}}\textbf{Pág. \thepage}}
 \renewcommand{\headrulewidth}{0.4pt}
 \setlength\headsep{4pt} % Pegar el texto principal al header
 

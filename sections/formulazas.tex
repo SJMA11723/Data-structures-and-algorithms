@@ -125,7 +125,7 @@ Dado que $e^x - 1 = \sum_{i=1}^\infty \frac{x^i}{i!}$, se invierte el polinomio 
 \[
 B(x) = \sum_{m=0}^\infty B_m \frac{x^m}{m!} = \left( \sum_{i=0}^\infty \frac{x^i}{(i+1)!} \right)^{-1} \pmod{x^{k+1}}
 \]
-\algoinfo{k \log k}{k}{Inversión de series usando Newton / NTT.}
+\algoinfo{k \log k}{k}{Inversión de series con Newton / NTT.}
 
 
 %=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=
@@ -151,12 +151,12 @@ con el polinomio nodal:
 L(x) = \prod_{k=0}^{n} (x - x_k) = \left( \sum_{i=0}^{n} \frac{w_i}{x - x_i} \right)^{-1}
 \end{equation*}
 
-Para evitar evaluar $L(x)$ explícitamente y mantener estabilidad numérica, se utiliza la \textbf{segunda forma baricéntrica} (donde $L(x)$ se cancela algebraicamente en numerador y denominador):
+Segunda forma baricéntrica:
 \begin{equation*}
     P_n(x) = \left( \sum_{i=0}^{n} \frac{w_i y_i}{x - x_i} \right) \Big/ \left( \sum_{i=0}^{n} \frac{w_i}{x - x_i} \right)
 \end{equation*}
 
-\algoinfo{N^2}{N}{Precálculo de $w_i$ en $O(N^2)$ y consulta de $P_n(x)$ en $O(N)$}
+\algoinfo{N^2}{N}{Cal $w_i$ en $O(N^2)$ y consulta $P_n(x)$ en $O(N)$}
 
 
 \textbf{Caso Particular: Puntos Consecutivos}
@@ -193,7 +193,7 @@ $\displaystyle\Sigma_k(n)=\sum_{i=1}^n i^k$, con $\Sigma_0(n)=n$.
 
 \algoinfo{k^2}{1}{}
 
-\textbf{Usando interpolación de lagrange:} Se evalúa la función de suma en los primeros $k+2$ puntos consecutivos $0, 1, \dots, k+1$ y se interpola el valor de $n$ utilizando productos prefijos/sufijos de diferencias y factoriales precomputados. Interpolación directa en tiempo $O(k)$ por consulta sin necesidad de precomputar coeficientes globales. Pero solo respone para una consulta, si se quieren varias consultas, es mejor usar los métodos siguientes.
+\textbf{Usando interpolación de lagrange:} Se evalúa la función de suma en los primeros $k+2$ puntos consecutivos $0, 1, \dots, k+1$ y se interpola el valor de $n$ utilizando Lagrange pero solo respone para una consulta, si se quieren varias consultas, es mejor usar los métodos siguientes.
 
 \algoinfo{k}{1}{}
 
@@ -204,43 +204,74 @@ $\displaystyle\Sigma_k(n)=\sum_{i=1}^n i^k$, con $\Sigma_0(n)=n$.
 \]
 
 \algoinfo{k^2}{k}{Nums de Stirling por recurrencia. Eval $O(k)$}
-\algoinfo{k \log k}{k}{Nums de Stirling por Mult de Polinomios (NTT). Evaluar en $O(k)$}
+\algoinfo{k \log k}{k}{Numeros de Stirling por Multiplicacion de Polinomios (NTT). Evaluar en $O(k)$}
 
 \textbf{Usando Bernoulli Numbers:}(Multiples consultas)
 \[
 \sum_{i=1}^{n} i^k = \frac{1}{k+1} \sum_{i=0}^{k} \binom{k+1}{i} B_i \cdot (n+1)^{k+1-i} 
 \]
+\begin{extended}[]
 \[
 = k! \sum_{i=0}^{k} \frac{B_i \cdot (n+1)^{k+1-i}}{(k+1-i)! \, i!}
 \]
+\end{extended}
 
 \algoinfo{k^2}{k}{$B_i$ por recurrencia. Eval en $O(k)$}
-\algoinfo{k \log k}{k}{$B_i$ por NTT e inversión de series de potencias. Eval en $O(k)$}
+\algoinfo{k \log k}{k}{$B_i$ por NTT e inversión de series de potencias. Evaluar en $O(k)$}
 
 
 
 %=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%
-\subsubsection{Numeros simplices}
+\subsubsection{Numeros simplices (Sumas de sumas de Gauss)}
 \[
-S_1(n)=\sum_{i=1}^n i= \binom{n}{2} ,\hspace{2mm}
-S_2(n)= \sum_{i=1}^n \left(\sum_{j=1}^i j\right) = \sum_{i=1}^n S_1(i) = \binom{n}{3},
+S_0(n)=1
+, \hspace{3mm}
+S_1(n)
+% =\sum_{i=1}^n S_0(i)
+= \sum_{i=1}^n 1= \binom{n}{1} 
+, \hspace{3mm}
+S_2(n)
+% =\sum_{i=1}^n S_1(i)
+=\sum_{i=1}^n i= \binom{n+1}{2}
 \]
+\begin{extended}[]
 \[
-S_k(n)=\sum_{j=1}^n S_{k-1}(j) = \binom{n}{k}.
+S_3(n)= \sum_{i=1}^n \left(\sum_{j=1}^i j\right) = \sum_{i=1}^n S_2(i) = \binom{n+2}{3},
 \]
+\end{extended}
+\[
+S_k(n)
+=\sum_{i=1}^n S_{k-1}(i) 
+= \binom{n+k-1}{k}.
+\]
+\begin{extended}[]
+\begin{itemize}
+    \item $S_k(n)$ es un polinomio de grado $k$ en $n$. Necesitas $k+1$ puntos para interpolar.
+    \item $S_k(0) = 0$ para $k\ge1$ (suma vacía).
+    \item $\binom{n+k-1}{k}$ es el número de multiconjuntos de tamaño $k$ tomados de $n$ elementos (estrellas y barras).
+\end{itemize}
+\end{extended}
+
+
+
+
+
 \subsubsection{Potencias de base fija (geométrica)}
 Para $p\ne1$:
 \[
 \sum_{i=a}^b p^i=\frac{p^{b+1}-p^{a}}{1-p}, \hspace{2mm}
-\sum_{i=0}^n p^i=\frac{1-p^{n+1}}{1-p}, \hspace{2mm}
-\sum_{i=1}^n p^i=\frac{p(1-p^n)}{1-p},
-\]
-\[
 \sum_{i=1}^n i\,p^i
 =\frac{p-(n+1)p^{n+1}+np^{n+2}}{(1-p)^2}.
 \]
-Si $p=1$, las tres sumas son, respectivamente,
-$n+1$, $n$, $b-a+1$ y $n(n+1)/2$.
+\begin{extended}[]
+\[
+\sum_{i=0}^n p^i=\frac{1-p^{n+1}}{1-p}, \hspace{2mm}
+\sum_{i=1}^n p^i=\frac{p(1-p^n)}{1-p},
+\]
+Si $p=1$, las cuatro sumas son, respectivamente,
+$b-a+1$ , $n(n+1)/2$, $n+1$ y $n$.
+\end{extended}
+
 
 \subsubsection{Series infinitas}
 Las siguientes fórmulas requieren $|p|<1$:

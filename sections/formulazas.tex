@@ -1,7 +1,7 @@
 \section{Formulazas}
 
-%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=
-%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=
+%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=
+%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=
 \subsection{Lógica - Conjuntos - Bitwise}
 $\oplus$ es el xor (o diferencia simétrica de conjuntos).
 \begin{enumerate}[1., nosep]
@@ -21,10 +21,10 @@ Si $p, q$ son predicados, entonces:
     \item $(p \oplus q) \iff -(p \iff q)$.
 \end{enumerate}
 
-%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=
-%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=
+%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=
+%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=
 \subsection{Teoria de numeros}
-Legendre's formula gives an expression for the exponent of the largest power of a prime p that divides the factorial n!.
+Expontente de la potencia mas grande de $p$ primo que divide a $n!$
 \newcommand{\piso}[1]{\left\lfloor#1\right\rfloor}
 \begin{equation*}
     \nu_p ( n! ) = \sum_{i=1}^{\piso{ \log_p n } } \piso{\frac{n}{ p^i }}
@@ -32,29 +32,207 @@ Legendre's formula gives an expression for the exponent of the largest power of 
 \end{equation*}
 Donde $S_p(n)$ es la suma de dígitos de $n$ en base $p$.
 
+%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=
+%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=
+\subsection{Combinatoria}
 
+\newcommand{\stirlingfirst}[2]{\left[ \begin{matrix} #1 \\ #2 \end{matrix} \right]}
+\newcommand{\stirlingsecond}[2]{\left\{ \begin{matrix} #1 \\ #2 \end{matrix} \right\}}
+
+\subsubsection{Números de Stirling del primer tipo}
+Cantidad de permutaciones de $n$ elementos con exactamente $k$ ciclos disjuntos.
+\[
+\stirlingfirst{n}{k} = (n-1) \stirlingfirst{n-1}{k} + \stirlingfirst{n-1}{k-1}, \quad \text{con } \stirlingfirst{0}{0}=1, \, \stirlingfirst{n}{0}=\stirlingfirst{0}{k}=0
+\]
+Función generatriz: $\sum_{k=0}^n \stirlingfirst{n}{k} x^k = x(x+1)\cdots(x+n-1)$.
+
+\[
+\begin{array}{c|ccccccccc}
+n \backslash k & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8   \\
+\hline
+1 & 1 & & & & & & &   \\
+2 & 1 & 1 & & & & & &   \\
+3 & 2 & 3 & 1 & & & & &   \\
+4 & 6 & 11 & 6 & 1 & & & &  \\
+5 & 24 & 50 & 35 & 10 & 1 & & &   \\
+6 & 120 & 274 & 225 & 85 & 15 & 1 & &  \\
+7 & 720 & 1764 & 1624 & 735 & 175 & 21 & 1 &   \\
+8 & 5040 & 13068 & 13132 & 6769 & 1960 & 322 & 28 & 1   \\
+9 & 40320 & 109584 & 118124 & 67284 & 22449 & 4536 & 546 & 36   \\
+% 10 & 362880 & 1026576 & 1172700 & 723680 & 269325 & 63273 & 9450 & 870 & 45
+\end{array}
+\]
+
+\subsubsection{Números de Stirling del segundo tipo}
+Número de formas de particionar un conjunto de $n$ elementos etiquetados en $k$ subconjuntos no vacíos no etiquetados.
+\[
+\stirlingsecond{n}{k} = k \stirlingsecond{n-1}{k} + \stirlingsecond{n-1}{k-1}, \quad \text{con } \stirlingsecond{0}{0}=1, \, \stirlingsecond{n}{0}=\stirlingsecond{0}{k}=0
+\]
+
+\algoinfo{n k}{n k}{DP clásica mediante recurrencia}
+
+\textbf{Fórmula explícita / Convolución (Fila completa $n$):}
+\[
+\stirlingsecond{n}{k} = \frac{1}{k!} \sum_{j=0}^k (-1)^{k-j} \binom{k}{j} j^n = \sum_{j=0}^k \frac{(-1)^{k-j}}{(k-j)!} \cdot \frac{j^n}{j!}
+\]
+
+\algoinfo{k \log k}{k}{Multiplicación de polinomios $A_j = \frac{(-1)^j}{j!}$ y $B_j = \frac{j^n}{j!}$ usando NTT.}
+
+\textbf{Cambio de base (Potencias a factoriales descendentes):}
+\[
+x^n = \sum_{k=0}^n \stirlingsecond{n}{k} (x)_k \quad \text{donde } (x)_k = x(x-1)\cdots(x-k+1)
+\]
+
+\[
+\begin{array}{c|ccccccccc}
+n \backslash k & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 \\
+\hline
+1 & 1 & & & & & & & &  \\
+2 & 1 & 1 & & & & & & &  \\
+3 & 1 & 3 & 1 & & & & & &  \\
+4 & 1 & 7 & 6 & 1 & & & & &  \\
+5 & 1 & 15 & 25 & 10 & 1 & & & &  \\
+6 & 1 & 31 & 90 & 65 & 15 & 1 & & &  \\
+7 & 1 & 63 & 301 & 350 & 140 & 21 & 1 & &  \\
+8 & 1 & 127 & 966 & 1701 & 1050 & 266 & 28 & 1 &  \\
+9 & 1 & 255 & 3025 & 7770 & 6951 & 2646 & 462 & 36 & 1 \\
+10 & 1 & 511 & 9330 & 34105 & 42525 & 22827 & 5880 & 750 & 45 &
+\end{array}
+\]
+\subsubsection{Números de Bernoulli}
+
+Secuencia de números racionales $B_m$ definidos por la función generatriz exponencial:
+\[
+\frac{x}{e^x - 1} = \sum_{m=0}^\infty B_m \frac{x^m}{m!}
+\]
+\[
+\begin{array}{c|ccccccccccc}
+m & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\
+\hline
+B_m & 1 & -\dfrac{1}{2} & \dfrac{1}{6} & 0 & -\dfrac{1}{30} & 0 & \dfrac{1}{42} & 0 & -\dfrac{1}{30} & 0 & \dfrac{5}{66}
+\end{array}
+\]
+
+\textbf{Relación de Recurrencia:}
+\[
+\sum_{j=0}^m \binom{m+1}{j} B_j = 0 \implies B_m = -\frac{1}{m+1} \sum_{j=0}^{m-1} \binom{m+1}{j} B_j \quad (B_0 = 1)
+\]
+
+\algoinfo{k^2}{k}{Cálculo directo por programación dinámica.}
+
+\textbf{Cálculo mediante Serie Formal de Potencias (Inversión):}
+Dado que $e^x - 1 = \sum_{i=1}^\infty \frac{x^i}{i!}$, se invierte el polinomio $P(x) = \frac{e^x - 1}{x} = \sum_{i=0}^\infty \frac{x^i}{(i+1)!}$.
+\[
+B(x) = \sum_{m=0}^\infty B_m \frac{x^m}{m!} = \left( \sum_{i=0}^\infty \frac{x^i}{(i+1)!} \right)^{-1} \pmod{x^{k+1}}
+\]
+\algoinfo{k \log k}{k}{Inversión de series usando Newton / NTT.}
+
+
+%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=
+\subsubsection{Interpolación de Lagrange}
+
+Dado un conjunto de $n+1$ puntos $\{(x_i, y_i)\}_{i=0}^{n}$ de un polinomio $P_n(x)$ de grado $\le n$, el valor de $P_n(X)$ viene dado por:
+\[
+P_n(X) = \sum_{i=0}^{n} y_i \ell_i(X), \quad \text{donde } \ell_i(X) = \prod_{\substack{j=0 \\ j \neq i}}^{n} \frac{X - x_j}{x_i - x_j}
+\]
+
+\algoinfo{N^2}{N}{Para una única consulta $P_n(x)$}
+
+
+\textbf{Interpolación baricéntrica}
+La fórmula baricéntrica de interpolación de Lagrange para el conjunto de nodos $\{(x_i, y_i)\}_{i=0}^{n}$ se define en su primera forma como:
+\begin{equation*}
+P_n(x) = L(x) \sum_{i=0}^{n} \frac{w_i y_i}{x - x_i}, 
+\quad \text{donde} \quad 
+w_i = \left( \prod_{\substack{j=0 \\ j \neq i}}^{n} (x_i - x_j) \right)^{-1}
+\end{equation*}
+con el polinomio nodal:
+\begin{equation*}
+L(x) = \prod_{k=0}^{n} (x - x_k) = \left( \sum_{i=0}^{n} \frac{w_i}{x - x_i} \right)^{-1}
+\end{equation*}
+
+Para evitar evaluar $L(x)$ explícitamente y mantener estabilidad numérica, se utiliza la \textbf{segunda forma baricéntrica} (donde $L(x)$ se cancela algebraicamente en numerador y denominador):
+\begin{equation*}
+    P_n(x) = \left( \sum_{i=0}^{n} \frac{w_i y_i}{x - x_i} \right) \Big/ \left( \sum_{i=0}^{n} \frac{w_i}{x - x_i} \right)
+\end{equation*}
+
+\algoinfo{N^2}{N}{Precálculo de $w_i$ en $O(N^2)$ y consulta de $P_n(x)$ en $O(N)$}
+
+
+\textbf{Caso Particular: Puntos Consecutivos}
+Si los puntos son $x_i = i$, precalculamos prefijos y sufijos de $pref_i = \prod_{j=0}^{i-1} (X - j)$ y $suf_i = \prod_{j=i+1}^{n} (X - j)$:
+\[
+P_n(X) = \sum_{i=0}^{n} y_i \cdot \frac{pref_i \cdot suf_i}{ (-1)^{n-i}\, i! \, (n-i)!}
+\]
+
+\algoinfo{N}{N}{Para una única consulta $P_n(x)$}
+
+
+%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=
+%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=
 \subsection{Aritmética}
 
 
-\textbf{Sumas de Gauss}
+\subsubsection{Sumas de Gauss}
+Para $k\ge1$, sea
+$\displaystyle\Sigma_k(n)=\sum_{i=1}^n i^k$, con $\Sigma_0(n)=n$.
 \[
-\sum_{i=1}^n i=\frac{n(n+1)}{2},\qquad
-\sum_{i=1}^n i^2=\frac{n(n+1)(2n+1)}{6},
+\Sigma_1(n)=\frac{n(n+1)}{2} ,\hspace{3mm}
+\Sigma_2(n)=\frac{n(n+1)(2n+1)}{6} 
 \]
 \[
-\sum_{i=1}^n i^3=\left(\frac{n(n+1)}{2}\right)^2.
-\]
-Para cualquier potencia entera $k\ge1$, sea
-$S_k(n)=\sum_{i=1}^n i^k$, con $S_0(n)=n$:
-\[
-S_k(n)=\frac{(n+1)^{k+1}-1-
-\sum_{j=0}^{k-1}\binom{k+1}{j}S_j(n)}{k+1}.
+\Sigma_3(n)=\left(\Sigma_1(n)\right)^2, \hspace{3mm}
+\Sigma_4(n)= \frac{n(n+1)(2n+1)(3n^2+3n-1)}{30} 
 \]
 
-\textbf{Potencias de base fija (geométrica)}
+\textbf{Usando recurrencia:}
+\[
+\Sigma_k(n)=\frac{(n+1)^{k+1}-1-
+\sum_{j=0}^{k-1}\binom{k+1}{j}\Sigma_j(n)}{k+1}.
+\]
+
+\algoinfo{k^2}{1}{}
+
+\textbf{Usando interpolación de lagrange:} Se evalúa la función de suma en los primeros $k+2$ puntos consecutivos $0, 1, \dots, k+1$ y se interpola el valor de $n$ utilizando productos prefijos/sufijos de diferencias y factoriales precomputados. Interpolación directa en tiempo $O(k)$ por consulta sin necesidad de precomputar coeficientes globales. Pero solo respone para una consulta, si se quieren varias consultas, es mejor usar los métodos siguientes.
+
+\algoinfo{k}{1}{}
+
+\newcommand{\stirling}[2]{\left\{ \begin{matrix} #1 \\ #2 \end{matrix} \right\}}
+\textbf{Usando Stirling:}(Multiples consultas)
+\[
+\Sigma_k(n) = \sum_{j=0}^k \stirling{k}{j} j! \binom{n+1}{j+1}
+\]
+
+\algoinfo{k^2}{k}{Nums de Stirling por recurrencia. Eval $O(k)$}
+\algoinfo{k \log k}{k}{Nums de Stirling por Mult de Polinomios (NTT). Evaluar en $O(k)$}
+
+\textbf{Usando Bernoulli Numbers:}(Multiples consultas)
+\[
+\sum_{i=1}^{n} i^k = \frac{1}{k+1} \sum_{i=0}^{k} \binom{k+1}{i} B_i \cdot (n+1)^{k+1-i} 
+\]
+\[
+= k! \sum_{i=0}^{k} \frac{B_i \cdot (n+1)^{k+1-i}}{(k+1-i)! \, i!}
+\]
+
+\algoinfo{k^2}{k}{$B_i$ por recurrencia. Eval en $O(k)$}
+\algoinfo{k \log k}{k}{$B_i$ por NTT e inversión de series de potencias. Eval en $O(k)$}
+
+
+
+%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%
+\subsubsection{Numeros simplices}
+\[
+S_1(n)=\sum_{i=1}^n i= \binom{n}{2} ,\hspace{2mm}
+S_2(n)= \sum_{i=1}^n \left(\sum_{j=1}^i j\right) = \sum_{i=1}^n S_1(i) = \binom{n}{3},
+\]
+\[
+S_k(n)=\sum_{j=1}^n S_{k-1}(j) = \binom{n}{k}.
+\]
+\subsubsection{Potencias de base fija (geométrica)}
 Para $p\ne1$:
 \[
-\sum_{i=0}^n p^i=\frac{1-p^{n+1}}{1-p},\qquad
+\sum_{i=a}^b p^i=\frac{p^{b+1}-p^{a}}{1-p}, \hspace{2mm}
+\sum_{i=0}^n p^i=\frac{1-p^{n+1}}{1-p}, \hspace{2mm}
 \sum_{i=1}^n p^i=\frac{p(1-p^n)}{1-p},
 \]
 \[
@@ -62,9 +240,9 @@ Para $p\ne1$:
 =\frac{p-(n+1)p^{n+1}+np^{n+2}}{(1-p)^2}.
 \]
 Si $p=1$, las tres sumas son, respectivamente,
-$n+1$, $n$ y $n(n+1)/2$.
+$n+1$, $n$, $b-a+1$ y $n(n+1)/2$.
 
-\textbf{Series infinitas}
+\subsubsection{Series infinitas}
 Las siguientes fórmulas requieren $|p|<1$:
 \[
 \sum_{i=0}^{\infty}p^i=\frac{1}{1-p},\qquad
@@ -75,7 +253,7 @@ Las siguientes fórmulas requieren $|p|<1$:
 \sum_{i=1}^{\infty}i^2p^i=\frac{p(1+p)}{(1-p)^3}.
 \]
 
-\textbf{Diferencias finitas}
+\subsubsection{Diferencias finitas}
 Si $a_t$ es polinómica de grado $\le k$, entonces
 $\Delta^{k+1}a_t=0$. Definimos
 \[
@@ -93,8 +271,8 @@ a_n=\sum_{j=0}^{k}\binom{n-1}{j}\Delta^ja_1,
 
 \algoinfo{k^2}{k}{Construir las diferencias desde $k+1$ términos; evaluar en $O(k)$}
 
-%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=
-%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=
+%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=
+%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=
 \subsection{Geometría}
 
 

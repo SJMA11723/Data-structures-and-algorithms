@@ -422,8 +422,40 @@ void dfs(int node, bool keep, int p = 0){
     \item \textit{Teorema de Menger}. Sea $G$ un grafo finito (sin pesos) con vértices $s$, $t$ distintos. El corte mínimo (por aristas) entre $s$ y $t$ es igual a la cantidad máxima de caminos independientes por aristas de $s$ a $t$. Si $s$ y $t$ no son adyacentes, el corte mínimo por vértices entre $s$ y $t$ es igual a la cantidad máxima de caminos independientes por vértices de $s$ a $t$.
     \item \textit{Teorema de Mirsky}. En todo POSET, el tamaño de la cadena de mayor tamaño es igual al número de anticadenas necesarias para cubrir todos los elementos del conjunto.
     \item \textit{Teorema de Dilworth}. En todo POSET, el tamaño de la anticadena de mayor tamaño es igual al número de cadenas necesarias para cubrir todos los elementos del conjunto.
-    \item \textit{Teorema de Hall}. Un grafo bipartito con subconjuntos $L$ y $R$ tiene un emparejamiento de tamaño $|L|$ si y sólo si para todo subconjunto $W$ de $L$, se cumple que $|W| \leq |N_G(W)|$, donde $N_G(W)$ es el conjunto de vértices vecinos de alguno de los vértices en $W$.
+    % \item \textit{Teorema de Hall}. Un grafo bipartito con subconjuntos $L$ y $R$ tiene un emparejamiento de tamaño $|L|$ si y sólo si para todo subconjunto $W$ de $L$, se cumple que $|W| \leq |N_G(W)|$, donde $N_G(W)$ es el conjunto de vértices vecinos de alguno de los vértices en $W$.
+    \item \textit{Teorema de Hall}. Sea $G=(L\cup R,E)$ bipartito. Para $S\subseteq 
+    $N(S)=\{\,r\in R : \exists\, s\in S,\ \{s,r\}\in E\,\}$.
+    $\nu(G)$ = tama\~no de un matching m\'aximo. 
+    Existe un matching que satura a $L$
+    SSI $|N(S)|\ge |S|$ para todo $S\subseteq L$.
+    \item \textit{Versi\'on con deficiencia (K\"onig--Ore).}
+    \[
+    \nu(G)\;=\;|L|-\delta(G),\qquad
+    \delta(G)=\max_{S\subseteq L}\bigl(|S|-|N(S)|\bigr)\ \ge 0 .
+    \]
+    ($S=\varnothing$ da $0$, as\'i que $\delta\ge 0$.) $\delta(G)$ es el n\'umero de
+    v\'ertices de $L$ que quedan sin cubrir en un matching m\'aximo.
+    \item \textit{Hall caso $\delta = 0$}. Matching perfecto $\iff |L|=|R|$ y $\delta(G)=0$.
+    \item \textit{Hall con pesos (multiplicidades).}
+    Sea $c:L\cup R\to\mathbb{Z}_{\ge 0}$ y $c(A)=\sum_{v\in A}c_v$.
+    Sea $G_c$ el grafo \emph{expandido}: cada $v$ se reemplaza por $c_v$ copias,
+    y dos copias son adyacentes $\iff$ sus originales lo son. Entonces
+    \begin{equation*}
+        \begin{align*}
+            G_c \text{ tiene un matching que satura a } L_c
+             \\ \iff c\bigl(N(S)\bigr)\ \ge\ c(S)\quad\forall\, S\subseteq L,
+        \end{align*}
+    \end{equation*}
+    \item \textit{Con pesos (multiplicidades).}
+    \[
+    \nu(G_c)=c(L)-\max_{S\subseteq L}\bigl(c(S)-c(N(S))\bigr).
+    \]
+    Matching perfecto en $G_c$ $\iff c(L)=c(R)$ y se cumple la condici\'on anterior.
 \end{itemize}
+
+
+
+
 
 
 \textbf{Edmonds-Karp}

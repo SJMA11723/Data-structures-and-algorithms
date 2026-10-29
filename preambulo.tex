@@ -28,6 +28,10 @@
 \usepackage{fancyhdr}
 \usepackage{titlesec}
 
+
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usetikzlibrary{fit,backgrounds}
 %%%%%%%%%%%%%%%%%% tabla de contenidos %%%%%%%%%%%%%%%%%%
 \setlength{\cftbeforesecskip}{1pt} % Espacio entre secciones en el índice
 \renewcommand{\cftsecdotsep}{\cftdotsep} % Poner puntitos a las secciones principales
@@ -174,7 +178,7 @@
 \headheight 14pt % Reducido de 25pt
 \fancyhead{}
 \fancyfoot{}
-\lhead{\textbf{Reference - ICPC} $\mid$ UG-CIMAT  $\mid$  Mäthgic Crüe $\mid$ \leftmark\ -- \rightmark } % Todo en una línea
+\lhead{\textbf{Reference - ICPC} $\mid$ UG-CIMAT  $\mid$  Mäthgic Crüe $\mid$ \leftmark \,  $\mid$  \rightmark } % Todo en una línea
 \rhead{\ext{\large\textbf{-- Versión Extendida--}}\textbf{Pág. \thepage}}
 \renewcommand{\headrulewidth}{0.4pt}
 \setlength\headsep{4pt} % Pegar el texto principal al header

@@ -408,8 +408,8 @@ void dfs(int node, bool keep, int p = 0){
 \end{minted}
 
 
+\subsection{Matching}
 
-\subsection{Máximo flujo}
 
 \textbf{Algunos problemas de flujos}
 \begin{itemize}
@@ -423,39 +423,133 @@ void dfs(int node, bool keep, int p = 0){
     \item \textit{Teorema de Mirsky}. En todo POSET, el tamaño de la cadena de mayor tamaño es igual al número de anticadenas necesarias para cubrir todos los elementos del conjunto.
     \item \textit{Teorema de Dilworth}. En todo POSET, el tamaño de la anticadena de mayor tamaño es igual al número de cadenas necesarias para cubrir todos los elementos del conjunto.
     % \item \textit{Teorema de Hall}. Un grafo bipartito con subconjuntos $L$ y $R$ tiene un emparejamiento de tamaño $|L|$ si y sólo si para todo subconjunto $W$ de $L$, se cumple que $|W| \leq |N_G(W)|$, donde $N_G(W)$ es el conjunto de vértices vecinos de alguno de los vértices en $W$.
-    \item \textit{Teorema de Hall}. Sea $G=(L\cup R,E)$ bipartito. Para $S\subseteq 
-    $N(S)=\{\,r\in R : \exists\, s\in S,\ \{s,r\}\in E\,\}$.
+    \end{itemize}
+
+
+\textbf{Teoremas de Matching}\\
+Notacion:  Sea $G=(L\cup R,E)$ bipartito. Para $S\subseteq L$
+    $ N(S)=\{\,r\in R : \exists\, s\in S,\ \{s,r\}\in E\,\} $.
     $\nu(G)$ = tama\~no de un matching m\'aximo. 
+
+
+
+\begin{description}
+\item[Teorema de Hall.]
     Existe un matching que satura a $L$
-    SSI $|N(S)|\ge |S|$ para todo $S\subseteq L$.
-    \item \textit{Versi\'on con deficiencia (K\"onig--Ore).}
+    Si y Solo Si $|N(S)|\ge |S|$ para todo $S\subseteq L$.
+\item[Deficiencia (K\"onig--Ore).] Se $
+    \delta(G)=\max_{S\subseteq L}\bigl(|S|-|N(S)|\bigr)\ \ge 0 $. Importante notar que $S=\varnothing$ da $0$, as\'i que $\delta\ge 0$. El teorema dice
     \[
-    \nu(G)\;=\;|L|-\delta(G),\qquad
-    \delta(G)=\max_{S\subseteq L}\bigl(|S|-|N(S)|\bigr)\ \ge 0 .
+    \nu(G)\;=\;|L|-\delta(G),
     \]
-    ($S=\varnothing$ da $0$, as\'i que $\delta\ge 0$.) $\delta(G)$ es el n\'umero de
+    Asi $\delta(G)$ es el n\'umero de
     v\'ertices de $L$ que quedan sin cubrir en un matching m\'aximo.
-    \item \textit{Hall caso $\delta = 0$}. Matching perfecto $\iff |L|=|R|$ y $\delta(G)=0$.
-    \item \textit{Hall con pesos (multiplicidades).}
-    Sea $c:L\cup R\to\mathbb{Z}_{\ge 0}$ y $c(A)=\sum_{v\in A}c_v$.
-    Sea $G_c$ el grafo \emph{expandido}: cada $v$ se reemplaza por $c_v$ copias,
-    y dos copias son adyacentes $\iff$ sus originales lo son. Entonces
-    \begin{equation*}
-        \begin{align*}
-            G_c \text{ tiene un matching que satura a } L_c
-             \\ \iff c\bigl(N(S)\bigr)\ \ge\ c(S)\quad\forall\, S\subseteq L,
-        \end{align*}
-    \end{equation*}
-    \item \textit{Con pesos (multiplicidades).}
-    \[
+\item[Hall caso $\delta = 0$.] Matching perfecto $\iff |L|=|R|$ y $\delta(G)=0$.\\
+\end{description}
+
+
+
+\textit{\textbf{Notaci\'on para multiplicidades.}}
+Sea $G=(L\cup R,E)$ bipartito, con $a:L\to\mathbb{Z}_{\ge0}$ (oferta),
+$b:R\to\mathbb{Z}_{\ge0}$ (demanda) y $u:L\times R\to\mathbb{Z}_{\ge0}\cup\{\infty\}$
+(capacidad por arista), con $u_{ij}=0$ si $\{i,j\}\notin E$.
+Para $A\subseteq L$ se define $a(A)=\sum_{i\in A}a_i$, y an\'alogamente $b(B)$ para $B\subseteq R$.
+Para $X\subseteq L$, $Y\subseteq R$ se define $u(X,Y)=\sum_{i\in X,\,j\in Y}u_{ij}$.
+$N(S)\subseteq R$ es la vecindad de $S\subseteq L$ en $G$.
+Cuando no hace falta distinguir lados, se escribe $c:L\cup R\to\mathbb{Z}_{\ge0}$ y
+$c(A)=\sum_{v\in A}c_v$.
+
+
+\begin{description}
+\item[Hall con multiplicidades.]
+  Sea $G_c$ el grafo \emph{expandido}: cada $v$ se reemplaza por $c_v$ copias, y dos copias son
+  adyacentes $\iff$ sus originales lo son (equivale a $u\equiv\infty$ sobre $E$).
+  Sea $L_c$ el conjunto de copias de $L$. Entonces
+  \[
+    G_c \text{ tiene un matching que satura } L_c
+    \iff c\bigl(N(S)\bigr)\ge c(S)\,\forall\, S\subseteq L .
+  \]
+\item[Deficiencia con multiplicidades.] Se cumple
+  \[
     \nu(G_c)=c(L)-\max_{S\subseteq L}\bigl(c(S)-c(N(S))\bigr).
-    \]
-    Matching perfecto en $G_c$ $\iff c(L)=c(R)$ y se cumple la condici\'on anterior.
-\end{itemize}
+  \]
+  $G_c$ tiene matching perfecto $\iff c(L)=c(R)$ y se cumple la condici\'on de Hall anterior.
+  \begin{extended}[]
+  \item[Transporte con capacidades.]
+  Existe $x:E\to\mathbb{Z}_{\ge0}$ con $0\le x_{ij}\le u_{ij}$,
+  $\sum_j x_{ij}=a_i$ para todo $i\in L$ y $\sum_i x_{ij}\le b_j$ para todo $j\in R$
+  (es decir, se \emph{satura} $L$) si y solo si
+  $
+    a(S)\;\le\; b(T)\;+\;u(S,\,R\setminus T)
+    % \,\forall\, 
+    \text{ Si y Solo Si }
+    S\subseteq L,\ T\subseteq R .
+  $
+  Si adem\'as $a(L)=b(R)$, tambi\'en se satura $R$ (igualdad en todas las columnas).
+  \end{extended}
+  
+  \item[Red y cortes.]
+  Aristas $s\to i$ con capacidad $a_i$, $i\to j$ con capacidad $u_{ij}$, y $j\to t$ con capacidad $b_j$.
+  Un corte $s$--$t$ se describe por $S\subseteq L$, $T\subseteq R$:
+  el lado de $s$ es $\{s\}\cup S\cup T$ y el lado de $t$ es $\{t\}\cup(L\setminus S)\cup(R\setminus T)$.
+  Su capacidad es
+  $
+    a(L\setminus S)\;+\;u(S,\,R\setminus T)\;+\;b(T).
+  $
+  Por max-flow min-cut, el flujo m\'aximo vale $a(L)$ (se satura $L$) $\iff$ todo corte tiene
+  capacidad $\ge a(L)$.
+  
+  
+  \item[Matching con multiplicidades y restricciones.]
+  El valor del m\'aximo emparejamiento (con cada $i\in L$ usado hasta $a_i$ veces
+  y cada $j\in R$ hasta $b_j$ veces, con restriccione $u_{ij}$) es $a(L)$, es decir, se \emph{satura} $L$, si y solo si
+  todo corte $s$--$t$ tiene capacidad al menos $a(L)$. Esto es
+  \[
+    a(S)\;\le\; b(T)\;+\;u(S,\,R\setminus T)\qquad\forall\, S\subseteq L,\ T\subseteq R .
+  \]
+  Si adem\'as $a(L)=b(R)$, tambi\'en se satura $R$, y el emparejamiento es perfecto.
 
 
+\item[Caso $u\equiv\infty$ en $E$ (Hall con pesos).]
+  El t\'ermino $u(S,R\setminus T)$ vale $\infty$ salvo que $T\supseteq N(S)$, y entre esos $T$ el
+  que minimiza $b(T)$ es $T=N(S)$. La condici\'on queda
+  $
+    a(S)\le b\bigl(N(S)\bigr)\,\forall\, S\subseteq L .
+  $
+
+\item[Teorema de Gale--Ryser.] Sean $a_1\ge a_2\ge\dots\ge a_m\ge0$ y $b_1,\dots,b_n\ge0$ enteros.
+Existe una matriz $A\in\{0,1\}^{m\times n}$ con suma $a_i$ en la fila $i$ y suma $b_j$ en la columna $j$
+\[
+\iff\quad \sum_{i=1}^m a_i=\sum_{j=1}^n b_j\quad\text{y}\quad
+\sum_{i=1}^{k}a_i\;\le\;\sum_{j=1}^{n}\min(b_j,k)\qquad\forall\,k\in[m].
+\]
+Forma de dominancia: con $b^*_k=\#\{j:b_j\ge k\}$ (partici\'on conjugada),
+$\sum_j\min(b_j,k)=\sum_{i\le k}b^*_i$, as\'i que la condici\'on es $a\preceq b^*$.
 
 
+\begin{extended}[]
+\item[Prueba (desde el corte).] Es el caso $G=K_{m,n}$, $u\equiv1$. La capacidad del corte es
+$a(L\setminus S)+|S|\,|R\setminus T|+b(T)$, luego la condici\'on es
+$a(S)\le b(T)+|S|\,|R\setminus T|$. Con $|S|=k$ fijo, el lado derecho se minimiza
+columna a columna ($b_j$ si $j\in T$, $k$ si no), dando $\sum_j\min(b_j,k)$;
+el lado izquierdo se maximiza tomando los $k$ mayores $a_i$. $\blacksquare$
+
+\item[Contraejemplos (l\'imites).] $a=(2,2)$, $b=(4,0)$: las sumas coinciden pero para $k=1$ se tiene
+$2\le\min(4,1)+\min(0,1)=1$, falso. $a=(1)$, $b=(2)$ cumple las desigualdades
+con $k=1$ pero no la igualdad de sumas.
+
+\item[Aclaraci\'on de alcance.] Gale--Ryser es para \emph{dos} conjuntos (filas, columnas): las
+entradas $(i,j)$ y $(j,i)$ son independientes. Si el mismo conjunto de elementos aparece en ambos
+lados y cada par $\{i,j\}$ se usa a lo sumo una vez, el objeto cambia:
+un grafo simple con secuencia de grados dada (matriz sim\'etrica con diagonal cero;
+Erd\H{o}s--Gallai), o un torneo (matriz con $x_{ij}+x_{ji}=1$ para $i\ne j$; Landau).
+Las condiciones de existencia son otras.
+\end{extended}
+
+
+\end{description}
+
+\subsection{Máximo flujo}
 
 
 \textbf{Edmonds-Karp}

@@ -2,8 +2,10 @@ import os
 import re
 
 # Carpetas de configuración
-INPUT_DIR: str = 'code/game_theory'       
-OUTPUT_DIR: str = 'latex_src/game_theory' 
+INPUT_DIR: str = 'code/'       
+OUTPUT_DIR: str = 'latex_src/' 
+# INPUT_DIR: str = 'code/game_theory'       
+# OUTPUT_DIR: str = 'latex_src/game_theory' 
 
 # Expresiones regulares para C++
 BOILERPLATE_REGEX: list[str] = [
@@ -201,16 +203,23 @@ def main() -> None:
         for file in files:
             in_path: str = os.path.join(root, file)
             out_path: str = in_path.replace(INPUT_DIR, OUTPUT_DIR, 1)
+
+            if file == 'GreenHackenbush.cpp':
+                continue;
+            if file == 'li_chao_tree.cpp':
+                continue;
+            
             
             if file == 'template.h':
                 clean_template_file(in_path, out_path)
                 count += 1
-            elif file.endswith('.sh'):
+            elif file.endswith('.sh') :
                 clean_bash_file(in_path, out_path)
                 count += 1
             elif file.endswith('.cpp'):
                 clean_cpp_file(in_path, out_path)
                 count += 1
+
                 
     print(f"¡Listo! Se procesaron {count} archivos. Revisa la carpeta '{OUTPUT_DIR}'.")
 

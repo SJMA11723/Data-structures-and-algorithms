@@ -141,14 +141,16 @@
 \newenvironment{solution}
 {\renewcommand\xqedsymbol{$\square$}\begin{proof}[Solución]}
     {\end{proof}}
-
+% \renewcommand{\binom}{\dbinom}
+\DeclareRobustCommand{\binom}[2]{\left(\genfrac{}{}{0pt}{}{#1}{#2}\right)}
 %%%%%%%%%%%%%%%%%% Espaciado %%%%%%%%%%%%%%%%%%
 \setlength{\columnsep}{0.25cm} % Espacio minimo entre columnas
 \setlength{\columnseprule}{0.5pt} % Linea divisoria opcional para guiar la vista
 \setlength{\parindent}{0pt}
-\setlist[enumerate,1]{label=\arabic*., nosep}
-\setlist[itemize]{noitemsep}
-\setlist[description]{noitemsep, topsep=0pt, parsep=1pt, itemsep=2pt, leftmargin=0pt}
+\setlist{topsep=0pt, partopsep=0pt, parsep=0pt, itemsep=0.5pt, leftmargin=3mm}
+\setlist[enumerate]{label=\arabic*., leftmargin=3mm}
+\setlist[itemize]{leftmargin=2.5mm}
+\setlist[description]{leftmargin=0mm}
 % \ newcommand{\noenter}[1]{\vspace{-2mm}}
 
 % \titlespacing*{comando}{izq}{arriba}{abajo}

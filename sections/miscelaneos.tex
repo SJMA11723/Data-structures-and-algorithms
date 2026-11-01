@@ -1,0 +1,44 @@
+\section{Misceláneos}
+% - % - % - % - % - % - % - % - % - % - % - % - % - % - % - % -
+% - % - % - % - % - % - % - % - % - % - % - % - % - % - % - % -
+\subsection{XOR Basis}
+
+
+\algoinfo{d}{d}{} 
+\begin{minted}{cpp}
+int basis[d];// basis[i]: v\inBase cuyo lsb es i
+int sz;       // size actual de la base (= rango r)
+void insertVector(int mask) {
+    for( int i = 0; i < d; i++ ){
+        if( is_on(mask,i) )continue; // continue if lsb(mask)!=i
+        if( !basis[i] ){ // no hay vector en la base con ese bit
+            basis[i] = mask;
+            ++sz;
+            return;
+        }
+        mask ^= basis[i]; // si ya hay, quitarle ese bit a mask
+    }
+}
+\end{minted}
+
+
+\textbf{Teorema de Rango--Nulidad.} 
+Sea $\varphi:W\to V$ una transformación lineal con $W$ de dimensión finita. Entonces
+\[
+\dim W=\dim\ker \varphi+\dim\operatorname{im}\varphi.
+\]
+
+\textbf{Resultado}
+Sean $v_1,\dots,v_n\in\mathbb F_2^d$ y sea $V=\operatorname{span}(v_1,\dots,v_n)$
+con $r=\dim V$. Se quiere contar, para $x\in\mathbb F_2^d$, cuántos
+$S\subseteq[n]$ cumplen $\bigoplus_{i\in S}v_i=x$. (Si $x\notin V$, la respuesta es 0.)
+\[
+\#\Bigl\{S\subseteq[n] : \bigoplus_{i\in S}v_i=x\Bigr\}=
+\begin{cases}
+2^{\,n-r} & \text{si } x\in V,\\
+0 & \text{si } x\notin V.
+\end{cases}
+\]
+
+
+

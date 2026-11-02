@@ -1,4 +1,4 @@
-#include "template.h"
+#include "../template.h"
 
 void linear_sigma(int n, vi &lp, vll &sigma1){
     vi primes;

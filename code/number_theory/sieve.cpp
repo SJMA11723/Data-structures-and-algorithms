@@ -1,10 +1,4 @@
-#include "template.h"
-
-/**
-* Author: Jorge Raul Tzab Lopez
-* Github: https://github.com/SJMA11723
-*/
-
+#include "../template.h"
 /**
 *   La idea es tener un arreglo no_primo[] en el cual
 *       - no_primo[i] = false si i es primo

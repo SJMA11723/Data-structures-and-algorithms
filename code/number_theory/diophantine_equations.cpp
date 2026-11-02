@@ -1,8 +1,4 @@
-#include "template.h"
-/**
-* Author: Jorge Raul Tzab Lopez
-* Github: https://github.com/SJMA11723
-*/
+#include "../template.h"
 
 ll ext_gcd(ll a, ll b, ll &x, ll &y); // hide
 

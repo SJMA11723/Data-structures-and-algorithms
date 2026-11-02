@@ -337,76 +337,16 @@ void generateBlockCutTree(vvi &g){
 }
 \end{minted}
 
+%% LCA
+\algoinfo{n \log n}{n \log n}{LCA y $n$-ésimo ancestro. Precalcula $2^k$-ancestros y profundidades. 1-index.}
+\inputcode{cpp}{latex_src/graph/trees/lca.cpp}{lca.cpp}
 
+%% SACK
+\algoinfo{n \log n}{n}{Sack. Consultas en todos los subárboles. 1-index. add agrega/elimina un subárbol. Responder después de add.}
+\inputcode{cpp}{latex_src/graph/trees/sack.cpp}{sack.cpp}
 
-\textbf{LCA.} Complejidad: Tiempo de preproceso $O(|V|\log |V|)$. Tiempo de LCA y $n$-ésimo ancestro $O(\log |V|)$. $1$-index.
-\begin{minted}{cpp}
-void precalc(int node, int p = 0, int d = 1){
-    depth[node] = d;
-    P[0][node] = p;
-    for(int k = 1; k <= LOGN; ++k)
-        P[k][node] = P[k - 1][P[k - 1][node]];
-    for(int child : tree[node]) if(p != child)
-        precalc(child, node, d + 1);
-}
-int LCA(int a, int b){
-    if(depth[b] < depth[a]) swap(a, b);
-    int dif = depth[b] - depth[a];
-    for(int k = LOGN; 0 <= k; --k)
-        if(is_on(dif, k)) b = P[k][b];
-    if(a == b) return a;
-    for(int k = LOGN; 0 <= k; --k){
-        if(P[k][a] != P[k][b]){
-            a = P[k][a];
-            b = P[k][b];
-        }
-    }
-    return P[0][a];
-}
-int nth_ancestor(int u, int n){
-    for(int k = LOGN; 0 <= k; --k)
-        if(is_on(n, k)) u = P[k][u];
-    return u;
-}
-\end{minted}
-
-
-
-\textbf{Sack.} Complejidad: Tiempo $O(\abs{V}\log \abs{V})$. $1$-index.
-\begin{minted}{cpp}
-void precalc(int node, int p = 0){
-    subtree_size[node] = 1;
-    depth[node] = depth[p] + 1;
-    for(int v : tree[node]){
-        if(v == p) continue;
-        precalc(v, node);
-        subtree_size[node] += subtree_size[v];
-    }
-}
-void add(int node, int x, int p = 0){
-    /// add node here
-    /// add subtree
-    for(int v: tree[node])
-        if(v != p && !big[v])
-            add(v, x, node);
-}
-void dfs(int node, bool keep, int p = 0){
-    int maxi = -1, big_child = -1;
-    for(int v : tree[node])///Searchfor big_child
-       if(v != p && subtree_size[v] > maxi)
-          maxi = subtree_size[v], big_child = v;
-    for(int v : tree[node])
-        if(v != p && v != big_child)
-            dfs(v, false, node);  /// run a dfs on small childs and clear them
-    if(big_child != -1)
-        dfs(big_child, true, node), big[big_child] = 1;  /// big_child marked as big and not cleared
-    add(node, 1, p);
-    /// answer queries here
-    if(big_child != -1) big[big_child] = 0;
-    if(!keep) add(node, -1, p);
-}
-\end{minted}
-
+\algoinfo{n \log n}{n}{Centroid Decomposition. Para constuir el árbol de centroides usar la arista \texttt{(p, centroid)} en build.}
+\inputcode{cpp}{latex_src/graph/trees/centroid.cpp}{centroid.cpp}
 
 \subsection{Matching}
 

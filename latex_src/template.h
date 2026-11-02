@@ -12,7 +12,8 @@ typedef vector<vll> vvll;
 #define pb push_back
 #define all(x) (x).begin(), (x).end()
 #define sz(x) (int)(x).size()
-#define rep(i,a,b) for( int i=a; i< (b); ++i )
+#define rep(i,a,b) for(int i = (a); i < (b); ++i)
+#define repr(i,a,b) for(int i = (b) - 1; (a) <= i; --i)
 const int MOD = 1e9 + 7;
 #include <ext/pb_ds/assoc_container.hpp>
 #include <ext/pb_ds/tree_policy.hpp>
@@ -58,7 +59,7 @@ void logger(const char* col, string vars, Args&&... values){
 #endif
 int main(){
     #ifdef LOCAL
-        ifstream cin("in.in");
+        ifstream cin("test.in");
     #else
         ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
     #endif

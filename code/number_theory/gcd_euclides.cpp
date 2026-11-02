@@ -1,11 +1,4 @@
-/**
-* Author: Jorge Raul Tzab Lopez
-* Github: https://github.com/SJMA11723
-*/
-
-#include <bits/stdc++.h>
-
-using namespace std;
+#include "../template.h"
 
 int gcd(int a, int b){
     return !b ? a : gcd(b, a % b);

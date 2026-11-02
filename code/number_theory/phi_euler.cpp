@@ -1,9 +1,4 @@
-#include "template.h"
-
-/**
-* Author: Jorge Raul Tzab Lopez
-* Github: https://github.com/SJMA11723
-*/
+#include "../template.h"
 
 vi calc_phi(int n){
     vi phi(n + 1);

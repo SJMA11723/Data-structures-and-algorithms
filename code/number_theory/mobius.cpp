@@ -1,4 +1,4 @@
-#include "template.h"
+#include "../template.h"
 
 void linear_mobius(int n, vi &primes, vi &mu) {
     vi lp(n + 1);

@@ -10,7 +10,7 @@ int basis[d];// basis[i]: v\inBase cuyo lsb es i
 int sz;       // size actual de la base (= rango r)
 void insertVector(int mask) {
     for( int i = 0; i < d; i++ ){
-        if( is_on(mask,i) )continue; // continue if lsb(mask)!=i
+        if( !is_on(mask,i) )continue; // continue if lsb(mask)!=i
         if( !basis[i] ){ // no hay vector en la base con ese bit
             basis[i] = mask;
             ++sz;
@@ -21,12 +21,40 @@ void insertVector(int mask) {
 }
 \end{minted}
 
-
-\textbf{Teorema de Rango--Nulidad.} 
+\begin{extended}[]
+\begin{description}
+\item[Teorema de Rango--Nulidad.] 
 Sea $\varphi:W\to V$ una transformación lineal con $W$ de dimensión finita. Entonces
 \[
 \dim W=\dim\ker \varphi+\dim\operatorname{im}\varphi.
 \]
+
+\item[Primer Teorema de Isomorfismo]
+Utilizando $W / \ker \varphi \cong \operatorname{im}\varphi$, los tamaños de los conjuntos satisfacen la relación multiplicativa:
+\[
+|W| = |\ker \varphi| \cdot |\operatorname{im} \varphi|
+\]
+
+\item[Cardinalidad de un Espacio Vectorial Finito]
+Si $V$ es un espacio vectorial de dimensión finita sobre un cuerpo finito $K$, la cardinalidad de $V$ cumple que:
+\[
+|V| = |K|^{n} \text{, si } V \cong K^n
+\]
+
+\item[Teorema de las Fibras]
+Sea $\varphi: W \to V$ una transformación lineal entre espacios vectoriales. Para todo vector $v \in \operatorname{im}\varphi$, la fibra (preimagen) $\varphi^{-1}(v)$ es una clase lateral del núcleo, dada por:
+\[
+\varphi^{-1}(v) = w_0 + \ker \varphi = \{ w_0 + k \mid k \in \ker \varphi \}
+\]
+donde $w_0 \in W$ es cualquier solución particular tal que $\varphi(w_0) = v$. 
+
+Como consecuencia, existe una biyección entre $\ker \varphi$ y cualquier fibra no vacía $\varphi^{-1}(v)$, por lo que la cardinalidad de cada fibra coincide exactamente con la del núcleo:
+\[
+|\varphi^{-1}(v)| = |\ker \varphi| \quad \forall \, v \in \operatorname{im}\varphi.
+\]
+\end{description}
+\end{extended}
+
 
 \textbf{Resultado}
 Sean $v_1,\dots,v_n\in\mathbb F_2^d$ y sea $V=\operatorname{span}(v_1,\dots,v_n)$

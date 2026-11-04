@@ -34,6 +34,42 @@ para arbol enraizado.
 
 \textbf{Principio de fusión.} Fusionar todos los vértices de un ciclo preserva Grundy; sus aristas se vuelven lazos. Unificar el suelo, fusionar ciclos. Reemplazar cada lazo por una hoja y aplicar colon. Lazos en un mismo vértice se cancelan por pares.\\
 
-\algoinfo{ (N+M) \alpha(N) }{ N+M }{Nodos en $[0,N)$}
+\algoinfo{ (N+M) \alpha(N) }{ N+M }{Nodos en $[0,N)$. Grafo general con $M$ aristas.}
+
 
 \inputcode{cpp}{latex_src/game_theory/GreenHackenbush.cpp}{GreenHackenbush.cpp}
+
+
+
+\ifextendedversion
+\algoinfo{ N+M }{ N+M }{Nodos en $[0,N)$. Arbol con $M$ multi-aritas.}
+\begin{minted}{cpp}
+struct edge{int from, to;ll w;};
+struct ghb_r{ int cntRepre, root=0, value; vi nim; vvpii tree;};
+ghb_r ghb(int n, vector<edge> edges, const vi &suelo={} ){
+    ghb_r r;r.cntRepre = n;r.root = 0;r.tree.resize(r.cntRepre);
+    for(const edge &e : edges ){
+        int a = e.from; int b = e.to; ll w = e.w;
+        r.tree[a].pb({b,w}); r.tree[b].pb({a,w}); 
+    }
+    vpii order={ {r.root, 0} }; vi npar(sz(r.tree),-1);
+    npar[r.root]=r.root;
+    for( int  i = 0; i < sz(order); i++ ){ int u = order[i].fi;
+        for( pii  arista : r.tree[u] ){ 
+            int v = arista.fi; ll w = arista.se;
+            if( v == npar[u] ) continue;
+            npar[v] = u;order.pb({v,w}); // u -> v con  w veces
+        }
+    }
+    r.nim.assign(sz(r.tree), 0);
+    for( int  i = sz(order) - 1; i > 0; i-- ){
+        int u = order[i].fi;  ll w = order[i].se; 
+        if( w == 1){ r.nim[npar[u]] ^= (r.nim[u]+ 1 ); 
+        }else{ r.nim[npar[u]] ^= (r.nim[u]);
+            int restantes = w%2; r.nim[npar[u]] ^= (restantes);
+        }      
+    }
+    r.value = r.nim[r.root]; return r;
+}
+\end{minted}
+\fi

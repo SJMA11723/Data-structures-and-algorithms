@@ -31,8 +31,8 @@ typedef __int128_t lll;
 typedef vector<pii> vpii;
 typedef vector<pll> vpll;
 typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> ordered_set;
-mt19937_64 gen(chrono::steady_clock::now().time_since_epoch().count());
-uniform_int_distribution<ll> distr(1, LLONG_MAX);
+mt19937_64 seed(chrono::steady_clock::now().time_since_epoch().count());
+uniform_int_distribution<ll> ale(1, LLONG_MAX);
 
 
 // --- --- --- --- LOGGER SETUP --- --- --- --- 

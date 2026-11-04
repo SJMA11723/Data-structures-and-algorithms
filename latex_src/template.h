@@ -22,8 +22,8 @@ typedef __int128_t lll;
 typedef vector<pii> vpii;
 typedef vector<pll> vpll;
 typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> ordered_set;
-mt19937_64 gen(chrono::steady_clock::now().time_since_epoch().count());
-uniform_int_distribution<ll> distr(1, LLONG_MAX);
+mt19937_64 seed(chrono::steady_clock::now().time_since_epoch().count());
+uniform_int_distribution<ll> ale(1, LLONG_MAX);
 template<typename C, typename T = typename enable_if<!is_same<C, string>::value, typename C::value_type>::type>
 ostream& operator<<(ostream &os, const C &v);
 template<typename A, typename B>

@@ -1,0 +1,318 @@
+\section{Dinamic Programming}
+
+
+
+\subsection{Subset sum optimization.}
+Complejidad: $O(N\sqrt{N})$. Si queremos obtener calcular el conjunto de sumas posibles en subconjuntos de un arreglo $A$, en el cual se cumple que $\sum a_i = N$ y todo $a_i\geq0$, podemos obtener exactamente el mismo conjunto con un arreglo comprimido de tamaño $\sqrt{N}$. El $3k-trick$ explota que las sumas generadas por el arreglo $[a,a,a]$ son exactamente las mismas que en $[2a,a]$. Podemos juntar elementos y repetirlo hasta que a solo haya dos copias de cada elemento distinto en el nuevo arreglo, acotando el numero de elementos a $O(\sqrt{N})$. El proceso de compresión toma $O(N\log_2(N))$.
+\begin{minted}{cpp}
+vi compress(vector<ll>& a){
+    sort(a.rbegin(), a.rend());
+    int n = sz(a);
+    a.pb(0);
+    vi weights;
+    int pi = 0;
+    for(int i = 1; i <= n; i++){
+      if(a[i] != a[i - 1]){
+        ll cnt = i - pi;
+        ll x = a[i - 1];
+        ll j = 1;
+        while(j < cnt){
+          weights.pb(x * j);
+          cnt -= j;
+          j *= 2;
+        }
+        weights.pb(x * cnt);
+        pi = i;
+      }
+    } return weights;
+}
+\end{minted}
+
+
+\subsection{Subset Sum con bitset}
+Dado una una arreglo de tamaño \(n\) ver si es psoible encontrar es la suma objetivo  \(S\). Nota: \(w\) es el tamaño del bloque de bits procesados en paralelo (normalmente 32 o 64). Complejidad:  Temporal \(O\left(n \times \frac{S}{w}\right)\) -  Memoria \(O(S)\)
+
+\begin{minted}{cpp}
+bool subsetSumBitset( vi& arr, int S) {
+    bitset<10001> dp; // tam >= S+1
+    dp[0] = 1;
+    for(int x : arr) dp |= (dp << x);
+    return dp[S];
+}
+\end{minted}
+
+
+
+
+%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%
+%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%
+%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%
+\subsection{SOS DP}
+
+Dada $f(X)$ definida para cada $X\subseteq\{0,\dots,n-1\}$, queremos calcular
+$
+g(X)=\sum_{T\subseteq X} f(T).
+$
+Definimos 
+$
+S(x, i) = \{ y \subseteq x \mid y \oplus x < 2^i \}.
+$
+
+Notar que 
+% contiene todos los subconjuntos de $x$ cuyos bits a la izquierda del bit $i$ coinciden con los de $x$. 
+los bits que pueden variar son los $\{0, 1, \dots, i-1\}$ (si el bit $i$ de $x$ es 1), apartir del bit $i$ ya está fijo. $ S(x, 0) = \{x\}$ y $S(x, n) = \{\text{todos los submasks de x}\} $
+
+
+
+\newcommand{\fijo}[1]{\textcolor{orange!70!black}{#1}}
+\newcommand{\vari}[1]{\textcolor{cyan!70!black}{#1}}
+\newcommand{\cero}[1]{\textcolor{black!80}{#1}}
+\textbf{Ejemplo 1:} con $x = \fijo{11010}\vari{11}\cero{0}_2$ e $i = 3$:
+\[
+S(x, 3) = \{
+  \fijo{11010}\vari{00}\cero{0},\;
+  \fijo{11010}\vari{01}\cero{0},\;
+  \fijo{11010}\vari{10}\cero{0},\;
+  \fijo{11010}\vari{11}\cero{0}
+\}
+\]
+
+\textbf{Ejemplo 2:} con $x = \fijo{101}\vari{1}\cero{0}\vari{1}\cero{0}\vari{1}_2$ e $i = 5$:
+\[
+S(x, 5) = \left\{
+\begin{aligned}
+  &\fijo{101}\vari{0}\cero{0}\vari{0}\cero{0}\vari{0},\;
+   \fijo{101}\vari{0}\cero{0}\vari{0}\cero{0}\vari{1},\;
+   \fijo{101}\vari{0}\cero{0}\vari{1}\cero{0}\vari{0},\;
+   \fijo{101}\vari{0}\cero{0}\vari{1}\cero{0}\vari{1},\\
+  &\fijo{101}\vari{1}\cero{0}\vari{0}\cero{0}\vari{0},\;
+   \fijo{101}\vari{1}\cero{0}\vari{0}\cero{0}\vari{1},\;
+   \fijo{101}\vari{1}\cero{0}\vari{1}\cero{0}\vari{0},\;
+   \fijo{101}\vari{1}\cero{0}\vari{1}\cero{0}\vari{1}
+\end{aligned}
+\right\}
+\]
+
+Podemos descomponer $S(x, i)$ recursivamente:
+\[
+S(x, i+1) =
+\begin{cases}
+S(x, i) & \text{si el bit $i$ de $x$ es 0} \\
+S(x, i) \sqcup S(x \oplus 2^i, i) & \text{si el bit $i$ de $x$ es 1}
+\end{cases}
+\]
+Definimos la tabla de DP $dp[x][i] = \sum_{y \in S(x, i)} f[y]$ y notamos que
+$g(x) = dp[x][n]$,  $dp[x][0]=f(x)$ y la recurrencia es
+\[
+dp[x][i+1] =
+\begin{cases}
+dp[x][i] & \text{si el bit $i$ de $x$ es 0} \\
+dp[x][i] + dp[x \oplus 2^i][i] & \text{si el bit $i$ de $x$ es 1}
+\end{cases}
+\]
+
+\algoinfo{n\cdot 2^n}{n \cdot 2^n}{}
+\begin{minted}{cpp}
+int n; // leer n
+vector<int> f(1<<n); // inicializar f[S]
+vector<vector<int>> dp(1<<n, vector<int>(n + 1));
+for(int x = 0; x < (1<<n); x++) dp[x][0] = f[x];
+for(int i = 0; i < n; i++ )
+    for(int x = 0; x < (1<<n); x++ ){
+        if(x&(1<<i)) dp[x][i+1] = dp[x][i] + dp[x^(1<<i)][i];
+        else           dp[x][i+1] = dp[x][i];
+    }
+\end{minted}
+
+\algoinfo{n\cdot 2^n}{2^n}{}
+\begin{minted}{cpp}
+int n;
+vector<int> f(1<<n); // inicializar f[S]
+vector<int> g = f;
+for(int i = 0; i < n; i++ )
+    for(int mask = 0; mask < (1<<n); mask++ )
+        if(mask & (1<<i)) g[mask] += g[mask^(1<<i)];
+\end{minted}
+
+
+%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%
+%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%
+%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%
+\subsection{Li-Chao Tree}
+La construcción inicial toma $\mathcal{O}(N \log N)$. Dado un conjunto $A \subset \mathbb{R}$ con $|A|=N$ y $M$ funciones que cumplen la \textit{transcending property}, la estructura permite agregar una nueva función en $\mathcal{O}(\log N)$ por operación. Además, para cualquier $a \in A$, permite responder $Q$ consultas de la forma $\max_i f_i(a)$ en $\mathcal{O}(\log N)$ cada una. Complejidad total: $\mathcal{O}((N + M + Q) \log N)$. Notar que si hacemos insersiones por segmentos la complejidad es $O(\log^2 N)$.
+
+
+\begin{extended}
+    \subsubsection*{Propiedad Transcendente (\textit{Transcending Property})}
+    El Li Chao Tree funciona para cualquier familia de funciones continuas $\{f_i\}$ definidas sobre el dominio de interés que cumplan la \textbf{propiedad de intersección única} o \textit{transcending property}:
+    \begin{quote}
+    \textit{Para cualquier par de funciones distintas $f_i$ y $f_j$, la función diferencia $d(x) = f_i(x) - f_j(x)$ cambia de signo a lo sumo una vez en el intervalo de evaluación $[x_{\min}, x_{\max}]$.}
+    \end{quote}
+    Esto garantiza que, al comparar dos funciones en el extremo izquierdo \texttt{lv} y en el punto medio \texttt{mv}, la decisión sobre en qué mitad del intervalo se encuentra la intersección permanece binaria, permitiendo descartar una subrama en $\mathcal{O}(1)$ por nivel.
+\end{extended}
+
+
+
+\algoinfo{ \log N }{ N }{  }
+\inputcode{cpp}{latex_src/dp/li_chao_tree.cpp}{li_chao_tree.cpp}
+
+
+
+
+
+\subsection*{Li Chao Tree Dinámico}
+\begin{extended}
+Opera sobre un dominio entero/continuo arbitrario $[L, R]$ (ej. $[-10^9, 10^9]$) sin necesidad de compresión previa de coordenadas.
+
+\textbf{Operaciones y Complejidades Temporales ($U = R - L + 1$):}
+\begin{description}
+   \item[add\_line(line)]: Inserta una línea en todo el dominio $[L, R]$. $\mathcal{O}(\log U)$.
+   \item[add\_segment(line, l, r)]: Inserta una línea restringida al intervalo espacial $[l, r]$. $\mathcal{O}(\log^2 U)$ (descompone en $\mathcal{O}(\log U)$ nodos canónicos y desciende).
+   \item[query(x)]: Consulta el valor mínimo $y = mx + b$ en el punto $x$ considerando todo el dominio global.$\mathcal{O}(\log U)$
+   \item[query\_segment(x, l, r)]: Consulta el valor mínimo en la coordenada $x$, filtrando \textbf{únicamente} las líneas cuyos nodos de inserción intersectan o cubren el rango de consulta $[l, r]$. Retorna $\infty$ si no hay líneas válidas.$\mathcal{O}(\log U)$
+   \item[Memoria]: $\mathcal{O}(Q \log^2 U)$ en el peor caso de inserciones de segmentos, debido a la creación dinámica de nodos (\texttt{new node}) bajo demanda.
+   \item [Consideraciones Prácticas]: El factor $\log U$ es pequeño ($\approx 30$ niveles para $10^9$). Evita el uso de compresión offline, pero introduce sobrecarga de memoria y punteros en comparación con la versión estática basada en arreglos contiguos.
+\end{description}
+\end{extended}
+
+\begin{minted}{cpp}
+#include<bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+const ll inf = 2e18;
+
+struct Line {
+  ll m, c;
+  ll eval(ll x) {
+    return m * x + c;
+  }
+};
+struct node {
+  Line line;
+  node* left = nullptr;
+  node* right = nullptr;
+  node(Line line) : line(line) {}
+  void add_segment(Line nw, int l, int r, int L, int R) {
+    if (l > r || r < L || l > R) return;
+    int m = (l + 1 == r ? l : (l + r) / 2);
+    if (l >= L and r <= R) {
+      bool lef = nw.eval(l) < line.eval(l);
+      bool mid = nw.eval(m) < line.eval(m);
+      if (mid) swap(line, nw);
+      if (l == r) return;
+      if (lef != mid) {
+        if (left == nullptr) left = new node(nw);
+        else left -> add_segment(nw, l, m, L, R);
+      }
+      else {
+        if (right == nullptr) right = new node(nw);
+        else right -> add_segment(nw, m + 1, r, L, R);
+      }
+      return;
+    }
+    if (max(l, L) <= min(m, R)) {
+      if (left == nullptr) left = new node({0, inf});
+      left -> add_segment(nw, l, m, L, R);
+    }
+    if (max(m + 1, L) <= min(r, R)) {
+      if (right == nullptr) right = new node ({0, inf});
+      right -> add_segment(nw, m + 1, r, L, R);
+    }
+  }
+  ll query_segment(ll x, int l, int r, int L, int R) {
+    if (l > r || r < L || l > R) return inf;
+    int m = (l + 1 == r ? l : (l + r) / 2);
+    if (l >= L and r <= R) {
+      ll ans = line.eval(x);
+      if (l < r) {
+        if (x <= m && left != nullptr) ans = min(ans, left -> query_segment(x, l, m, L, R));
+        if (x > m && right != nullptr) ans = min(ans, right -> query_segment(x, m + 1, r, L, R));
+      }
+      return ans;
+    }
+    ll ans = inf;
+    if (max(l, L) <= min(m, R)) {
+      if (left == nullptr) left = new node({0, inf});
+      ans = min(ans, left -> query_segment(x, l, m, L, R));
+    }
+    if (max(m + 1, L) <= min(r, R)) {
+      if (right == nullptr) right = new node ({0, inf});
+      ans = min(ans, right -> query_segment(x, m + 1, r, L, R));
+    }
+    return ans;
+  }
+};
+
+struct LiChaoTree {
+  int L, R;
+  node* root;
+  LiChaoTree() : L(numeric_limits<int>::min() / 2), R(numeric_limits<int>::max() / 2), root(nullptr) {}
+  LiChaoTree(int L, int R) : L(L), R(R) {
+    root = new node({0, inf});
+  }
+  void add_line(Line line) {
+    root -> add_segment(line, L, R, L, R);
+  }
+  // y = mx + b: x in [l, r]
+  void add_segment(Line line, int l, int r) {
+    root -> add_segment(line, L, R, l, r);
+  }
+  ll query(ll x) {
+    return root -> query_segment(x, L, R, L, R);
+  }
+  ll query_segment(ll x, int l, int r) {
+    return root -> query_segment(x, l, r, L, R);
+  }
+};
+
+int32_t main() {
+  ios_base::sync_with_stdio(0);
+  cin.tie(0);
+  LiChaoTree t = LiChaoTree((int)-1e9, (int) 1e9);
+  int n, q; cin >> n >> q;
+  for (int i = 0; i < n; i++) {
+    ll l, r, a, b; cin >> l >> r >> a >> b;
+    r--;
+    t.add_segment({a, b}, l, r);
+  }
+  while (q--) {
+    int ty; cin >> ty;
+    if (ty == 0) {
+      ll l, r, a, b; cin >> l >> r >> a >> b;
+      r--;
+      t.add_segment({a, b}, l, r);
+    }
+    else {
+      ll x; cin >> x;
+      ll ans = t.query(x);
+      if (ans >= inf) cout << "INFINITY\n";
+      else cout << ans << '\n';
+    }
+  }
+  return 0;
+}
+\end{minted}
+
+
+\begin{extended}
+\textbf{Casos de Uso Avanzados (\texttt{query\_segment})}
+\begin{enumerate}
+    \item \textbf{Problemas de Caminos en Árboles (Tree Paths / Euler Tour):}
+    \begin{itemize}
+        \item \emph{Escenario:} Se modifican o agregan líneas en caminos arbitrarios sobre un árbol y se requiere consultar el óptimo en un nodo $u$ considerando únicamente las líneas asociadas a su subárbol o a una ruta específica.
+        \item \emph{Mapeo:} Al aplanar el árbol mediante un \emph{Euler Tour}, los subárboles y rangos jerárquicos se transforman en intervalos continuos $[l, r]$, permitiendo realizar \texttt{add\_segment} y \texttt{query\_segment($x, in[u], out[u]$)}.
+    \end{itemize}
+
+    \item \textbf{Algoritmos de Barrido en el Plano (Sweep-Line con Ventanas Temporales/Espaciales):}
+    \begin{itemize}
+        \item \emph{Escenario:} Rectas o segmentos que  ``nacen'' en una coordenada y "mueren" en otra (activos solo en un intervalo $[l, r]$). 
+        \item \emph{Mapeo:} Al barrer el plano, se insertan segmentos con su respectivo intervalo de vigencia y se consulta el valor óptimo filtrando estrictamente por las entidades activas en el rango actual.
+    \end{itemize}
+
+    \item \textbf{Estructuras de Datos Persistentes o Versionadas (por IDs de Operación):}
+    \begin{itemize}
+        \item \emph{Escenario:} Consultar el resultado óptimo considerando únicamente las modificaciones realizadas dentro de un rango de tiempos o identificadores de eventos $[id_{min}, id_{max}]$.
+    \end{itemize}
+\end{enumerate}
+\end{extended}

@@ -34,7 +34,7 @@ para arbol enraizado.
 
 \textbf{Principio de fusión.} Fusionar todos los vértices de un ciclo preserva Grundy; sus aristas se vuelven lazos. Unificar el suelo, fusionar ciclos. Reemplazar cada lazo por una hoja y aplicar colon. Lazos en un mismo vértice se cancelan por pares.\\
 
-\algoinfo{ (N+M) \alpha(N) }{ N+M }{Nodos en $[0,N)$. Grafo general con $M$ aristas.}
+\algoinfo{ (N+M) \alpha(N) }{ N+M }{Nodos en $[0,N)$. Grafo general}
 
 
 \inputcode{cpp}{latex_src/game_theory/GreenHackenbush.cpp}{GreenHackenbush.cpp}
@@ -42,7 +42,7 @@ para arbol enraizado.
 
 
 \ifextendedversion
-\algoinfo{ N+M }{ N+M }{Nodos en $[0,N)$. Arbol con $M$ multi-aritas.}
+\algoinfo{ N+M }{ N+M }{Arbol, multi-aristas.}
 \begin{minted}{cpp}
 struct edge{int from, to;ll w;};
 struct ghb_r{ int cntRepre, root=0, value; vi nim; vvpii tree;};

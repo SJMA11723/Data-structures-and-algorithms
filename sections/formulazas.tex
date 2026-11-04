@@ -113,9 +113,9 @@ B_m & 1 & -\dfrac{1}{2} & \dfrac{1}{6} & 0 & -\dfrac{1}{30} & 0 & \dfrac{1}{42} 
 \end{array}
 \]
 
-\textbf{Relación de Recurrencia:}
+\textbf{Relación de Recurrencia:} Con $(B_0 = 1)$
 \[
-\sum_{j=0}^m \binom{m+1}{j} B_j = 0 \implies B_m = -\frac{1}{m+1} \sum_{j=0}^{m-1} \binom{m+1}{j} B_j \quad (B_0 = 1)
+\sum_{j=0}^m \binom{m+1}{j} B_j = 0 \implies B_m = -\frac{1}{m+1} \sum_{j=0}^{m-1} \binom{m+1}{j} B_j 
 \]
 
 \algoinfo{k^2}{k}{Cálculo directo por programación dinámica.}
@@ -222,29 +222,24 @@ $\displaystyle\Sigma_k(n)=\sum_{i=1}^n i^k$, con $\Sigma_0(n)=n$.
 
 
 %=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%
-\subsubsection{Numeros simplices (Sumas de sumas de Gauss)}
+\subsubsection{Numeros simplices (Sumas de sumas de Gauss)} Sea $S_0(n)=1$, $S_1(n) = n$, en general:
 \[
-S_0(n)=1
-, \hspace{3mm}
-S_1(n)
-% =\sum_{i=1}^n S_0(i)
-= \sum_{i=1}^n 1= \binom{n}{1} 
-, \hspace{3mm}
+% S_1(n)
+% % =\sum_{i=1}^n S_0(i)
+% = \sum_{i=1}^n 1= \binom{n}{1} 
+% , \hspace{1mm}
 S_2(n)
 % =\sum_{i=1}^n S_1(i)
 =\sum_{i=1}^n i= \binom{n+1}{2}
-\]
-\begin{extended}[]
-\[
-S_3(n)= \sum_{i=1}^n \left(\sum_{j=1}^i j\right) = \sum_{i=1}^n S_2(i) = \binom{n+2}{3},
-\]
-\end{extended}
-\[
+, \hspace{1mm}
 S_k(n)
 =\sum_{i=1}^n S_{k-1}(i) 
 = \binom{n+k-1}{k}.
 \]
 \begin{extended}[]
+% \[
+% S_3(n)= \sum_{i=1}^n \left(\sum_{j=1}^i j\right) = \sum_{i=1}^n S_2(i) = \binom{n+2}{3},
+% \]
 \begin{itemize}
     \item $S_k(n)$ es un polinomio de grado $k$ en $n$. Necesitas $k+1$ puntos para interpolar.
     \item $S_k(0) = 0$ para $k\ge1$ (suma vacía).
@@ -268,7 +263,7 @@ Para $p\ne1$:
 \sum_{i=0}^n p^i=\frac{1-p^{n+1}}{1-p}, \hspace{2mm}
 \sum_{i=1}^n p^i=\frac{p(1-p^n)}{1-p},
 \]
-Si $p=1$, las cuatro sumas son, respectivamente,
+Si $p=1$, las cuatro sumas son,
 $b-a+1$ , $n(n+1)/2$, $n+1$ y $n$.
 \end{extended}
 
@@ -368,8 +363,8 @@ h=\sqrt{r_1^2-t^2},
 \[
 X_\pm=O_1+te\pm he^\perp.
 \]
-$h=0$: tangencia. Si $d=0$, coinciden si $r_1=r_2$;
-en otro caso no se intersectan.
+$h=0$: tangencia. Si $d=0$ y $r_1=r_2$ coinciden;
+otro caso no se intersectan.
 
 
 \textbf{Círculos tangentes: Descartes}
@@ -384,9 +379,9 @@ $k_i=1/r_i$, negativas para el círculo que encierra a los otros:
 \textbf{Volumen de un simplex}
 Vértices $P_0,\ldots,P_n\in\mathbb R^d$, $d\ge n$.
 Sea $E$ la matriz con filas $P_i-P_0$, $i=1,\ldots,n$:
-\[
+$
 V_n=\frac{1}{n!}\sqrt{\det(AA^\top)}.
-\]
+$
 Si $d=n$, se simplifica a $V_n=|\det A|/n!$.
 
 

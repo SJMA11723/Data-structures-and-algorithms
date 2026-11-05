@@ -176,17 +176,10 @@ Opera sobre un dominio entero/continuo arbitrario $[L, R]$ (ej. $[-10^9, 10^9]$)
 \end{extended}
 
 \begin{minted}{cpp}
-#include<bits/stdc++.h>
-using namespace std;
-
-using ll = long long;
 const ll inf = 2e18;
-
 struct Line {
   ll m, c;
-  ll eval(ll x) {
-    return m * x + c;
-  }
+  ll eval(ll x) { return m * x + c; }
 };
 struct node {
   Line line;
@@ -267,8 +260,6 @@ struct LiChaoTree {
 };
 
 int32_t main() {
-  ios_base::sync_with_stdio(0);
-  cin.tie(0);
   LiChaoTree t = LiChaoTree((int)-1e9, (int) 1e9);
   int n, q; cin >> n >> q;
   for (int i = 0; i < n; i++) {
@@ -279,8 +270,7 @@ int32_t main() {
   while (q--) {
     int ty; cin >> ty;
     if (ty == 0) {
-      ll l, r, a, b; cin >> l >> r >> a >> b;
-      r--;
+      ll l, r, a, b; cin >> l >> r >> a >> b; r--;
       t.add_segment({a, b}, l, r);
     }
     else {
@@ -290,7 +280,6 @@ int32_t main() {
       else cout << ans << '\n';
     }
   }
-  return 0;
 }
 \end{minted}
 

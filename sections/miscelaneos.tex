@@ -65,4 +65,67 @@ $S\subseteq[n]$ cumplen $\bigoplus_{i\in S}v_i=x$. (Si $x\notin V$, la respuesta
 \]
 
 
+\subsection{Queue-like undo}
+\algoinfo{n \log n}{n}{La complejidad es amortizada para $n$ operaciones.}
+\begin{minted}{cpp}
+struct QueueLikeUndo{
+    T structure;
+    stack<Op> st;
+    void rollback();
+    void insert(lli x){
+        st.push(Op(x, 1))
+        structure.insert(x);
+    }
 
+    void undo(){
+        if(st.empty()) return;
+        if(!st.top().st){
+            structure.rollback();
+            st.pop();
+            return;
+        }
+        vector<Op> nw;
+        vector<Op> old;
+        while(!st.empty()){
+            if(st.top().st) nw.pb(st.top());
+            else old.pb(st.top());
+            structure.rollback();
+            st.pop();
+            if(sz(nw)==sz(old)) break;
+        }
+
+        if(st.empty()){
+            rep(i, 0, sz(nw)){
+                nw[i].st=0;
+                structure.insert(nw[i].val, nw[i].w);
+                st.push(nw[i]);
+            }
+            repr(i, 1, sz(old)){
+                structure.insert(old[i].val, old[i].w);
+                st.push(old[i]);
+            }
+            if(sz(old)==0){
+                st.pop();
+                structure.rollback();
+            }
+        }
+        else{
+            for(lli i=nw.size()-1; i>=0; --i){
+                structure.insert(nw[i].val, nw[i].w);
+                st.push(nw[i]);
+            }
+            repr(i, 1, sz(old)){
+                structure.insert(old[i].val, old[i].w);
+                st.push(old[i]);
+            }
+            if(sz(old)==0){
+                st.pop();
+                structure.rollback();
+            }
+        }
+    }
+
+    QueueLikeUndo() : structure() {}
+
+};
+\end{minted}

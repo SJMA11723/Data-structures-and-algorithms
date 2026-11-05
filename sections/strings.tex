@@ -27,12 +27,9 @@ void compute_automaton(const string &s, vvi& aut){
     int n = sz(s);
     vi pi = prefix_function(s);
     aut.assign(n, vi(26));
-    for(int i = 0; i < n; ++i){
-        for(int c = 0; c < 26; ++c){
-            if(i && 'a' + c != s[i])
-                aut[i][c] = aut[pi[i - 1]][c];
-            else aut[i][c] = i + ('a'+c == s[i]);
-        }
+    for(int i = 0; i < n; ++i) for(int c = 0; c < 26; ++c){
+        if(i && 'a' + c != s[i]) aut[i][c] = aut[pi[i - 1]][c];
+        else aut[i][c] = i + ('a'+c == s[i]);
     }
 }
 \end{minted}
@@ -121,7 +118,7 @@ void counting_sort(int k, int n){
         sfs += f;
     }
     for(int i = 0; i < n; ++i){
-        if(SA[i] + k < n) tmpSA[ freqs[mrank[ SA[i] + k ]]++ ] = SA[i];
+        if(SA[i]+k<n) tmpSA[freqs[mrank[ SA[i]+k ]]++] = SA[i];
         else tmpSA[ freqs[0]++ ] = SA[i];
     }
     for(int i = 0; i < n; ++i) SA[i] = tmpSA[i];
@@ -152,8 +149,8 @@ inline bool suff_compare2(const string &pattern,int idx) {
     return (s.substr(idx).compare(0, sz(pattern), pattern) > 0);
 }
 pair<int,int> match(const string &pattern) {
-    int *low = lower_bound (SA, SA + sz(s), pattern, suff_compare1);
-    int *up = upper_bound (SA, SA + sz(s), pattern, suff_compare2);
+    int *low= lower_bound(SA, SA+sz(s), pattern, suff_compare1);
+    int *up = upper_bound(SA, SA+sz(s), pattern, suff_compare2);
     return make_pair((int)(low - SA),(int)(up - SA));
 }
 \end{minted}
@@ -255,8 +252,7 @@ map<int, int> to[maxn];
 //len[i] is the number of letters in the edge that enters in i
 //slink[i] is the suffix link
 int len[maxn], f_pos[maxn], slink[maxn];
-int node, pos;
-int sz = 1, n = 0;
+int node, pos, sz = 1, n = 0;
 int make_node(int _pos, int _len){
     f_pos[sz] = _pos;
     len [sz] = _len;
@@ -301,11 +297,8 @@ void add_letter(int c){
 }
 void correct(int s_size){
     len[0] = 0;
-    for (int i = 1; i < sz; i++){
-        if (f_pos[i] + len[i] - 1 >= s_size){
-            len[i] = (s_size - f_pos[i]);
-        }
-    }
+    rep(i, 1, sz) if(f_pos[i] + len[i] - 1 >= s_size)
+        len[i] = (s_size - f_pos[i]);
 }
 void print_suffix_tree(int from){
     cout << "Edge entering in " << from << " has size " << len[from];
@@ -313,25 +306,19 @@ void print_suffix_tree(int from){
     cout << "Node " << from << " goes to: ";
     for (auto u : to[from]){
         cout << u.se << " with " << (char)u.fi << " ";
-    }
-    cout << endl;
-    for (auto u : to[from]){
-        print_suffix_tree(u.se);
-    }
+    } cout << endl;
+    for (auto u : to[from]) print_suffix_tree(u.se);
 }
 void build(string &s){
-    for (int i = 0; i < sz; i++){
-        to[i].clear();
-    }
+    rep(i, 0, sz) to[i].clear();
     sz = 1;
     node = pos = n = 0;
     len[0] = inf;
-    for(int i = 0; i < sz(s); i++)
-        add_letter(s[i]);
+    rep(i, 0, sz(s)) add_letter(s[i]);
     correct(sz(s));
 }
 void cutGeneralized(vi &finishPoints){
-    for (int i = 0; i < sz; i++){
+    rep(i, 0, sz){
         int init = f_pos[i];
         int end = f_pos[i] + len[i] - 1;
         int idx = lower_bound(all(finishPoints), init) - finishPoints.begin();
@@ -342,19 +329,15 @@ void cutGeneralized(vi &finishPoints){
     }
 }
 void build_generalized(vector<string> &ss){
-    for (int i = 0; i < sz; i++){
-        to[i].clear();
-    }
+    rep(i, 0, sz) to[i].clear();
     sz = 1;
     node = pos = n = 0;
     len[0] = inf;
     int sep = 256;
     vi finishPoints;
     int next = 0;
-    for (int i = 0; i < sz(ss); i++){
-        for (int j = 0; j < sz(ss[i]); j++){
-            add_letter(ss[i][j]);
-        }
+    rep(i, 0, sz(ss)){
+        rep(j, 0, sz(ss[i])) add_letter(ss[i][j]);
         next += sz(ss[i]);
         finishPoints.pb(next);
         add_letter(sep++);

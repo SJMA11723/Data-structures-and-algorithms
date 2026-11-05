@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
-typedef int64_t ll;
+typedef long long ll;
 typedef pair<int, int> pii;
 typedef pair<ll, ll> pll;
 typedef vector<int> vi;
@@ -49,7 +49,7 @@ void logger(const char* col, string vars, Args&&... values){
     #define SALTO   (cerr << '\n')
     #define LOG(...)   logger("", #__VA_ARGS__, __VA_ARGS__)
     #define LOGC(c, ...) logger(c, #__VA_ARGS__, __VA_ARGS__)
-    #define COL(c, ...) (cerr << c << __VA_ARGS__ << RST << '\n')
+    #define COL(c, ...) (cerr <<c<< __VA_ARGS__ <<RST<< '\n')
 #else
     #define DEBUG   if (false)
     #define SALTO

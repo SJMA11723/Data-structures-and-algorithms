@@ -9,18 +9,13 @@ struct dsu{
     vector<action> actions;
 
     dsu(int n){
-        RA.resize(n, 1);
-        P.resize(n);
-        iota(all(P), 0);
+        RA.resize(n, 1); P.resize(n); iota(all(P), 0);
     }
 
-    int root(int x){
-        return x == P[x] ? x : P[x] = root(P[x]);
-    }
+    int root(int x){return x == P[x] ? x : P[x] = root(P[x]);}
 
     void join(int x, int y, bool recording){
-        x = root(x);
-        y = root(y);
+        x = root(x); y = root(y);
         if(x == y) return;
         if(RA[x] >= RA[y]) swap(x, y);
 

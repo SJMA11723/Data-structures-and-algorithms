@@ -4,10 +4,19 @@
 \subsection{Template y archivos}
 \inputcode{cpp}{latex_src/template.h}{template.h}
 
-Ejecutar en la terminal de carpeta
+
+Para compilar y ejecutar creamos los siguientes scrips en la carpeta \mintinline{bash}|~/|:
+\inputcode{bash}{latex_src/g.sh}{g.sh}
+\inputcode{bash}{latex_src/gc.sh}{gc.sh}
+\inputcode{bash}{latex_src/run.sh}{run.sh}
+
+Agregar los siguientes alias en \mintinline{bash}|~/.bashrc| para compilar:
 \begin{minted}{bash}
-for f in {a..n}; do cp template.cpp $f.cpp; done
+alias g='bash ~/g.sh'
+alias gc='bash ~/gc.sh'
+alias run='bash ~/run.sh'
 \end{minted}
+Ahora compilamos un código con \mintinline{bash}|g code.cpp| o con \mintinline{bash}|gc code.cpp| para debuggear. Para ejecutar \mintinline{bash}|run code test.in| o \mintinline{bash}|run code| para escribir el input desde la terminal.
 
 \subsection{Stress testing (diff)}
 Para stress testing en problemas donde existe solo una respuesta, usamos $stress.sh$. Testeamos $code.cpp$ contra $brute.cpp$. $gen.cpp$ es el generador de casos. Este ultimo recibe de semilla el valor $i$.
@@ -16,11 +25,8 @@ Para stress testing en problemas donde existe solo una respuesta, usamos $stress
 
 Para extraer la semilla en gen.cpp leemos desde argv
 \begin{minted}{cpp}
-int rnd(int a, int b){return a + rand() % (b - a + 1);}
 int main(int argc, char* argv[]){
     int seed = atoi(argv[1]);
-    srand(seed);
-    int n = rnd(1, 5);
 }
 \end{minted}
 
@@ -46,12 +52,7 @@ done
 Se ejecutara mientras el return value de checker sea $0$. Ejemplo de la implementación de un checker
 
 \begin{minted}{cpp}
-bool validAns(ifstream &fin, int n, int* arr){
-    fin>>n;
-    //aquí validariamos nuestra respuesta, fin sera el input stream que le pase
-    if(algunacosa) return true
-    else return false
-}
+bool validAns(ifstream &fin, int n, int* arr);
 int main(int argc, char * argv[]){
     //input stream del caso
     ifstream fin("input_file", ifstream::in);

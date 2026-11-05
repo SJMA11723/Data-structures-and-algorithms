@@ -41,6 +41,7 @@ void compute_automaton(const string &s, vvi& aut){
 
 \subsection{Suffix Automata}
 Complejidad: Tiempo $O(|s|)$, memoria $O(|S|)$. Construye un autómata sobre los sufijos de $s$, donde cada nodo terminal es un sufijo de $s$. Esta construcción se hace online. Donde $alpha$ es el tamaño del alfabeto y $offset$ el primer caracter. Si se hace uso de los nodos terminales llamar a markTerminalNodes() primero (este método no es online).
+Cada nodo $v$ representa una \textbf{clase de equivalencia} de substrings con el mismo $\mathrm{endpos}$ (posiciones finales de ocurrencia), y por tanto con las mismas transiciones de salida. Los substrings de una clase cubren longitudes contiguas $[\min(v), \max(v)] = [\,\texttt{sa[sa[v].link].len} + 1,\; \texttt{sa[v].len}\,]$. El suffix link salta a la clase del sufijo propio más largo que ya no pertenece a la misma clase, encadenando desde $\min(v)$ hasta $\texttt{sa[link].len} = \min(v)-1$.
 \begin{minted}{cpp}
 constexpr short alpha = 26;
 constexpr char offset = 'a';

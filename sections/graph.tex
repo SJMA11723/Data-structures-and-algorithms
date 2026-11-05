@@ -260,7 +260,6 @@ vi DMST(int n, int root, const vector<edge> &edges) {
     return res;
 }
 int main() {
-    ios_base::sync_with_stdio(0); cin.tie(0);
     int n, m, root; cin >> n >> m >> root;
     vector<edge> edges(m);
     for(auto &e : edges) cin >> e.u >> e.v >> e.w;
@@ -268,11 +267,9 @@ int main() {
     unordered_map<int, int> W[n];
     for (auto u : edges) W[u.v][u.u] = u.w;
     ll ans = 0;
-    for(int i = 0; i < n; i++) if(i != root)
-        ans += W[i][res[i]];
+    for(int i = 0; i < n; i++) if(i != root)ans += W[i][res[i]];
     cout << ans << '\n';
-    for(auto x : res) cout << x << ' ';
-    cout << '\n';
+    for(auto x : res) cout << x << ' '; cout << '\n';
 }
 \end{minted}
 
@@ -285,11 +282,9 @@ vvi comps;//nodes in each component
 vvi bcc;//nodes to components that it belong
 vi st;//internal stack
 vi low, num;
-int id;
-int sz;
+int id, sz;
 void dfs_biconnected(vvi &g, int u, int pre){
-  low[u] = num[u] = ++id;
-  st.pb(u);
+  low[u] = num[u] = ++id; st.pb(u);
   for(auto v: g[u]) {
     if(!num[v]) {
       dfs_biconnected(g, v, u);
@@ -314,8 +309,7 @@ vi utoubt;//its component or its AP index
 vb uisart;//u is AP?
 vvi bt;//block cut tree
 void generateBlockCutTree(vvi &g){
-    int n = sz(g);
-    sz = id = 0;
+    int n = sz(g); sz = id = 0;
     bcc.resize(0); low.resize(0); num.resize(0);
     bcc.resize(n); low.resize(n); num.resize(n);
     dfs_biconnected(g, 0, 0);
@@ -331,22 +325,27 @@ void generateBlockCutTree(vvi &g){
                 bt[utoubt[u]].pb(v);
                 bt[v].pb(utoubt[u]);
             }
-        } else //Not articulation point
-            utoubt[u] = bcc[u][0];
+        } else utoubt[u] = bcc[u][0]; //Not articulation point
     }
 }
 \end{minted}
 
 %% LCA
-\algoinfo{n \log n}{n \log n}{LCA y $n$-ésimo ancestro. Precalcula $2^k$-ancestros y profundidades. 1-index.}
+\algoinfo{n \log n}{n \log n}{\textbf{LCA y $n$-ésimo ancestro}. Precalcula $2^k$-ancestros y profundidades. 1-index.}
 \inputcode{cpp}{latex_src/graph/trees/lca.cpp}{lca.cpp}
 
 %% SACK
-\algoinfo{n \log n}{n}{Sack. Consultas en todos los subárboles. 1-index. add agrega/elimina un subárbol. Responder después de add.}
+\algoinfo{n \log n}{n}{\textbf{Sack}. Consultas en todos los subárboles. 1-index. add agrega/elimina un subárbol. Responder después de add.}
 \inputcode{cpp}{latex_src/graph/trees/sack.cpp}{sack.cpp}
 
-\algoinfo{n \log n}{n}{Centroid Decomposition. Para constuir el árbol de centroides usar la arista \texttt{(p, centroid)} en build.}
+\algoinfo{n \log n}{n}{\textbf{Centroid Decomposition}. Para constuir el árbol de centroides usar la arista \texttt{(p, centroid)} en build.}
 \inputcode{cpp}{latex_src/graph/trees/centroid.cpp}{centroid.cpp}
+
+\algoinfo{m \log n}{n}{\textbf{Dominator Tree}. Calcula el dominator tree de un grafo dirigido. 1-index.}
+\inputcode{cpp}{latex_src/graph/trees/dom_tree.cpp}{dom_tree.cpp}
+
+\algoinfo{k \log k}{k}{\textbf{Virtual Tree}. Dado un árbol $T$ y un subconjunto de nodos $S$ de $T$, calcula el árbol virtual de $S$. NO TESTEADO.}
+\inputcode{cpp}{latex_src/graph/trees/virtual_tree.cpp}{virtual_tree.cpp}
 
 \subsection{Matching}
 

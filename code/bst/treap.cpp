@@ -23,6 +23,8 @@ node alloc(ll _x){
     return &pool[nxt_node++];
 }
 
+int cnt(node u){return u ? u->cnt : 0;}
+
 struct treap{
     node root;
     treap(): root(nullptr){}
@@ -77,6 +79,37 @@ struct treap{
         }
         root = merge(merge(l, m), r);
     }
+
+    int kth(int k){
+        if(k < 0 || !root || k >= cnt(root)) return -1;
+        node cur = root; int cntl;
+        while(k != (cntl = cnt(cur->l))){
+            if(k < cntl) cur = cur->l;
+            else if(k < cntl + cur->freq) return cur->x;
+            else {
+                k -= cntl + cur->freq;
+                cur = cur->r;
+            }
+        }
+        return cur->x;
+    }
+
+    int idx(ll x){
+        if(!root) return -1;
+        node cur = root;
+        int pos = cnt(root->l);
+        while(cur && cur->x != x){
+            if(cur->x < x){
+                pos += cur->freq;
+                cur = cur->r;
+                if(cur) pos += cnt(cur->l);
+            } else {
+                cur = cur->l;
+                if(cur) pos += cnt(cur->l) - cur->cnt;
+            }
+        }
+        return cur ? pos : -1;
+    }
 };
 
 struct implicit_treap{
@@ -111,7 +144,7 @@ struct implicit_treap{
     pair<node, node> split_p(node u, int pos){
         if(!u) return {u, u};
         push(u);
-        int cur_pos = (u->l) ? (u->l->cnt) : 0;
+        int cur_pos = cnt(u->l);
         if(cur_pos < pos){
             auto p = split_p(u->r, pos - cur_pos - 1);
             u->r = p.fi;

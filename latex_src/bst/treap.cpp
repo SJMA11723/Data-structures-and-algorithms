@@ -123,10 +123,10 @@ struct implicit_treap{
     }
     void reverse(int l, int r){
         node prv, inter, nxt;
-        tie(prv, inter) = split_p(root, l);
-        tie(inter, nxt) = split_p(inter, r - l + 1);
+        tie(inter, nxt) = split_p(root, r + 1);
+        tie(prv, inter) = split_p(inter, l);
         inter->rev ^= 1;
-        root = merge(merge(prv, inter), nxt);
+        root = merge(prv, merge(inter, nxt));
     }
     void _print(node u){
         if(!u) return;
